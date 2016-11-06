@@ -1,0 +1,23 @@
+{
+  "name": "shiftworld",
+  "version": "1.0.0",
+  "description": "Github game jam",
+  "main": "index.js",
+  "dependencies": {
+    "phaser": "^2.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darragh169/shiftworld.git"
+  },
+  "author": "Mauldy Pumpkin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darragh169/shiftworld/issues"
+  },
+  "homepage": "https://github.com/darragh169/shiftworld#readme"
+}
