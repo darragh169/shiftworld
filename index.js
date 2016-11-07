@@ -40,7 +40,7 @@ function create() {
     layer = map.createLayer('Tile Layer 1');
 
     //  Un-comment this on to see the collision tiles
-    // layer.debug = true;
+    //layer.debug = true;
 
     layer.resizeWorld();
 
@@ -60,7 +60,7 @@ function create() {
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
-    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    switchButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 }
 
@@ -109,18 +109,22 @@ function update() {
         }
     }
     
-    if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
+    if (cursors.up.isDown && player.body.onFloor() && game.time.now > jumpTimer)
     {
         player.body.velocity.y = -250;
         jumpTimer = game.time.now + 750;
     }
 
+    if (switchButton.isDown)
+    {
+        console.log('switch Gravity here');
+    }
 }
 
 function render () {
 
-    // game.debug.text(game.time.physicsElapsed, 32, 32);
-    // game.debug.body(player);
-    // game.debug.bodyInfo(player, 16, 24);
+    //game.debug.text(game.time.physicsElapsed, 32, 32);
+    //game.debug.body(player);
+    //game.debug.bodyInfo(player, 16, 24);
 
 }
