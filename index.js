@@ -34,7 +34,7 @@ var mainState = {
         // Design the level. x = wall, o = coin, ! = lava.
         var level = [
             'xxxxxxxxxxxxxxxxxxxxxx',
-            '!         !          x',
+            '!                    x',
             '!                 o  x',
             '!         o          x',
             '!                    x',
@@ -82,6 +82,13 @@ var mainState = {
     },
 
     update: function() {  
+
+        if (this.cursor.left.isDown) 
+             this.player.body.velocity.x = -200;
+        else if (this.cursor.right.isDown) 
+             this.player.body.velocity.x = 200;
+         else 
+             this.player.body.velocity.x = 0;
 
         // Make the player and the walls collide
         game.physics.arcade.collide(this.player, this.walls);
