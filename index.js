@@ -79,6 +79,10 @@ var mainState = {
         this.cursor.right.onDown.add(function() { 
             this.player.body.velocity.x = 200;
         }, this);
+
+        this.cursor.down.onDown.add(function(){
+        	this.player.body.velocity.x = 0;
+        }, this);
     },
 
     update: function() {  
