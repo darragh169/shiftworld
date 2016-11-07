@@ -1,116 +1,126 @@
- // Create the state that will contain the whole game
-var mainState = {  
-    preload: function() {  
-        // Here we preload the assets
-        game.load.image('player', 'assets/player.png');
-        game.load.image('wall', 'assets/wall.png');
-        game.load.image('coin', 'assets/coin.png');
-        game.load.image('enemy', 'assets/enemy.png');
-    },
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-    create: function() {  
-        // Here we create the game
-        // Set the background color to blue
-        game.stage.backgroundColor = '#3598db';
+function preload() {
 
-        // Start the Arcade physics system (for movements and collisions)
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles-1', 'assets/images/tiles-1.png');
+    game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);
+    game.load.image('starSmall', 'assets/images/star.png');
+    game.load.image('starBig', 'assets/images/star2.png');
+    game.load.image('background', 'assets/images/background2.png');
 
-        // Add the physics engine to all game objects
-        game.world.enableBody = true;
-        // Variable to store the arrow key pressed
-        this.cursor = game.input.keyboard.createCursorKeys();
+}
 
-        // Create the player in the middle of the game
-        this.player = game.add.sprite(70, 100, 'player');
+var map;
+var tileset;
+var layer;
+var player;
+var facing = 'left';
+var jumpTimer = 0;
+var cursors;
+var jumpButton;
+var bg;
 
-        // Add gravity to make it fall
-        this.player.body.gravity.y = 600;
-        // Create 3 groups that will contain our objects
-        this.walls = game.add.group();
-        this.coins = game.add.group();
-        this.enemies = game.add.group();
+function create() {
 
-        // Design the level. x = wall, o = coin, ! = lava.
-        var level = [
-            'xxxxxxxxxxxxxxxxxxxxxx',
-            '!                    x',
-            '!                 o  x',
-            '!         o          x',
-            '!                    x',
-            '!     o   !    x     x',
-            'xxxxxxxxxxxxxxxx!!!!!x',
-        ];
-        // Create the level by going through the array
-        for (var i = 0; i < level.length; i++) {
-            for (var j = 0; j < level[i].length; j++) {
+    game.physics.startSystem(Phaser.Physics.ARCADE);
 
-                // Create a wall and add it to the 'walls' group
-                if (level[i][j] == 'x') {
-                    var wall = game.add.sprite(30+20*j, 30+20*i, 'wall');
-                    this.walls.add(wall);
-                    wall.body.immovable = true; 
-                }
+    game.stage.backgroundColor = '#000000';
 
-                // Create a coin and add it to the 'coins' group
-                else if (level[i][j] == 'o') {
-                    var coin = game.add.sprite(30+20*j, 30+20*i, 'coin');
-                    this.coins.add(coin);
-                }
+    bg = game.add.tileSprite(0, 0, 800, 600, 'background');
+    bg.fixedToCamera = true;
 
-                // Create a enemy and add it to the 'enemies' group
-                else if (level[i][j] == '!') {
-                    var enemy = game.add.sprite(30+20*j, 30+20*i, 'enemy');
-                    this.enemies.add(enemy);
-                }
-            }
+    map = game.add.tilemap('level1');
+
+    map.addTilesetImage('tiles-1');
+
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+
+    layer = map.createLayer('Tile Layer 1');
+
+    //  Un-comment this on to see the collision tiles
+    // layer.debug = true;
+
+    layer.resizeWorld();
+
+    game.physics.arcade.gravity.y = 250;
+
+    player = game.add.sprite(32, 32, 'dude');
+    game.physics.enable(player, Phaser.Physics.ARCADE);
+
+    player.body.bounce.y = 0.2;
+    player.body.collideWorldBounds = true;
+    player.body.setSize(20, 32, 5, 16);
+
+    player.animations.add('left', [0, 1, 2, 3], 10, true);
+    player.animations.add('turn', [4], 20, true);
+    player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+    game.camera.follow(player);
+
+    cursors = game.input.keyboard.createCursorKeys();
+    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+}
+
+function update() {
+
+    game.physics.arcade.collide(player, layer);
+
+    player.body.velocity.x = 0;
+
+    if (cursors.left.isDown)
+    {
+        player.body.velocity.x = -150;
+
+        if (facing != 'left')
+        {
+            player.animations.play('left');
+            facing = 'left';
         }
-
-        this.cursor.up.onDown.add(function() { 
-            if(this.player.body.touching.down){
-                this.player.body.velocity.y = -250;
-            }
-        }, this);
-
-        this.cursor.left.onDown.add(function() { 
-            this.player.body.velocity.x = -200; 
-        }, this);
-
-        this.cursor.right.onDown.add(function() { 
-            this.player.body.velocity.x = 200;
-        }, this);
-    },
-
-    update: function() {  
-
-        if (this.cursor.left.isDown) 
-             this.player.body.velocity.x = -200;
-        else if (this.cursor.right.isDown) 
-             this.player.body.velocity.x = 200;
-         else 
-             this.player.body.velocity.x = 0;
-
-        // Make the player and the walls collide
-        game.physics.arcade.collide(this.player, this.walls);
-
-        // Call the 'takeCoin' function when the player takes a coin
-        game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
-
-        // Call the 'restart' function when the player touches the enemy
-        game.physics.arcade.overlap(this.player, this.enemies, this.restart, null, this);
-    },
-    // Function to kill a coin
-    takeCoin: function(player, coin) {
-        coin.kill();
-    },
-
-    // Function to restart the game
-    restart: function() {
-        game.state.start('main');
     }
-};
+    else if (cursors.right.isDown)
+    {
+        player.body.velocity.x = 150;
 
-// Initialize the game and start our state
-var game = new Phaser.Game(500, 200);  
-game.state.add('main', mainState);  
-game.state.start('main');
+        if (facing != 'right')
+        {
+            player.animations.play('right');
+            facing = 'right';
+        }
+    }
+    else
+    {
+        if (facing != 'idle')
+        {
+            player.animations.stop();
+
+            if (facing == 'left')
+            {
+                player.frame = 0;
+            }
+            else
+            {
+                player.frame = 5;
+            }
+
+            facing = 'idle';
+        }
+    }
+    
+    if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
+    {
+        player.body.velocity.y = -250;
+        jumpTimer = game.time.now + 750;
+    }
+
+}
+
+function render () {
+
+    // game.debug.text(game.time.physicsElapsed, 32, 32);
+    // game.debug.body(player);
+    // game.debug.bodyInfo(player, 16, 24);
+
+}
