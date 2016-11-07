@@ -119,7 +119,13 @@ var mainState = {
         game.state.start('main');
     }
 };
+function render () {
 
+     game.debug.text(game.time.physicsElapsed, 32, 32);
+     game.debug.body(player);
+     game.debug.bodyInfo(player, 16, 24);
+
+}
 // Initialize the game and start our state
 var game = new Phaser.Game(500, 200);
 var life;  
