@@ -24,7 +24,7 @@ var mainState = {
         // Create the player in the middle of the game
         this.player = game.add.sprite(70, 100, 'player');
 		
-		this.player.life = 3;
+		this.life = 3;
 
         // Add gravity to make it fall
         this.player.body.gravity.y = 600;
@@ -96,22 +96,23 @@ var mainState = {
         game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
 
         // Call the 'restart' function when the player touches the enemy
-        game.physics.arcade.overlap(this.player, this.enemies, this.restart, null, this);
+        game.physics.arcade.overlap(this.player, this.enemies, this.takeDamage, null, this);
     },
     // Function to kill a coin
     takeCoin: function(player, coin) {
         coin.kill();
     },
 	
-	takeDamage:function(player, enemies){
-		if(this.player.life = 0){
+	takeDamage: function(){
+		if(this.life = 0){
 			this.restart;
 		}
 		else{
-			this.player.velocity.x = -this.player.velocity.x;
-			this.player.velocity.y = -this.player.velocity.y;
-			this.player.life--;
+			this.player.body.velocity.y = -this.player.body.velocity.y;
+			this.player.body.velocity.x = -this.player.body.velocity.x;
+			this.life = this.life-1;
 		}
+	},
 	
     // Function to restart the game
     restart: function() {
@@ -120,6 +121,7 @@ var mainState = {
 };
 
 // Initialize the game and start our state
-var game = new Phaser.Game(500, 200);  
+var game = new Phaser.Game(500, 200);
+var life;  
 game.state.add('main', mainState);  
 game.state.start('main');
