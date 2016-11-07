@@ -65,22 +65,24 @@ var mainState = {
                 }
             }
         }
+
+        this.cursor.up.onDown.add(function() { 
+            if(this.player.body.touching.down){
+                this.player.body.velocity.y = -250;
+            }
+        }, this);
+
+        this.cursor.left.onDown.add(function() { 
+            this.player.body.velocity.x = -200; 
+        }, this);
+
+        this.cursor.right.onDown.add(function() { 
+            this.player.body.velocity.x = 200;
+        }, this);
     },
 
     update: function() {  
-        // Here we update the game 60 times per second
-        // Move the player when an arrow key is pressed
-        if (this.cursor.left.isDown) 
-            this.player.body.velocity.x = -200;
-        else if (this.cursor.right.isDown) 
-            this.player.body.velocity.x = 200;
-        else 
-            this.player.body.velocity.x = 0;
-         
-        // Make the player jump if he is touching the ground
-        if (this.cursor.up.isDown && this.player.body.touching.down)
-            this.player.body.velocity.y = -250;
-         
+
         // Make the player and the walls collide
         game.physics.arcade.collide(this.player, this.walls);
 
