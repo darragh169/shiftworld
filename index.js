@@ -6,9 +6,13 @@ var mainState = {
         game.load.image('wall', 'assets/wall.png');
         game.load.image('coin', 'assets/coin.png');
         game.load.image('enemy', 'assets/enemy.png');
+
     },
 
     create: function() {  
+	
+	
+	
         // Here we create the game
         // Set the background color to blue
         game.stage.backgroundColor = '#3598db';
@@ -23,8 +27,10 @@ var mainState = {
 
         // Create the player in the middle of the game
         this.player = game.add.sprite(70, 100, 'player');
+		this.player.alive = true;
+		this.player.health = 100;
 		
-		this.life = 3;
+
 
         // Add gravity to make it fall
         this.player.body.gravity.y = 600;
@@ -32,7 +38,6 @@ var mainState = {
         this.walls = game.add.group();
         this.coins = game.add.group();
         this.enemies = game.add.group();
-
         // Design the level. x = wall, o = coin, ! = lava.
         var level = [
             'xxxxxxxxxxxxxxxxxxxxxx',
@@ -64,6 +69,7 @@ var mainState = {
                 else if (level[i][j] == '!') {
                     var enemy = game.add.sprite(30+20*j, 30+20*i, 'enemy');
                     this.enemies.add(enemy);
+					enemy.body.immovable = true;
                 }
             }
         }
@@ -85,32 +91,33 @@ var mainState = {
         this.cursor.down.onDown.add(function(){
         	this.player.body.velocity.x = 0;
         }, this);
+		
     },
 
     update: function() {  
-
+		game.debug.text(this.player.health/1, 32, 32);
         // Make the player and the walls collide
         game.physics.arcade.collide(this.player, this.walls);
 
         // Call the 'takeCoin' function when the player takes a coin
         game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
 
-        // Call the 'restart' function when the player touches the enemy
-        game.physics.arcade.overlap(this.player, this.enemies, this.takeDamage, null, this);
+		// Make the player and the lava
+        game.physics.arcade.collide(this.player, this.enemies,this.takeDamage, null, this);
     },
+	
     // Function to kill a coin
     takeCoin: function(player, coin) {
         coin.kill();
     },
 	
 	takeDamage: function(){
-		if(this.life = 0){
+		if(this.player.life = 0){
 			this.restart;
 		}
 		else{
-			this.player.body.velocity.y = -this.player.body.velocity.y;
-			this.player.body.velocity.x = -this.player.body.velocity.x;
-			this.life = this.life-1;
+			this.player.damage(1);
+			
 		}
 	},
 	
@@ -131,3 +138,4 @@ var game = new Phaser.Game(500, 200);
 var life;  
 game.state.add('main', mainState);  
 game.state.start('main');
+
