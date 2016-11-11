@@ -1,3 +1,5 @@
+'use strict'
+
 var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
@@ -22,6 +24,9 @@ var layer;
 
 var player;
 var droid;
+var droid2;
+
+var droid_collection = [];
 
 var facing = 'left';
 var jumpTimer = 0;
@@ -76,10 +81,14 @@ function create() {
     player.animations.add('right', [5, 6, 7, 8], 10, true);
     //****************PLAYER***************//
 
-    //****************DROID***************//
+    //****************DROIDS***************//
     droid = game.add.sprite(400, 200, 'droid');
     initDroid(droid);
-    //****************DROID***************//
+    droid_collection.push(droid);
+    droid2 = game.add.sprite(200,200, 'droid');
+    initDroid(droid2);
+    droid_collection.push(droid2);
+    //****************DROIDS***************//
 
     game.camera.follow(player);
 
@@ -93,9 +102,7 @@ function update() {
     game.physics.arcade.collide(player, layer);
     player.body.velocity.x = 0;
 
-    game.physics.arcade.collide(droid, layer);
-    droid.animations.play('move');
-    droid.body.velocity.x = -15;
+    updateDroids();
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -189,4 +196,11 @@ function initDroid(droid) {
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
 
+function updateDroids(){
+    for(var i = 0; i < droid_collection.length; i++){
+            game.physics.arcade.collide(droid_collection[i], layer);
+            droid_collection[i].animations.play('move');
+            droid_collection[i].body.velocity.x = -15;
+    }
+}
 
