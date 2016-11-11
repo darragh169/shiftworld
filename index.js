@@ -12,10 +12,8 @@ function preload() {
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
 
-
     game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
-    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);
-    
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
 }
 
 var map;
@@ -58,7 +56,7 @@ function create() {
     layer = map.createLayer('Tile Layer 1');
 
     //  Un-comment this on to see the collision tiles
-    layer.debug = true;
+    // layer.debug = true;
 
     layer.resizeWorld();
 
@@ -70,7 +68,7 @@ function create() {
 
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
-    player.body.setSize(20, 32, 5, 16);
+    player.body.setSize(20, 32, 5, 16); //player.body.setSize(20, 32, 5, 16);
     player.anchor.setTo(0.5, 0.5);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
     player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -79,7 +77,6 @@ function create() {
     //****************PLAYER***************//
 
     //****************DROID***************//
-
     droid = game.add.sprite(400, 200, 'droid');
     initDroid(droid);
     //****************DROID***************//
@@ -100,55 +97,55 @@ function update() {
     droid.animations.play('move');
     droid.body.velocity.x = -15;
 
-    if (cursors.left.isDown)
-    {
+    // PLAYER MOVEMENT
+    if (cursors.left.isDown) {
         player.body.velocity.x = -playerSpeed;
 
-        if (facing != 'left')
-        {
+        if (facing != 'left') {
             player.animations.play('left');
             facing = 'left';
         }
     }
-    else if (cursors.right.isDown)
-    {
+    else if (cursors.right.isDown) {
         player.body.velocity.x = playerSpeed;
 
-        if (facing != 'right')
-        {
+        if (facing != 'right') {
             player.animations.play('right');
             facing = 'right';
         }
     }
-    else
-    {
-        if (facing != 'idle')
-        {
+    else {
+        if (facing != 'idle') {
             player.animations.stop();
 
-            if (facing == 'left')
-            {
+            if (facing == 'left') {
                 player.frame = 0;
             }
-            else
-            {
+            else {
                 player.frame = 5;
             }
-
             facing = 'idle';
         }
     }
+
+    //console.log(player.body.blocked.up);
     
-    if (cursors.up.isDown && player.body.onFloor() && game.time.now > jumpTimer)
-    {
+    // JUMPING
+    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { // player.body.blocked.up
         player.body.velocity.y =  -250;
+
+        jumpTimer = game.time.now + 750;
+    }
+    // REVERSE JUMP
+    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { // player.body.blocked.up
+        player.body.velocity.y =  250;
 
         jumpTimer = game.time.now + 750;
     }
 
     // Reversing GRAVITY when C button is pressed
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
-        gravityDown = !gravityDown;              // Change gravity boolean
+        gravityDown = !gravityDown;             // Change gravity boolean
         game.physics.arcade.gravity.y *= -1;    // Invert gravity
 
         //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
@@ -169,14 +166,16 @@ function update() {
         gameH1.style.webkitTransform = twist; 
         gameH1.style.Transform = twist;
     }
-
 }
 
-function render () {
+function render() {
 
-    //game.debug.text(game.time.physicsElapsed, 32, 32);
+    game.debug.text(game.time.physicsElapsed, 32, 32);
     //game.debug.body(droid);
     //game.debug.bodyInfo(droid, 16, 24);
+
+    game.debug.body(player);
+    game.debug.bodyInfo(player, 16, 24);
 }
 
 
