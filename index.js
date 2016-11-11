@@ -1,152 +1,230 @@
-// Create the state that will contain the whole game
-var mainState = {
-    preload: function () {
-        // Here we preload the assets
-        game.load.image('player', 'assets/player.png');
-        game.load.image('wall', 'assets/wall.png');
-        game.load.image('coin', 'assets/coin.png');
-        game.load.image('enemy', 'assets/enemy.png');
-        game.load.image('heart', 'assets/heartFull.png');
+var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { 
+    preload: preload, 
+    create: create, 
+    update: update, 
+    render: render 
+});
+var map;
+var tileset;
+var layer;
 
-    },
+var player;
+var droid;
 
-    create: function () {
+var facing = 'left';
+var jumpTimer = 0;
+var gravityTimer = 0;
+var cursors;
+var jumpButton;
+var gravityButton;
+var bg;
+var switchButton;
+
+var droidspeed = -100;
+var playerSpeed = 220;
+var gravityDown = true;
+var invincibleTime;
+
+function preload() {
+
+    game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles-1', 'assets/images/tiles-1.png');
+    game.load.image('background', 'assets/images/background2.png');
+
+    game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);
+    game.load.image('heart', 'assets/heartFull.png');
 
 
+}
 
-        // Here we create the game
-        // Set the background color to blue
-        game.stage.backgroundColor = '#3598db';
+function create() {
 
-        // Start the Arcade physics system (for movements and collisions)
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // Add the physics engine to all game objects
-        game.world.enableBody = true;
-        // Variable to store the arrow key pressed
-        this.cursor = game.input.keyboard.createCursorKeys();
+    game.stage.backgroundColor = '#000000';
 
-        // Create the player in the middle of the game
-        this.player = game.add.sprite(70, 100, 'player');
-        this.player.alive = true;
-        this.player.health = 3;
-        this.player.maxHealth = 8;
-        this.game.plugin = this.game.plugins.add(Phaser.Plugin.HealthMeter);
+    bg = game.add.tileSprite(0, 0, 800, 500, 'background');
+    bg.fixedToCamera = true;
 
-        // create our hearts
-        this.hearts = this.game.add.group();
-        this.hearts.enableBody = true;
 
-        for (var k = 0; k < 6; k++) {
-            this.hearts.create(100 + Math.random() * 800, 45 + Math.random() * 200, 'heartFull');
+    map = game.add.tilemap('level1');
+
+    map.addTilesetImage('tiles-1');
+
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+
+    layer = map.createLayer('Tile Layer 1');
+
+	
+	 
+    //  Un-comment this on to see the collision tiles
+    // layer.debug = true;
+
+    layer.resizeWorld();
+
+    game.physics.arcade.gravity.y = 350;
+
+    //****************PLAYER****************//
+    player = game.add.sprite(32, 32, 'dude');
+    game.physics.enable(player, Phaser.Physics.ARCADE);
+
+    player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
+    player.body.collideWorldBounds = true;
+    player.body.setSize(20, 32, 5, 16); //player.body.setSize(20, 32, 5, 16);
+    player.anchor.setTo(0.5, 0.5);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
+
+    player.animations.add('left', [0, 1, 2, 3], 10, true);
+    player.animations.add('turn', [4], 20, true);
+    player.animations.add('right', [5, 6, 7, 8], 10, true);
+	player.health = 3;
+    player.maxHealth = 8;
+	
+	//*******************HEARTS*****************//
+	game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
+	hearts = game.add.group();
+    hearts.enableBody = true;
+	 // set up a timer so player is briefly invincible after being damaged
+    invincibleTimer = game.time.now + 1000;
+	healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
+    healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
+    //****************PLAYER***************//
+
+    //****************DROID***************//
+    droid = game.add.sprite(400, 200, 'droid');
+    initDroid(droid);
+    //****************DROID***************//
+
+    game.camera.follow(player);
+
+    cursors = game.input.keyboard.createCursorKeys();
+    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.C);      // Press C to flip gravity
+
+}
+
+function update() {
+    game.physics.arcade.collide(player, layer);
+    player.body.velocity.x = 0;
+
+    game.physics.arcade.collide(droid, layer);
+
+    droid.animations.play('move');
+    droid.body.velocity.x = -15;
+
+    // PLAYER MOVEMENT
+    if (cursors.left.isDown) {
+        player.body.velocity.x = -playerSpeed;
+
+        if (facing != 'left') {
+            player.animations.play('left');
+            facing = 'left';
         }
-        // set up a timer so player is briefly invincible after being damaged
-        this.invincibleTimer = this.game.time.now + 1000;
+    }
+    else if (cursors.right.isDown) {
+        player.body.velocity.x = playerSpeed;
 
-        this.healthMeterIcons = this.game.add.plugin(Phaser.Plugin.HealthMeter);
-        this.healthMeterIcons.icons(this.player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
-
-
-        // Add gravity to make it fall
-        this.player.body.gravity.y = 600;
-        // Create 3 groups that will contain our objects
-        this.walls = game.add.group();
-        this.coins = game.add.group();
-        this.enemies = game.add.group();
-        // Design the level. x = wall, o = coin, ! = lava.
-        var level = [
-            'xxxxxxxxxxxxxxxxxxxxxx',
-            '!         !          x',
-            '!                 o  x',
-            '!         o          x',
-            '!                    x',
-            '!     o   !    x     x',
-            'xxxxxxxxxxxxxxxx!!!!!x'
-        ];
-        // Create the level by going through the array
-        for (var i = 0; i < level.length; i++) {
-            for (var j = 0; j < level[i].length; j++) {
-
-                // Create a wall and add it to the 'walls' group
-                if (level[i][j] == 'x') {
-                    var wall = game.add.sprite(30 + 20 * j, 30 + 20 * i, 'wall');
-                    this.walls.add(wall);
-                    wall.body.immovable = true;
-                }
-
-                // Create a coin and add it to the 'coins' group
-                else if (level[i][j] == 'o') {
-                    var coin = game.add.sprite(30 + 20 * j, 30 + 20 * i, 'coin');
-                    this.coins.add(coin);
-                }
-
-                // Create a enemy and add it to the 'enemies' group
-                else if (level[i][j] == '!') {
-                    var enemy = game.add.sprite(30 + 20 * j, 30 + 20 * i, 'enemy');
-                    this.enemies.add(enemy);
-                    enemy.body.immovable = true;
-                }
-            }
+        if (facing != 'right') {
+            player.animations.play('right');
+            facing = 'right';
         }
+    }
+    else {
+        if (facing != 'idle') {
+            player.animations.stop();
 
-        this.cursor.up.onDown.add(function () {
-            if (this.player.body.touching.down) {
-                this.player.body.velocity.y = -250;
+            if (facing == 'left') {
+                player.frame = 0;
             }
-        }, this);
+            else {
+                player.frame = 5;
+            }
+            facing = 'idle';
+        }
+    }
 
-        this.cursor.left.onDown.add(function () {
-            this.player.body.velocity.x = -200;
-        }, this);
+    //console.log(player.body.blocked.up);
+    
+    // JUMPING
+    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { // player.body.blocked.up
+        player.body.velocity.y =  -250;
 
-        this.cursor.right.onDown.add(function () {
-            this.player.body.velocity.x = 200;
-        }, this);
+        jumpTimer = game.time.now + 750;
+    }
+    // REVERSE JUMP
+    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { // player.body.blocked.up
+        player.body.velocity.y =  250;
 
-        this.cursor.down.onDown.add(function () {
-            this.player.body.velocity.x = 0;
-        }, this);
+        jumpTimer = game.time.now + 750;
+    }
 
-    },
+    // Reversing GRAVITY when C button is pressed
+    if(gravityButton.isDown && game.time.now > gravityTimer) {  
+        gravityDown = !gravityDown;             // Change gravity boolean
+        game.physics.arcade.gravity.y *= -1;    // Invert gravity
 
-    update: function () {
-        //game.debug.text(this.player.health, 32, 32);
-        // Make the player and the walls collide
-        game.physics.arcade.collide(this.player, this.walls);
+        //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
+        player.scale.y *= -1;                   // Flip Sprite vertically
+        gravityTimer = game.time.now + 500;     // Ensures that function is called once 
 
-        // Call the 'takeCoin' function when the player takes a coin
-        game.physics.arcade.overlap(this.player, this.coins, this.takeCoin, null, this);
+        // Flip the game Header Text
+        var twist;
 
-        // Make the player and the lava
-        game.physics.arcade.collide(this.player, this.enemies, this.takeDamage, null, this);
+        if(gravityDown) { twist = "rotate(0deg)"; }
+        else            { twist = "rotate(180deg)"; }
+        var gameH1 = document.getElementsByTagName("h1")[0];
 
-    },
+        // Accommodate all CSS vendor Prefixes
+        gameH1.style.oTransform = twist;
+        gameH1.style.mozTransform = twist; 
+        gameH1.style.msTransform = twist;
+        gameH1.style.webkitTransform = twist; 
+        gameH1.style.Transform = twist;
+    }
+	// Make the player and the lava
 
-    // Function to kill a coin
-    takeCoin: function (player, coin) {
-        coin.kill();
-    },
+    game.physics.arcade.collide(player,droid, takeDamage,null);
+		
+}
 
-    takeDamage: function () {
-        if (this.game.time.now > this.invincibleTimer) {
-            this.player.damage(1);
-            this.invincibleTimer = this.game.time.now + 1000;
+function render() {
+
+    game.debug.text(game.time.physicsElapsed, 32, 32);
+    //game.debug.body(droid);
+    //game.debug.bodyInfo(droid, 16, 24);
+
+    game.debug.body(player);
+    game.debug.bodyInfo(player, 16, 24);
+}
+
+
+function initDroid(droid) {
+    game.physics.enable(droid, Phaser.Physics.ARCADE);
+
+    droid.body.collideWorldBounds = true;
+    droid.body.setSize(32, 32);
+    droid.body.velocity.x = droidspeed;
+
+    droid.animations.add('move', [0, 1, 2, 3], 10, true);
+}
+function takeDamage()   {
+
+    if (game.time.now > invincibleTimer) {
+            player.damage(1);
+            invincibleTimer = game.time.now + 1000;
         }
 
         // player is dead, start over
-        if (this.player.health <= 0) {
-            this.restart();
+        if (player.health <= 0) {
+            restart();
         }
-    },
+    }
 
     // Function to restart the game
-    restart: function () {
-        game.state.start('main');
-    }
-};
+    function restart () {
+        //game.state.start("the_state_name");
 
-// Initialize the game and start our state
-var game = new Phaser.Game(500, 200);
-game.state.add('main', mainState);
-game.state.start('main');
+    }
+
+
 
