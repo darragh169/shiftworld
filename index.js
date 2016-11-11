@@ -14,7 +14,7 @@ function preload() {
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
 
-    game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
+    game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
 }
 
@@ -73,12 +73,12 @@ function create() {
 
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
-    player.body.setSize(20, 32, 5, 16); //player.body.setSize(20, 32, 5, 16);
+    player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
     player.anchor.setTo(0.5, 0.5);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
+    player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+    player.animations.add('right', [0, 1, 2, 3], 10, true);
     //****************PLAYER***************//
 
     //****************DROIDS***************//
@@ -126,10 +126,10 @@ function update() {
             player.animations.stop();
 
             if (facing == 'left') {
-                player.frame = 0;
+                player.frame = 5;
             }
             else {
-                player.frame = 5;
+                player.frame = 0;
             }
             facing = 'idle';
         }
