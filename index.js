@@ -148,12 +148,26 @@ function update() {
 
     // Reversing GRAVITY when C button is pressed
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
-        gravityDown = !gravityDown              // Change gravity boolean
+        gravityDown = !gravityDown;              // Change gravity boolean
         game.physics.arcade.gravity.y *= -1;    // Invert gravity
 
         //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
         player.scale.y *= -1;                   // Flip Sprite vertically
         gravityTimer = game.time.now + 500;     // Ensures that function is called once 
+
+        // Flip the game Header Text
+        var twist;
+
+        if(gravityDown) { twist = "rotate(0deg)"; }
+        else            { twist = "rotate(180deg)"; }
+        var gameH1 = document.getElementsByTagName("h1")[0];
+
+        // Accommodate all CSS vendor Prefixes
+        gameH1.style.oTransform = twist;
+        gameH1.style.mozTransform = twist; 
+        gameH1.style.msTransform = twist;
+        gameH1.style.webkitTransform = twist; 
+        gameH1.style.Transform = twist;
     }
 
 }
