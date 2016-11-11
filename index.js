@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
@@ -32,7 +32,7 @@ function create() {
 
     game.stage.backgroundColor = '#000000';
 
-    bg = game.add.tileSprite(0, 0, 800, 600, 'background');
+    bg = game.add.tileSprite(0, 0, 800, 500, 'background');
     bg.fixedToCamera = true;
 
 
@@ -68,7 +68,6 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.C);      // Press C to flip gravity
-
 
 }
 
@@ -132,6 +131,7 @@ function update() {
         player.scale.y *= -1;                   // Flip Sprite vertically
         gravityTimer = game.time.now + 500;     // Ensures that function is called once 
     }
+
 }
 
 
