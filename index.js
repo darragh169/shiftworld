@@ -37,11 +37,7 @@ var gravityButton;
 var bg;
 var switchButton;
 
-<<<<<<< HEAD
-var droidspeed = -100;
-=======
 var droidspeed = 50;
->>>>>>> e6445c087ea9835be0b9c1f23a1bdc1a0e37ed02
 var playerSpeed = 220;
 var gravityDown = true;
 
@@ -189,10 +185,6 @@ function render() {
     game.debug.bodyInfo(player, 16, 24);
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e6445c087ea9835be0b9c1f23a1bdc1a0e37ed02
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
 
@@ -200,21 +192,13 @@ function initDroid(droid) {
     droid.body.setSize(32, 32);
     droid.body.velocity.x = droidspeed;
 
-<<<<<<< HEAD
-=======
     droid.currentDirection = 'left';
 
->>>>>>> e6445c087ea9835be0b9c1f23a1bdc1a0e37ed02
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
 
 function updateDroids(){
     for(var i = 0; i < droid_collection.length; i++){
-<<<<<<< HEAD
-            game.physics.arcade.collide(droid_collection[i], layer);
-            droid_collection[i].animations.play('move');
-            droid_collection[i].body.velocity.x = -15;
-=======
         game.physics.arcade.collide(droid_collection[i], layer);
         droid_collection[i].animations.play('move');
 
@@ -227,7 +211,5 @@ function updateDroids(){
         }
 
         droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
->>>>>>> e6445c087ea9835be0b9c1f23a1bdc1a0e37ed02
     }
 }
-
