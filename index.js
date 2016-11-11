@@ -157,7 +157,6 @@ function update() {
     }
 }
 
-<<<<<<< HEAD
 function render () {
 
     //game.debug.text(game.time.physicsElapsed, 32, 32);
@@ -175,13 +174,5 @@ function initDroid(droid) {
 
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
-=======
 
-function render() {
-    /*
-    game.debug.text(game.time.physicsElapsed, 32, 32);
-    game.debug.body(player);
-    game.debug.bodyInfo(player, 16, 24);
-    */
-}
->>>>>>> origin/master
+
