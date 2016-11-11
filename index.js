@@ -74,7 +74,7 @@ function create() {
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
-    player.anchor.setTo(0.5, 0.5);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
+    player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
     player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
@@ -85,9 +85,15 @@ function create() {
     droid = game.add.sprite(400, 200, 'droid');
     initDroid(droid);
     droid_collection.push(droid);
-    droid2 = game.add.sprite(200,200, 'droid');
+
+    droid2 = game.add.sprite(200, 200, 'droid');
     initDroid(droid2);
     droid_collection.push(droid2);
+
+    // Set Anchor for each droid so that they flip correctly
+    for(var i=0; i < droid_collection.length; i+=1) {
+        droid_collection[i].anchor.setTo(0.5, 0.5);
+    }
     //****************DROIDS***************//
 
     game.camera.follow(player);
@@ -157,6 +163,11 @@ function update() {
 
         //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
         player.scale.y *= -1;                   // Flip Sprite vertically
+
+        for(var i=0; i < droid_collection.length; i+=1){
+            droid_collection[i].scale.y *= -1;
+        }
+        
         gravityTimer = game.time.now + 500;     // Ensures that function is called once 
 
         // Flip the game Header Text
@@ -181,8 +192,8 @@ function render() {
     //game.debug.body(droid);
     //game.debug.bodyInfo(droid, 16, 24);
 
-    game.debug.body(player);
-    game.debug.bodyInfo(player, 16, 24);
+    //game.debug.body(player);
+    //game.debug.bodyInfo(player, 16, 24);
 }
 
 function initDroid(droid) {
