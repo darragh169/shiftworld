@@ -38,7 +38,8 @@ var bg;
 var switchButton;
 
 var droidspeed = 50;
-var playerSpeed = 220;
+var playerSpeed = 290;
+var playerJumpPower = 500;
 var gravityDown = true;
 
 
@@ -65,7 +66,7 @@ function create() {
 
     layer.resizeWorld();
 
-    game.physics.arcade.gravity.y = 350;
+    game.physics.arcade.gravity.y = 1000;
 
     //****************PLAYER****************//
     player = game.add.sprite(32, 32, 'dude');
@@ -100,13 +101,17 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.C);      // Press C to flip gravity
+    gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
 
 }
 
 function update() {
     game.physics.arcade.collide(player, layer);
     player.body.velocity.x = 0;
+
+
+    // console.log("Y Vel " + player.body.velocity.y);
+    //console.log("Gravity Y " + game.physics.arcade.gravity.y);
 
     updateDroids();
 
@@ -141,17 +146,16 @@ function update() {
         }
     }
 
-    //console.log(player.body.blocked.up);
     
     // JUMPING
-    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { // player.body.blocked.up
-        player.body.velocity.y =  -250;
+    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { 
+        player.body.velocity.y = -playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
     // REVERSE JUMP
-    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { // player.body.blocked.up
-        player.body.velocity.y =  250;
+    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { 
+        player.body.velocity.y =  playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
