@@ -186,8 +186,8 @@ function update() {
     }
 	// Make the player and the lava
 
-    game.physics.arcade.collide(player,droid_collection, takeDamage,null,this);
-		
+    game.physics.arcade.collide(player,droidCollection, takeDamage,null,this);
+    game.physics.arcade.collide(player,hearts,collectedHeart,null,this);
 }
 
 function render() {
@@ -246,7 +246,6 @@ function updateDroids(dr){
         if(dr.body.blocked.right){
             dr.currentDirection = 'left';
         }
-        game.physics.arcade.overlap(player, dr, collisionHandler, null, this);
         dr.body.velocity.x = dr.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
 }
 
@@ -278,13 +277,10 @@ function updateGravity() {
 
 function updateDroidGravity(droid){
     droid.scale.y *= -1;
+     droid.body.velocity.x = droid.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
 }
 
-        droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
-    }
-}
-
-function collectedHeart(player, heart) {
+function collectedHeart(heart) {
     heart.kill();
     if (player.health < player.maxHealth) {
         player.heal(1);
