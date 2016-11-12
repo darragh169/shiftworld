@@ -43,6 +43,8 @@ var playerSpeed = 290;
 var playerJumpPower = 500;
 var gravityDown = true;
 var invincibleTimer;
+var hearts;
+var healthMeterIcons;
 
 
 function create() {
@@ -89,12 +91,12 @@ function create() {
 	
 	//*******************HEARTS*****************//
 	game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
-	this.hearts = game.add.group();
-    this.hearts.enableBody = true;
+	hearts = game.add.group();
+    hearts.enableBody = true;
 	 // set up a timer so player is briefly invincible after being damaged
     invincibleTimer = game.time.now + 1000;
-	this.healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
-    this.healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
+	healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
+    healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
     //****************PLAYER***************//
 
     //****************DROIDS***************//
@@ -205,8 +207,9 @@ function update() {
     }
 	// Make the player and the lava
 
-    game.physics.arcade.collide(player,droid_collection, takeDamage,null,this);
-		
+    game.physics.arcade.collide(player,droid_collection, takeDamage(1),null,this);
+	game.physics.arcade.collide(player,lava,takeDamage(10),null,this);
+    game.physics.arcade.overlap(player, hearts, collectedHeart, null, this);
 }
 
 function render() {
@@ -230,11 +233,13 @@ function initDroid(droid) {
 
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
-function takeDamage()   {
+
+//damage the play the amount of amountOfDamage
+function takeDamage(amountOfDamage)   {
 
     if (game.time.now > invincibleTimer) {
 
-            player.damage(1);
+            player.damage(amountOfDamage);
             invincibleTimer = game.time.now + 1000;
 
         }
@@ -265,6 +270,13 @@ function updateDroids(){
         }
 
         droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+    }
+}
+
+function collectedHeart(player, heart) {
+    heart.kill();
+    if (player.health < player.maxHealth) {
+        player.heal(1);
     }
 }
 
