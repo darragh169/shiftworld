@@ -216,10 +216,10 @@ function initDroid(droid) {
 
 //damage the play the amount of amountOfDamage
 function takeDamage(player, enemy)   {
-debugger;
+
     if (game.time.now > invincibleTimer) {
 
-            player.damage(enemy.damagelevel);
+            player.damage(enemy.damageLevel);
             invincibleTimer = game.time.now + 1000;
 
         }
