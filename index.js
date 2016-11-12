@@ -1,3 +1,5 @@
+'use strict'
+
 var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
@@ -10,7 +12,10 @@ var layer;
 
 var player;
 var droid;
+var droid2;
 
+var droid_collection = [];
+//var droidCollisionGroup = game.physics.p2.createCollisionGroup();
 var facing = 'left';
 var jumpTimer = 0;
 var gravityTimer = 0;
@@ -20,10 +25,10 @@ var gravityButton;
 var bg;
 var switchButton;
 
-var droidspeed = -100;
+var droidspeed = 50;
 var playerSpeed = 220;
 var gravityDown = true;
-var invincibleTime;
+var invincibleTimer;
 
 function preload() {
 
@@ -41,7 +46,7 @@ function preload() {
 function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
     bg = game.add.tileSprite(0, 0, 800, 500, 'background');
@@ -82,18 +87,27 @@ function create() {
 	
 	//*******************HEARTS*****************//
 	game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
-	hearts = game.add.group();
-    hearts.enableBody = true;
+	this.hearts = game.add.group();
+    this.hearts.enableBody = true;
 	 // set up a timer so player is briefly invincible after being damaged
     invincibleTimer = game.time.now + 1000;
-	healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
-    healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
+	this.healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
+    this.healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
     //****************PLAYER***************//
 
-    //****************DROID***************//
+    //****************DROIDS***************//
     droid = game.add.sprite(400, 200, 'droid');
     initDroid(droid);
-    //****************DROID***************//
+    droid_collection.push(droid);
+    droid2 = game.add.sprite(200,200, 'droid');
+    initDroid(droid2);
+    droid_collection.push(droid2);
+
+    /*for(var enemy = 0; enemy < a.length; ++enemy)
+    {
+        enemy.body.setCollisionGroup(droidCollisionGroup);
+    }*/
+    //****************DROIDS***************//
 
     game.camera.follow(player);
 
@@ -106,9 +120,8 @@ function create() {
 function update() {
     game.physics.arcade.collide(player, layer);
     player.body.velocity.x = 0;
-
+updateDroids();
     game.physics.arcade.collide(droid, layer);
-
     droid.animations.play('move');
     droid.body.velocity.x = -15;
 
@@ -183,7 +196,7 @@ function update() {
     }
 	// Make the player and the lava
 
-    game.physics.arcade.collide(player,droid, takeDamage,null);
+    game.physics.arcade.collide(player,droid, takeDamage,null,this);
 		
 }
 
@@ -197,7 +210,6 @@ function render() {
     game.debug.bodyInfo(player, 16, 24);
 }
 
-
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
 
@@ -205,13 +217,17 @@ function initDroid(droid) {
     droid.body.setSize(32, 32);
     droid.body.velocity.x = droidspeed;
 
+    droid.currentDirection = 'left';
+
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
 function takeDamage()   {
 
     if (game.time.now > invincibleTimer) {
+
             player.damage(1);
             invincibleTimer = game.time.now + 1000;
+
         }
 
         // player is dead, start over
@@ -225,6 +241,23 @@ function takeDamage()   {
         //game.state.start("the_state_name");
 
     }
+
+function updateDroids() {
+    for (var i = 0; i < droid_collection.length; i++) {
+        game.physics.arcade.collide(droid_collection[i], layer);
+        droid_collection[i].animations.play('move');
+
+        if (droid_collection[i].body.blocked.left) {
+            droid_collection[i].currentDirection = 'right';
+        }
+
+        if (droid_collection[i].body.blocked.right) {
+            droid_collection[i].currentDirection = 'left';
+        }
+
+        droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+    }
+}
 
 
 
