@@ -6,6 +6,19 @@ var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', {
     update: update, 
     render: render 
 });
+
+
+function preload() {
+
+    game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('tiles-1', 'assets/images/tiles-1.png');
+    game.load.image('background', 'assets/images/background2.png');
+
+    game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
+    game.load.image('heart', 'assets/heartFull.png');
+}
+
 var map;
 var tileset;
 var layer;
@@ -26,22 +39,11 @@ var bg;
 var switchButton;
 
 var droidspeed = 50;
-var playerSpeed = 220;
+var playerSpeed = 290;
+var playerJumpPower = 500;
 var gravityDown = true;
 var invincibleTimer;
 
-function preload() {
-
-    game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('tiles-1', 'assets/images/tiles-1.png');
-    game.load.image('background', 'assets/images/background2.png');
-
-    game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
-    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);
-    game.load.image('heart', 'assets/heartFull.png');
-
-
-}
 
 function create() {
 
@@ -68,7 +70,7 @@ function create() {
 
     layer.resizeWorld();
 
-    game.physics.arcade.gravity.y = 350;
+    game.physics.arcade.gravity.y = 1000;
 
     //****************PLAYER****************//
     player = game.add.sprite(32, 32, 'dude');
@@ -76,12 +78,12 @@ function create() {
 
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
-    player.body.setSize(20, 32, 5, 16); //player.body.setSize(20, 32, 5, 16);
-    player.anchor.setTo(0.5, 0.5);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
+    player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
+    player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
+    player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+    player.animations.add('right', [0, 1, 2, 3], 10, true);
 	player.health = 3;
     player.maxHealth = 8;
 	
@@ -99,31 +101,34 @@ function create() {
     droid = game.add.sprite(400, 200, 'droid');
     initDroid(droid);
     droid_collection.push(droid);
-    droid2 = game.add.sprite(200,200, 'droid');
+
+    droid2 = game.add.sprite(200, 200, 'droid');
     initDroid(droid2);
     droid_collection.push(droid2);
 
-    /*for(var enemy = 0; enemy < a.length; ++enemy)
-    {
-        enemy.body.setCollisionGroup(droidCollisionGroup);
-    }*/
+    // Set Anchor for each droid so that they flip correctly
+    for(var i=0; i < droid_collection.length; i+=1) {
+        droid_collection[i].anchor.setTo(0.5, 0.5);
+    }
     //****************DROIDS***************//
 
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.C);      // Press C to flip gravity
+    gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
 
 }
 
 function update() {
     game.physics.arcade.collide(player, layer);
     player.body.velocity.x = 0;
-updateDroids();
-    game.physics.arcade.collide(droid, layer);
-    droid.animations.play('move');
-    droid.body.velocity.x = -15;
+
+
+    // console.log("Y Vel " + player.body.velocity.y);
+    //console.log("Gravity Y " + game.physics.arcade.gravity.y);
+
+    updateDroids();
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -147,26 +152,25 @@ updateDroids();
             player.animations.stop();
 
             if (facing == 'left') {
-                player.frame = 0;
+                player.frame = 5;
             }
             else {
-                player.frame = 5;
+                player.frame = 0;
             }
             facing = 'idle';
         }
     }
 
-    //console.log(player.body.blocked.up);
     
     // JUMPING
-    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { // player.body.blocked.up
-        player.body.velocity.y =  -250;
+    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { 
+        player.body.velocity.y = -playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
     // REVERSE JUMP
-    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { // player.body.blocked.up
-        player.body.velocity.y =  250;
+    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { 
+        player.body.velocity.y =  playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
@@ -178,6 +182,11 @@ updateDroids();
 
         //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
         player.scale.y *= -1;                   // Flip Sprite vertically
+
+        for(var i=0; i < droid_collection.length; i+=1){
+            droid_collection[i].scale.y *= -1;
+        }
+        
         gravityTimer = game.time.now + 500;     // Ensures that function is called once 
 
         // Flip the game Header Text
@@ -206,8 +215,8 @@ function render() {
     //game.debug.body(droid);
     //game.debug.bodyInfo(droid, 16, 24);
 
-    game.debug.body(player);
-    game.debug.bodyInfo(player, 16, 24);
+    //game.debug.body(player);
+    //game.debug.bodyInfo(player, 16, 24);
 }
 
 function initDroid(droid) {
@@ -242,22 +251,20 @@ function takeDamage()   {
 
     }
 
-function updateDroids() {
-    for (var i = 0; i < droid_collection.length; i++) {
+function updateDroids(){
+    for(var i = 0; i < droid_collection.length; i++){
         game.physics.arcade.collide(droid_collection[i], layer);
         droid_collection[i].animations.play('move');
 
-        if (droid_collection[i].body.blocked.left) {
+        if(droid_collection[i].body.blocked.left){
             droid_collection[i].currentDirection = 'right';
         }
-
-        if (droid_collection[i].body.blocked.right) {
+        
+        if(droid_collection[i].body.blocked.right){
             droid_collection[i].currentDirection = 'left';
         }
 
         droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
     }
 }
-
-
 
