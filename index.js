@@ -20,12 +20,12 @@ function preload() {
 }
 
 var map;
-var tileset;
+
 var layer;
 
 var player;
 var droid;
-var droid2;
+
 var droidLength = 10;
 
 var droidCollection;
@@ -36,7 +36,6 @@ var cursors;
 var jumpButton;
 var gravityButton;
 var bg;
-var switchButton;
 
 var droidspeed = 50;
 var playerSpeed = 290;
@@ -45,9 +44,10 @@ var gravityDown = true;
 var invincibleTimer;
 var hearts;
 var healthMeterIcons;
+var damagelevel;
 
 
-function create() {
+function create() {;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -101,6 +101,7 @@ function create() {
 
     //****************DROIDS***************//
     droidCollection = game.add.physicsGroup();
+
 
     for(var i=0; i<droidLength; i++)    {
         var droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid');
@@ -206,6 +207,7 @@ function initDroid(droid) {
     droid.body.collideWorldBounds = true;
     droid.body.setSize(32, 32);
     droid.body.velocity.x = droidspeed;
+    droid.damageLevel = 1;
 
     droid.currentDirection = 'left';
 
@@ -213,11 +215,11 @@ function initDroid(droid) {
 }
 
 //damage the play the amount of amountOfDamage
-function takeDamage(amountOfDamage)   {
-
+function takeDamage(player, enemy)   {
+debugger;
     if (game.time.now > invincibleTimer) {
 
-            player.damage(amountOfDamage);
+            player.damage(enemy.damagelevel);
             invincibleTimer = game.time.now + 1000;
 
         }
@@ -230,7 +232,7 @@ function takeDamage(amountOfDamage)   {
 
     // Function to restart the game
     function restart () {
-        //game.state.start("the_state_name");
+        player.kill();
 
     }
 function updateAnchor(droid){
@@ -280,7 +282,7 @@ function updateDroidGravity(droid){
      droid.body.velocity.x = droid.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
 }
 
-function collectedHeart(heart) {
+function collectedHeart(player,heart) {
     heart.kill();
     if (player.health < player.maxHealth) {
         player.heal(1);
