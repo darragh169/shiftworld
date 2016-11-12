@@ -77,7 +77,6 @@ function create() {;
     //****************PLAYER****************//
     player = game.add.sprite(32, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
-
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
@@ -214,14 +213,11 @@ function initDroid(droid) {
     droid.animations.add('move', [0, 1, 2, 3], 10, true);
 }
 
-//damage the play the amount of amountOfDamage
-function takeDamage(player, enemy)   {
-
+//whatever is damaging the player needs to have attribute "damageLevel"
+function takeDamage(player, enemy)   {p
     if (game.time.now > invincibleTimer) {
-
             player.damage(enemy.damageLevel);
             invincibleTimer = game.time.now + 1000;
-
         }
 
         // player is dead, start over
@@ -230,7 +226,8 @@ function takeDamage(player, enemy)   {
         }
     }
 
-    // Function to restart the game
+    // remove the player sprite, should update to a more spectacular death when possible.
+    // also need to restart the game
     function restart () {
         player.kill();
 
