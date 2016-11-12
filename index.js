@@ -205,7 +205,7 @@ function update() {
     }
 	// Make the player and the lava
 
-    game.physics.arcade.collide(player,droid, takeDamage,null,this);
+    game.physics.arcade.collide(player,droid_collection, takeDamage,null,this);
 		
 }
 
