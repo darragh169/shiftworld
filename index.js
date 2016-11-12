@@ -26,9 +26,9 @@ var layer;
 var player;
 var droid;
 var droid2;
+var droidLength = 10;
 
-var droid_collection = [];
-
+var droidCollection;
 var facing = 'left';
 var jumpTimer = 0;
 var gravityTimer = 0;
@@ -100,18 +100,21 @@ function create() {
     //****************PLAYER***************//
 
     //****************DROIDS***************//
-    droid = game.add.sprite(400, 200, 'droid');
-    initDroid(droid);
-    droid_collection.push(droid);
+    droidCollection = game.add.physicsGroup();
 
-    droid2 = game.add.sprite(200, 200, 'droid');
-    initDroid(droid2);
-    droid_collection.push(droid2);
+    for(var i=0; i<droidLength; i++)    {
+        var droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid');
+        initDroid(droid);
+    }
+
+    droidCollection.forEach(updateAnchor, this);
+
+    
 
     // Set Anchor for each droid so that they flip correctly
-    for(var i=0; i < droid_collection.length; i+=1) {
-        droid_collection[i].anchor.setTo(0.5, 0.5);
-    }
+    /*for(var i=0; i < droidCollection.length; i+=1) {
+        droidCollection[i].anchor.setTo(0.5, 0.5);
+    }*/
     //****************DROIDS***************//
 
     game.camera.follow(player);
@@ -130,7 +133,7 @@ function update() {
     // console.log("Y Vel " + player.body.velocity.y);
     //console.log("Gravity Y " + game.physics.arcade.gravity.y);
 
-    updateDroids();
+    droidCollection.forEach(updateDroids, this);
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -179,37 +182,12 @@ function update() {
 
     // Reversing GRAVITY when C button is pressed
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
-        gravityDown = !gravityDown;             // Change gravity boolean
-        game.physics.arcade.gravity.y *= -1;    // Invert gravity
-
-        //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
-        player.scale.y *= -1;                   // Flip Sprite vertically
-
-        for(var i=0; i < droid_collection.length; i+=1){
-            droid_collection[i].scale.y *= -1;
-        }
-        
-        gravityTimer = game.time.now + 500;     // Ensures that function is called once 
-
-        // Flip the game Header Text
-        var twist;
-
-        if(gravityDown) { twist = "rotate(0deg)"; }
-        else            { twist = "rotate(180deg)"; }
-        var gameH1 = document.getElementsByTagName("h1")[0];
-
-        // Accommodate all CSS vendor Prefixes
-        gameH1.style.oTransform = twist;
-        gameH1.style.mozTransform = twist; 
-        gameH1.style.msTransform = twist;
-        gameH1.style.webkitTransform = twist; 
-        gameH1.style.Transform = twist;
+        updateGravity();
     }
 	// Make the player and the lava
 
-    game.physics.arcade.collide(player,droid_collection, takeDamage(1),null,this);
-	game.physics.arcade.collide(player,lava,takeDamage(10),null,this);
-    game.physics.arcade.overlap(player, hearts, collectedHeart, null, this);
+    game.physics.arcade.collide(player,droid_collection, takeDamage,null,this);
+		
 }
 
 function render() {
@@ -255,19 +233,52 @@ function takeDamage(amountOfDamage)   {
         //game.state.start("the_state_name");
 
     }
+function updateAnchor(droid){
+    droid.anchor.setTo(0.5, 0.5);
+}    
 
-function updateDroids(){
-    for(var i = 0; i < droid_collection.length; i++){
-        game.physics.arcade.collide(droid_collection[i], layer);
-        droid_collection[i].animations.play('move');
-
-        if(droid_collection[i].body.blocked.left){
-            droid_collection[i].currentDirection = 'right';
+function updateDroids(dr){
+        game.physics.arcade.collide(dr, layer);
+        dr.animations.play('move');
+        if(dr.body.blocked.left){
+            dr.currentDirection = 'right';
         }
+        if(dr.body.blocked.right){
+            dr.currentDirection = 'left';
+        }
+        game.physics.arcade.overlap(player, dr, collisionHandler, null, this);
+        dr.body.velocity.x = dr.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+}
+
+function updateGravity() {
+    gravityDown = !gravityDown;             // Change gravity boolean
+        game.physics.arcade.gravity.y *= -1;    // Invert gravity
+
+        //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
+        player.scale.y *= -1;                   // Flip Sprite vertically
+
+        droidCollection.forEach(updateDroidGravity, this);
         
-        if(droid_collection[i].body.blocked.right){
-            droid_collection[i].currentDirection = 'left';
-        }
+        gravityTimer = game.time.now + 500;     // Ensures that function is called once 
+
+        // Flip the game Header Text
+        var twist;
+
+        if(gravityDown) { twist = "rotate(0deg)"; }
+        else            { twist = "rotate(180deg)"; }
+        var gameH1 = document.getElementsByTagName("h1")[0];
+
+        // Accommodate all CSS vendor Prefixes
+        gameH1.style.oTransform = twist;
+        gameH1.style.mozTransform = twist; 
+        gameH1.style.msTransform = twist;
+        gameH1.style.webkitTransform = twist; 
+        gameH1.style.Transform = twist;
+}
+
+function updateDroidGravity(droid){
+    droid.scale.y *= -1;
+}
 
         droid_collection[i].body.velocity.x = droid_collection[i].currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
     }
