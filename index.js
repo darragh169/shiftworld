@@ -28,7 +28,7 @@ var droid;
 var droid2;
 
 var droid_collection = [];
-//var droidCollisionGroup = game.physics.p2.createCollisionGroup();
+
 var facing = 'left';
 var jumpTimer = 0;
 var gravityTimer = 0;
