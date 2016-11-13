@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="44" height="67" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="collision" tilewidth="32" tileheight="32">
+  <image source="../../tiles/collision.png" width="64" height="32"/>
+ </tileset>
+ <tileset firstgid="3" name="ruleset" tilewidth="32" tileheight="32">
+  <image source="../../automapping/ruleset.png" width="256" height="64"/>
+ </tileset>
+ <tileset firstgid="19" name="mountains" tilewidth="32" tileheight="32">
+  <image source="../../tiles/mountains.png" width="416" height="288"/>
+ </tileset>
+ <tileset firstgid="136" name="dirt2" tilewidth="32" tileheight="32">
+  <image source="../../tiles/dirt2.png" width="96" height="192"/>
+ </tileset>
+ <tileset firstgid="154" source="../../tiles/terrain.tsx"/>
+ <tileset firstgid="618" name="toro" tilewidth="32" tileheight="64">
+  <image source="../../tiles/toro.png" width="32" height="64"/>
+ </tileset>
+ <tileset firstgid="619" name="foodog_statue" tilewidth="64" tileheight="96">
+  <image source="../../tiles/foodog_statue.png" width="64" height="96"/>
+ </tileset>
+ <tileset firstgid="620" name="gravestones" tilewidth="32" tileheight="32">
+  <image source="../../tiles/gravestones.png" width="160" height="96"/>
+ </tileset>
+ <tileset firstgid="635" name="cup" tilewidth="32" tileheight="64">
+  <image source="../../tiles/cup.png" width="32" height="64"/>
+ </tileset>
+ <tileset firstgid="636" source="../../tiles/fire.tsx"/>
+ <tileset firstgid="640" name="holek" tilewidth="32" tileheight="32">
+  <image source="../../tiles/holek.png" width="96" height="192"/>
+ </tileset>
+ <layer name="setCave" width="44" height="67" opacity="0.87">
+  <data encoding="base64" compression="zlib">
+   eJzt1EEOxSAIBFAT9//+x+0F2i8OgwOGxaxs5Amkc4wxOx1yfoaojTvWLF6rNYv5dq/SjFjbG+9VmD3Wit5TZoazqjfazLZGev/VyWZe1UDOo7yW+71ephmxftWPNFvuRGpHmL1WT48RN7qzu3WjvJ4+WWp7vGwr2me1F3F7rR4nYsjg3ekx6mU5kV1D/i0nUs3rnUOmtLe9lb1vZrXndu98OcvUr/by5sv4/oR716s2V/Gi+9PeWK/adHNvM5vbq/NmNFfyrqwVvVnMVmt7Y61qM2JVmT1WhbmSl2E9ZWZaV2/wvOuEkzETta1zRx4WL2ns
+  </data>
+ </layer>
+ <layer name="CaveGround" width="44" height="67" opacity="0">
+  <data encoding="base64" compression="zlib">
+   eJzt0jESxCAMA8D8v+TF6W+SnG0QshJpxhWFFsNxON0z2IBERnLYUfJmrWzzV7wM84zVXrx3p3mFVdGLNq90or0IK8qMtK72/uvpZp7xZu/DtFb3X3U+dUUd0bvPmlfurWJmWX/7EX8D0XvVjfZmu6L9M16kVdFbcVetK5wVc9Y7AudVb+TtKl7kRPfVwVr9O2xP1sy22Msfe/eZ2Y63e1XM9tp751Uw22vvnZdtefNuFcz27vd2Nit5n8K2Zb3dzJGwjareTJSsbPNM7MVZd5uRuerq6IxGxelo5wQV0zBt
+  </data>
+ </layer>
+ <layer name="Terrain" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJztmEFPFEEQhWcmnk086Y/Sg3hf+V1sDAlkw8EIifwC48F4Jh4Iy4K7gOgBkr2qid2hX+ZRVPfUzPQEN9lNXoDd2emvX7+urqEoVu+1tSJa8655h+ZdOt043a4I79xp7HSwYrz7A3g8BO/CaWcgj4fgHTITQ/PmzkRuXtSGmdOrKj9zX94lsSwD53Zxl1/++THMo2+d68MLvn3yFH6eOR0Wd3vvY/h7N+jwEXjZy10h7ynvMzDnyEQX3iX5pXk1Lx7WhXmRJ8dteHkvxerUMvI5ajKy05W7Da/3COuv+coZ0T5fFHVeunJbeWO+afNp2k99uK28GCPFouXWck8v63608lrz0vX8tX43F68lLzm+m4MX43U9e5ELSyZy8Pq1RK+AnozP6Tb3aZpvLl6woj50OdMse7ovL7Lwknox9DXoLf6XfpJzy3mQytmzd+VN9Tuy9+l7BufgtWSNr+vbR+bwd4j/LwzFi9pzI3Rb1H1cjueJnLy8p5BjX8NmynuPnV/uLTmb3HsdiPdycLflxVrj+Sx23UL5HD17n/pm5eVnC0uPm5pHm3NP7gULr6y1feuS9VmOz6PfZVH8KW281ucGr7G757bQu1LPRYoZz7Q7gfWJOz+fVXbepsyB84PnK+7rq8LddN4gN97fwnG+MPJinoeBSXqV4vTaqO4Ebv/9MfHHzh2ZBau/8HYcmOSYMU7oTfXQa/+dY6dPZTzL88D5N7D+Ktvx7oUxjpw+E+dGdd/LFLvk9vOO5cKPWwZOyMKLOjoJfsDnFJv0lPW6quem5Zp5kdsYL+cqltWm9beI5+N//6LwooYwM/Myi/8++4m6pLHGvOySDXiC39GjlArvJGTzW1mvExhTTG24LMzwqYkX6zAJzKkMSv101/9wujZmJbZH2WeZiedOTxXethn1rAunE6dzUTMwD6nr4Ie2Nry2XD8gybsnWKXP8u/LwMq88rO3VX2N15myHho79iHXgVgepD+xtbbwxiS5JTO85jqg5eF9YL5yOqV7MzPm4rMwqrrxnkTuHVtPjXevrM9MjOl5Nqv7fjDL1GnmNBdjXoX3T+la3KuJOZYPjZevBRfG8GzfaY9NFU4pXieN1eJzije2pmDj8ZGBpnOD78PMU+G/zFQTL58bck0xf62GNdVaLcs+G+dles9C6Ockr1aD/Zi455mSBcvZgjWZ0s9ZyNYFecK8cq9tFTqvzITMoPTCeiZf0nyxdy8CM2rNeWT+KV6uwfxdydy0P1icITlnrF1s7yILMV7JzH0N53mzas5vinVU1X7LbOHZ4IhYU7yxXMi6gXVNSbKOqDbOSr12az2xlVfLpzwLtLo6Ut5LMbJkr2bhlbVN2wdXNL5FntHaN2sep3gtuZD+85y69PKx3LbhndA9joTnMWlrkeI/TjC25bXOoWk+cg6e38opedev9Quvf1jot6c=
+  </data>
+ </layer>
+ <layer name="Ground2" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJzt1kEKgCAQRmHxJl0yinJZ4a4jV9DKVSL2M/o+GNw+ZBCdw/AOAFgwqQMAAEC3+Ifkm9UBDRs9OwlAj3e+D6s6IIOl1tSiDgAAyAV1QOMs32+N9pCcaMPunTu8uuKbp3W75yzozdnf0l2Pha1/o7euaKgVAICeXFn1Doc=
+  </data>
+ </layer>
+ <layer name="CaveWall" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJztmEtSwzAQRPsUZjsBtvy2CbAN7LkA978EqCpTDEIjjT62BkhXaeMy+KXdklreAdj9s3H9OW4N48oJ6yEab4lrYdw7YX2JxnviGo+ZHj+cGF5h036yx88VrEFHzPM4ZOGugpU1y+OQhccG3uDx0wTe2ixI3WDbTLRmgbV1JlqzwNpq3vE+VrOGadrC4+Br2B96vGWt7fE1vvaoXm9Za3nM++4IX6XW8Fh2hFG+So30OMdKp3suO3lHepzrMwvy63DN7wkeHzqYS+sWs+YyzbwXBl72uIVZ9u8UC8GW6XjPLXFL5pqzCGcg562l96becSkbktk6B3M9ZjHck3o2M9dkw9LhcvNnMdxjYbbmgwy8Wo9ZDPdYmFO51DJS6py832rrbE/XyeVS87m0j5S87e06zKztDTF36RySmkOE776O6pHWbGiZ0ObQDfJrcYtkNpib2WNeLRNaFvYY3yEls+QOI/ZM6xbaenoczJn6//Lbj+ZZ7HFvxxohzZvUvPPAmxPhzLum4nXNO28857zzxnPOO28Qwd7tPIigzznC+p7L51ueJe+P/ybMx57vjxaFZ3BvsLxfgs4b5uPobzmxuKfx2aPkMUHvn2v3Bn6G7Dyl90n42dNmrBPMXXqfBB+8QZb3SbCfjT2IYOvsXiTP6LnO7kGE8vnUkwjpM7LXHkH4G7xeM0HQv5t49DheGzzzEnRWj5nIeevNY0KZ1ROvxVsvmbCyemCuZZ3JTI2ss7Lc6u0Mj3tZt2QexWr5DUvimhfOUe/EC+d5/O7xAW2UyqQ=
+  </data>
+ </layer>
+ <layer name="CaveWall2" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJzt18EKAjEMhOG+kHgX7+L7v5D0ECxCa9rNdLPwf2dxh6HJdktBdvezA0yoWZ/O396UQZy8WauHLIXGq+ToeMYVOwZ+7Zy7iPfDzrmb2bk9O3ab9foO+j9lxzPvXS9Vx5Y1qtdWdMeKXlvRHSuzmtpxROZ/eyvq3ls7PpLZcoy6VZyT1cyWYzRfnqwrzz7z/hZ1Lnci85dn3ld3guJcembo6E6I7Hm0D6LuOurz7NnFM+zdUClye3bxqvZM97Jn3S29eeT7HwAAvaz3g56rfi8BAAAAAABk8QEB1xJA
+  </data>
+ </layer>
+ <layer name="Fringe" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJzt1kEKgCAQBVDpuHWBFh4+2lqGC7FR3tsIIviZccCUoL9crOVeTnF85YmU89aSJ6dYNW7NESXvLNSLFRxbnzMAAEB/e+UvXtvnXa96qTs8jZoL87eesqd6/L9z8H2tPfc2AAAAgJlclsQMzw==
+  </data>
+ </layer>
+ <layer name="CaveOver" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJzt2NEKgCAMhWHfQXv/V80bQUQodc6p/wfeBMFprYk5BwAAAOjzcYW4ntVBhFh6Hr86QIOerFbq3Eo78+l9UBPc/P6YVdcZuXfqAS1Sddau7Y4zDwCAm+V7t3fz9/J0Ht31rLSbG2p8wzMC2k45ozMfUKInxpwyG3JWeuLE2lrRWtuVPdHbBysyj/aslW/PIql5oFFj6dkVilX+r+j9j5Du1ZCy1659ZdfM+Vf5TvIFSHgBK1oFog==
+  </data>
+ </layer>
+ <layer name="Collision" width="44" height="67">
+  <data encoding="base64" compression="zlib">
+   eJzt1tEOwyAIBVDS///ovfYBlcsFxFUSs2W1ckqp3SMizx1HDWlgQJzy+t55aLHbZHV2Ncvr8wS3J643z3qid4dZy23xneqtMkfGad5sc0ZUWSOvo6Ku7PEsr2V91htp9lhH+TPNljU9ubV5rJm1znJbo6Jn0bxZXqZOltyMl7Ui63TwroLNjcyPCMTQwbtyRHizgukJNi/y+2hulTc7vN7IZw6d/4X67orrzQ3kHV7lmR37h/o+yvFKg3VelFd796/me97DXeqL/tfZ0cOsl+0B77zVHtWpxqvo4kXuTaS34lozrMjzIsr8zl5t//R4tT14VpeI/chSJ8Y7O9/rjagvmxM9d2RG+yqzNlHX7Lm2kRU17/SieZmesp53kheJSi9r9uRFzkHMXawzD7NephXtjS61GEXkWpF1WOWJiIwes/RcR2e3e3/Hd8cPxh0Myw==
+  </data>
+ </layer>
+ <objectgroup name="lower area" width="44" height="67">
+  <object name="spawn_trigger_lower_middle" type="TRIGGER" x="480" y="1248" width="352" height="224"/>
+  <object name="boss_position" type="COORDINATE" x="640" y="1728" width="32" height="32"/>
+  <object name="spawn_lower_middle" type="COORDINATE" x="640" y="1344" width="32" height="32"/>
+  <object name="skeleton mage spawn" type="SPAWN" x="512" y="1632" width="288" height="224">
+   <properties>
+    <property name="MAX_BEINGS" value="15"/>
+    <property name="MONSTER_ID" value="Skeleton Mage"/>
+    <property name="SPAWN_RATE" value="10"/>
+   </properties>
+  </object>
+  <object name="area" type="AREA_BOSS" x="512" y="1632" width="288" height="224">
+   <properties>
+    <property name="MAX_BEINGS" value="15"/>
+    <property name="MONSTER_ID" value="Skeleton Mage"/>
+    <property name="SPAWN_RATE" value="10"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="upper area" width="44" height="67">
+  <object name="spawn_trigger_up_middle" type="TRIGGER" x="576" y="928" width="160" height="32"/>
+  <object name="spawn_trigger_up_left" type="TRIGGER" x="384" y="960" width="160" height="32"/>
+  <object name="spawn_trigger_up_left_left" type="TRIGGER" x="256" y="1024" width="96" height="128"/>
+  <object name="spawn_trigger_up_right" type="TRIGGER" x="768" y="960" width="160" height="32"/>
+  <object name="spawn_trigger_up_right_right" type="TRIGGER" x="960" y="1024" width="96" height="128"/>
+  <object name="spawn_up_left_left" type="COORDINATE" x="384" y="1120" width="32" height="32"/>
+  <object name="spawn_up_left" type="COORDINATE" x="480" y="1024" width="32" height="32"/>
+  <object name="spawn_up_middle" type="COORDINATE" x="640" y="992" width="32" height="32"/>
+  <object name="spawn_up_right" type="COORDINATE" x="800" y="1024" width="32" height="32"/>
+  <object name="spawn_up_right_right" type="COORDINATE" x="896" y="1120" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="Objects" width="44" height="67">
+  <object name="External Map Events" type="SCRIPT" x="32" y="32" width="320" height="32">
+   <properties>
+    <property name="FILENAME" value="scripts/maps/cave3.lua"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Warps" width="44" height="67">
+  <object name="to outside" type="WARP" x="672" y="64" width="32" height="32">
+   <properties>
+    <property name="DEST_MAP" value="goldenfields/cave"/>
+    <property name="DEST_NAME" value="Exit bosscave"/>
+   </properties>
+  </object>
+  <object name="Exit cave" type="WARP" x="672" y="96" width="32" height="32"/>
+ </objectgroup>
+</map>

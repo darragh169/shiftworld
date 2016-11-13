@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<abilities>
+    <ability
+        id="1"
+        name="Magic/Fire Lion"
+        target="being"
+        useaction="spellcast"
+        icon="icons/spell_firelion.png"
+        priority="2"
+    />
+    <ability
+        id="2"
+        name="Magic/Earthquake"
+        target="being"
+        useaction="spellcast"
+        priority="2"
+    />
+    <ability
+        id="3"
+        name="Magic/Lightning"
+        target="being"
+        useaction="spellcast"
+        icon="icons/spell_lightning.png"
+        priority="1"
+    />
+    <ability
+        id="4"
+        name="Magic/Heal"
+        target="being"
+        useaction="spellcast"
+        priority="1"
+    />
+    <ability
+        id="5"
+        name="Magic/Snake Bite"
+        target="being"
+        useaction="spellcast"
+        icon="icons/spell_snakebite.png"
+        priority="1"
+    />
+    <ability
+        id="6"
+        name="Magic/Insult"
+        target="being"
+        useaction="spellcast"
+        priority="2"
+    />
+    <ability
+        id="7"
+        name="Monster Attacks/Strike"
+        target="being"
+        useaction="attack"
+    />
+    <ability
+        id="8"
+        name="Monster Attacks/Spellcast"
+        target="being"
+        useaction="spellcast"
+    />
+    <ability
+        id="9"
+        name="Monster Attacks/Skeletonking monsterspawn"
+        target="being"
+        useaction="spellcast"
+    />
+    <ability
+        id="10"
+        name="Strike"
+        target="direction"
+        useaction="attack"
+        icon="items/sword-iron.png"
+        priority="0"
+    />
+</abilities>

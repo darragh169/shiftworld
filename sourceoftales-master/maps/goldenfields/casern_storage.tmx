@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map SYSTEM "http://mapeditor.org/dtd/1.0/map.dtd">
+<map version="1.0" orientation="orthogonal" width="15" height="14" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="music" value="calmtown.ogg"/>
+ </properties>
+ <tileset firstgid="1" name="collision" tilewidth="32" tileheight="32">
+  <image source="../../tiles/collision.png" width="64" height="32"/>
+ </tileset>
+ <tileset firstgid="3" name="inside" tilewidth="32" tileheight="32">
+  <image source="../../tiles/inside.png" width="320" height="320"/>
+ </tileset>
+ <tileset firstgid="103" name="farming_fishing" tilewidth="32" tileheight="32">
+  <image source="../../tiles/farming_fishing.png" width="640" height="640"/>
+ </tileset>
+ <tileset firstgid="503" name="barrel" tilewidth="32" tileheight="64">
+  <image source="../../tiles/barrel.png" width="128" height="64"/>
+ </tileset>
+ <tileset firstgid="507" name="victoria" tilewidth="32" tileheight="32">
+  <image source="../../tiles/victoria.png" width="352" height="192"/>
+ </tileset>
+ <tileset firstgid="573" name="mountains" tilewidth="32" tileheight="32">
+  <image source="../../tiles/mountains.png" width="416" height="288"/>
+ </tileset>
+ <tileset firstgid="690" name="shrine" tilewidth="32" tileheight="32">
+  <image source="../../tiles/shrine.png" width="224" height="512"/>
+ </tileset>
+ <tileset firstgid="802" name="buckets" tilewidth="32" tileheight="32">
+  <image source="../../tiles/buckets.png" width="96" height="64"/>
+ </tileset>
+ <tileset firstgid="808" name="cabinets" tilewidth="32" tileheight="32">
+  <image source="../../tiles/cabinets.png" width="192" height="416"/>
+ </tileset>
+ <tileset firstgid="886" name="shadow" tilewidth="32" tileheight="32">
+  <image source="../../tiles/shadow.png" width="160" height="64"/>
+ </tileset>
+ <tileset firstgid="896" name="chests" tilewidth="32" tileheight="32">
+  <image source="../../tiles/chests.png" width="64" height="96"/>
+ </tileset>
+ <layer name="Ground" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJzbwMTAsGGAMDmAGnq1GUjHg1EvJf6lRC+p8auNxVxa6kU2g5K0SYp6AEMLUFU=
+  </data>
+ </layer>
+ <layer name="Wall" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMXGMiHcPAXSbSMQw8YSIdj4JRQCsAALK7Ifo=
+  </data>
+ </layer>
+ <layer name="Ground" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAPqGLCFJsGpacDsQ0zA4MdEFsxY6prx6KXh5GBoRnKdgbqcQJiRyD+DxRXAamH6pkCpCcB6clIehUYIXQDUL0XEHsAsRsQiwLVWgGxGJJ9y4B4OQn+xAdWA/FaMvXuB+KDZOq9DMRXydT7HIhfkql3JAEACHgQvw==
+  </data>
+ </layer>
+ <layer name="Ground" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYBheYAcQ7xxoR+AAyszk61WjQO8ooD0AABjaAcE=
+  </data>
+ </layer>
+ <layer name="Ground" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh+4AEQP6SR2fqM5Ot1Buq1YCZP7w4g3kmmvZpAe79T4O5RQBgAAIGUBQQ=
+  </data>
+ </layer>
+ <layer name="Fringe" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUUAoAA0gAAQ==
+  </data>
+ </layer>
+ <layer name="Over" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFpAIeJuqZpcCMH+MDG5jwY2roRXYHMW7CZgc6mxS9IPtI1YtsBrmAVL0Avw0T6g==
+  </data>
+ </layer>
+ <layer name="Over" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAfiDOTp+8mEwODHJl6HwwzvZLM+LE8M269IHMJAUr0SiC5A9mt8iSEgz4J9uGynxT7BgoAAL74CkI=
+  </data>
+ </layer>
+ <layer name="Over" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFAwluMg20CwgDcWYITY5b5Zip65bBCgC3+AHy
+  </data>
+ </layer>
+ <layer name="Collision" width="15" height="14">
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYBrGmAGHGAMaG10dNjF09cQCSsyglV5Swo+QubTQiy/+6KGXVAwA+Q8BMQ==
+  </data>
+ </layer>
+ <objectgroup name="Warps" width="15" height="14">
+  <object name="Warp outside" type="WARP" x="96" y="384" width="32" height="32">
+   <properties>
+    <property name="DEST_MAP" value="goldenfields/main"/>
+    <property name="DEST_NAME" value="Exit storage"/>
+   </properties>
+  </object>
+  <object name="Warp up" type="WARP" x="352" y="96" width="32" height="32">
+   <properties>
+    <property name="DEST_MAP" value="goldenfields/casern_storage_roof"/>
+    <property name="DEST_NAME" value="Exit 1st level"/>
+   </properties>
+  </object>
+  <object name="Exit main" type="WARP" x="96" y="352" width="32" height="32"/>
+  <object name="Exit 2nd level" type="WARP" x="320" y="128" width="32" height="32"/>
+ </objectgroup>
+</map>

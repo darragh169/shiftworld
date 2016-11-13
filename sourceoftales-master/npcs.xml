@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This file maps the NPC appearance IDs the server is sending to the
+    spritesheet(s).
+
+    Note that it is possible to give an NPC multiple sprites. In this case the
+    sprites are drawn in order of declaration.
+-->
+<npcs>
+<!-- Male soldier with chain armor, chain hood and jacket. -->
+<npc id="1">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/head/chain_hood_male.xml</sprite>
+    <sprite>equipment/torso/chain_armor_male.xml</sprite>
+    <sprite>equipment/misc/purple_cape_male.xml</sprite>
+    <sprite>equipment/legs/plate_trousers_male.xml</sprite>
+    <sprite>equipment/feet/plate_boots_male.xml</sprite>
+</npc>
+<!-- Male soldier with chain armor and open helmet. TODO: hair? -->
+<npc id="2">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/head/kettle_hat_male.xml</sprite>
+    <sprite>equipment/torso/chain_armor_male.xml</sprite>
+    <sprite>equipment/legs/plate_trousers_male.xml</sprite>
+    <sprite>equipment/misc/leather_belt_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+</npc>
+<!-- Male knight with helmet and shield. -->
+<npc id="3">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/head/plate_armor_helmet_male.xml</sprite>
+    <sprite>equipment/misc/plate_shoulder_pad_male.xml</sprite>
+    <sprite>equipment/torso/plate_armor_male.xml</sprite>
+    <sprite>equipment/gloves/plate_gloves_male.xml</sprite>
+    <sprite>equipment/legs/plate_trousers_male.xml</sprite>
+    <sprite>equipment/feet/plate_boots_male.xml</sprite>
+</npc>
+<!-- Male knight without helmet and gloves. TODO: hair-->
+<npc id="4">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/legs/plate_trousers_male.xml</sprite>
+    <sprite>equipment/torso/plate_armor_male.xml</sprite>
+    <sprite>equipment/misc/plate_shoulder_pad_male.xml</sprite>
+    <sprite>equipment/feet/plate_boots_male.xml</sprite>
+    <sprite>characters/hair09_male.xml|#191e24,254237,31774b,3cb85f,85f57c</sprite>
+</npc>
+<!-- Monk -->
+<npc id="5">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/brown_shirt_male.xml</sprite>
+    <sprite>equipment/misc/rope_belt_male.xml</sprite>
+    <sprite>equipment/legs/robe_skirt_male.xml</sprite>
+</npc>
+<!-- Some man in leather armor with a hat. TODO: hair -->
+<npc id="6">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/head/leather_hat_male.xml</sprite>
+    <sprite>equipment/torso/leather_armor_male.xml</sprite>
+    <sprite>equipment/misc/leather_shoulder_pad_male.xml</sprite>
+    <sprite>equipment/misc/leather_bracers_male.xml</sprite>
+    <sprite>equipment/legs/light_blue_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+</npc>
+<!-- Some man in leather armor wearing a hood. -->
+<npc id="7">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/head/leather_hood_male.xml</sprite>
+    <sprite>equipment/torso/leather_armor_male.xml</sprite>
+    <sprite>equipment/misc/leather_shoulder_pad_male.xml</sprite>
+    <sprite>equipment/misc/leather_bracers_male.xml</sprite>
+    <sprite>equipment/legs/light_blue_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+</npc>
+<!-- Some man. TODO: hair -->
+<npc id="8">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/white_shirt_male.xml</sprite>
+    <sprite>equipment/legs/light_blue_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+</npc>
+<!-- Some man. TODO: hair -->
+<npc id="9">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/brown_shirt_male.xml</sprite>
+    <sprite>equipment/legs/light_blue_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+    <sprite>characters/hair09_male.xml|#5a72dd</sprite>
+</npc>
+<npc id="10">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/darkblonde_female.xml</sprite>
+    <sprite>equipment/torso/black_robe_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="11">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/lightblonde_female.xml</sprite>
+    <sprite>equipment/torso/blue_robe_female.xml</sprite>
+    <sprite>equipment/misc/silver_belt_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="12">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/darkblonde_female.xml</sprite>
+    <sprite>equipment/torso/brown_robe_female.xml</sprite>
+    <sprite>equipment/feet/brown_slippers_female.xml</sprite>
+</npc>
+<npc id="13">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/black_female.xml</sprite>
+    <sprite>equipment/torso/darkbrown_robe_female.xml</sprite>
+    <sprite>equipment/feet/brown_slippers_female.xml</sprite>
+</npc>
+<npc id="14">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/lightblonde_female.xml</sprite>
+    <sprite>equipment/torso/darkgray_robe_female.xml</sprite>
+    <sprite>equipment/misc/silver_belt_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="15">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/brown_female.xml</sprite>
+    <sprite>equipment/torso/green_robe_female.xml</sprite>
+    <sprite>equipment/misc/black_belt_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="16">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/brown_female.xml</sprite>
+    <sprite>equipment/torso/lightgray_robe_female.xml</sprite>
+    <sprite>equipment/feet/gray_slippers_female.xml</sprite>
+</npc>
+<npc id="17">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/black_female.xml</sprite>
+    <sprite>equipment/torso/purple_robe_female.xml</sprite>
+    <sprite>equipment/misc/gold_belt_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="18">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/black_female.xml</sprite>
+    <sprite>equipment/torso/red_robe_female.xml</sprite>
+    <sprite>equipment/misc/brown_belt_female.xml</sprite>
+    <sprite>equipment/feet/black_slippers_female.xml</sprite>
+</npc>
+<npc id="19">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/gray_female.xml</sprite>
+    <sprite>equipment/torso/white_robe_female.xml</sprite>
+    <sprite>equipment/feet/gray_slippers_female.xml</sprite>
+</npc>
+<npc id="20">
+    <sprite>characters/female_base.xml</sprite>
+    <sprite>equipment/hair/white_female.xml</sprite>
+    <sprite>equipment/torso/white_robe_female.xml</sprite>
+    <sprite>equipment/feet/white_slippers_female.xml</sprite>
+    <sprite>equipment/misc/gold_belt_female.xml.xml</sprite>
+    <sprite>equipment/misc/gold_buckle_female.xml</sprite>
+    <sprite>equipment/head/gold_tiara_female.xml</sprite>
+    <sprite>equipment/necklace/gold_necklace_female.xml</sprite>
+</npc>
+<npc id="21">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/legs/green_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+    <sprite>equipment/torso/green_vest_male.xml</sprite>
+    <sprite>equipment/misc/leather_shoulder_pad_male.xml</sprite>
+    <sprite>equipment/misc/leather_belt_male.xml</sprite>
+    <sprite>equipment/head/leather_hat_male.xml</sprite>
+</npc>
+<npc id="22">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/green_vest_male.xml</sprite>
+    <sprite>equipment/legs/light_blue_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+    <sprite>characters/hair09_male.xml|#191e24,254237,31774b,3cb85f,85f57c</sprite>
+</npc>
+<npc id="23">
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/brown_shirt_male.xml</sprite>
+    <sprite>equipment/legs/green_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+    <sprite>characters/hair09_male.xml|#5a72dd</sprite>
+</npc>
+<npc id="100">
+    <!-- old trader -->
+    <sprite>characters/male_base.xml</sprite>
+    <sprite>equipment/torso/brown_shirt_male.xml</sprite>
+    <sprite>equipment/legs/green_trousers_male.xml</sprite>
+    <sprite>equipment/feet/brown_shoes_male.xml</sprite>
+    <sprite>characters/hair03_male.xml|#c0c0c0</sprite>
+</npc>
+</npcs>

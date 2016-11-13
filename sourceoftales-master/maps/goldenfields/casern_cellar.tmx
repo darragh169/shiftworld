@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="42" height="30" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="music" value="strings_theme.ogg"/>
+ </properties>
+ <tileset firstgid="1" name="collision" tilewidth="32" tileheight="32">
+  <image source="../../tiles/collision.png" width="64" height="32"/>
+ </tileset>
+ <tileset firstgid="3" name="castlewalls" tilewidth="32" tileheight="32">
+  <image source="../../tiles/castlewalls.png" width="384" height="480"/>
+ </tileset>
+ <tileset firstgid="183" name="cementstair" tilewidth="32" tileheight="32">
+  <image source="../../tiles/cementstair.png" width="160" height="128"/>
+ </tileset>
+ <tileset firstgid="203" name="castlefloors" tilewidth="32" tileheight="32">
+  <image source="../../tiles/castlefloors.png" width="320" height="320"/>
+ </tileset>
+ <tileset firstgid="303" name="woodenbeam" tilewidth="32" tileheight="32">
+  <image source="../../tiles/woodenbeam.png" width="256" height="128"/>
+ </tileset>
+ <tileset firstgid="335" name="country" tilewidth="32" tileheight="32">
+  <image source="../../tiles/country.png" width="160" height="128"/>
+ </tileset>
+ <tileset firstgid="355" source="../../tiles/castle_lightsources_small.tsx"/>
+ <tileset firstgid="405" name="farming_fishing" tilewidth="32" tileheight="32">
+  <image source="../../tiles/farming_fishing.png" width="640" height="640"/>
+ </tileset>
+ <tileset firstgid="805" name="barrel" tilewidth="32" tileheight="32">
+  <image source="../../tiles/barrel.png" width="128" height="64"/>
+ </tileset>
+ <tileset firstgid="813" name="magecity" tilewidth="32" tileheight="32">
+  <image source="../../tiles/magecity.png" width="256" height="1450"/>
+ </tileset>
+ <tileset firstgid="1173" name="buckets" tilewidth="32" tileheight="32">
+  <image source="../../tiles/buckets.png" width="96" height="64"/>
+ </tileset>
+ <tileset firstgid="1179" name="dungeon" tilewidth="32" tileheight="32">
+  <image source="../../tiles/dungeon.png" width="416" height="256"/>
+ </tileset>
+ <tileset firstgid="1283" name="castle_outside" tilewidth="32" tileheight="32">
+  <image source="../../tiles/castle_outside.png" width="544" height="352"/>
+ </tileset>
+ <tileset firstgid="1470" name="cellar_shadow" tilewidth="32" tileheight="32">
+  <image source="../../tiles/cellar_shadow.png" width="192" height="128"/>
+ </tileset>
+ <layer name="Ground" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztmNEOgzAIRW2yvm36tn3Xvtxf2vbQzJACF9pq3XoTEhNFjgWKul6maRXMK+mennhev8G5L2epbuFrVs757fNQ7BrqMlo4E98dtBacNXU2Tq02tHrpdT0/PsuOnJHEQ4VyIn2M5MvLSf04zmjoZWrLD3BKeULyUFKf0j5J40nPj+ThHzhjJk4rzjn453ArzjQfuLrVZjq1bazcOQ9nkrTOHGeKUUNP5rg3TlS5ukE4PXv24JTz7p37XP9ZrtnW65HfRJa5PDh1Ie8/PXBa5P0fUGqD81jOF4r411g=
+  </data>
+ </layer>
+ <layer name="Walls" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzdmEsKAjEMhscTiOfysfUBuhEXzkbxBF5Ab6F7PaEpTKCWJk3SOlV/+BG1k3yYpC02Da+R0VZZ423AY6XXGZyYbwKegmfCeC14C553r5xxzT6Ds+3iLMBL8EoYzz13UNrFtfYL5juCd+CTglOrS6PvFeyXWL5PcA4H8j6J9QvFWXp2Hae2T/x+oTgl89yXOE6cZ2utuHqV5rTWKVWv0pyl43N14upQi1Nbh1qcludi+wv1uVZ4jlD5KYXr8HyIrSvB6WJfmfyUwnXUfk/t8/4MhP3vK5yLXE6ub7m7QMy+qO+snNTn1PmeO1saTmpuNJxnMdm7pPcCal1fv6f0XkDdI8L3Ek7tuU/N3w18T8Tzc4ZzmeLMPfvRD/AzsSbMqeH8BlGcJfb+kvoHzk9b01s1OTU1q1nfX+Ls4/+qXGk5XxIamMs=
+  </data>
+ </layer>
+ <layer name="Decor" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowA72A/EB/DIxzAyMBgxMzAYA3EsI50chQUcAeKjeOQTgW6zArrRGoiTBtCdowABVJkH2gXEAU0s7jwATEMHh0A6ugJ041Ukd95iYWC4zUIem57gOdDOFyzksU3omK6+AO38ykIeG9mda6AYBoiND5CetUj6sKVVWgJi4mMwAGLiYzAAUtNuxgCVQTZ43ImertdiUYNLHBngqh/WMGDmF1zm0iN9UiPPDZX0OQoGFhCTb6ihh1KAbudAuGEUjIJRMAqGGwAAZCFQmQ==
+  </data>
+ </layer>
+ <layer name="Decor2" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4AykMxMHXMOMDIwHGQkXd80FsJqghkhmBrgCtCcq2SYNZMId0YwQvAoGNzg0hCJI1UseXM6EemQ3kATiztnDUJ3DmagDgxDDSqVxbQE2kA36gwSdw7GvIAN0Dov3GFBYFoAYupoYsBLFgSmBSCmjh4Fo2AUjIJRMApGwSigJwAAXlERDw==
+  </data>
+ </layer>
+ <layer name="Decor3" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzlENgCAUAMDH7OIH/QNoB+wDERiToewuwUXAN5zH6kGfPPi8UsSd3r3MUNrx+cETAAAAdlUBVR4DhQ==
+  </data>
+ </layer>
+ <layer name="Fringe" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20ND6AAAAAAgBcDE7AAAQ==
+  </data>
+ </layer>
+ <layer name="Over" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztlkEKAjEMRTM4F/AQ7sdRENQbzMoD6F5voXvdudCj6WVMYMKEwGg6FkslDz6U0tBA/28L4DiO07Ex6JSsu47mg7aoQ7LuwqkLgBnqCLYz4HOosGZa/K7PJe61Qu1xvIP/OwfNZJS6g7yZK2+yb9nvct7qeapdqLwwQ/OwVjXsW/Y7M1bqy8ClrSWo/tzO586jBHiW78dOfL6576sBbwtL7m9ZR5mg3Oh818a+ZVZCxMi5G+res47gjPKeMrOOownNTqhi/av1GxVbOf3nrpnkOfQ+ToXVI058XlxPQ2g=
+  </data>
+ </layer>
+ <layer name="Collision" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztk1kKACAIRKX7H7r/aJkcWywHBiIyn2ZJRFI47Nw9rc5pyWrJzd73GqdW7HvvqsMrZ4u3PDuzZvpQi/PCWdtnheRr1Racc5zaOGaOkPlGOTX9tHIvH/LuZTzCycgbp/bcrZyj/62ZtZX+gfMGBaetds4e04vTnCjraUZPnK85A7r/BlU=
+  </data>
+ </layer>
+ <layer name="Shadow" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztlkcKw0AMRb3x/W+U5jTSSDtQfhaBIGTVydgED7ydZvRRGalp5NO1MaIn+t7bZg4WYAlWzBszYpPVyfmy3NuALdiBPaNzTWyyOjlflntHcAJncGF0HohNtFY+cL4sOm/gDh7gybx7JTZanUj10vX4suj0otWJVC810eokWi80/p5ccbZanfTVi6aTxt+TK8m2NDT+nlxJtjT21pxZ4+/JlWRLYz9UHrx5suahNt+x9+Rh7ND/3kPfzOjafF9QMv+9NDNK90VmP5BmRum+kP57baZLM6NmX5TaPX6NpjPaK9we4NkjvDqjvcLtAZndQNMZ7RVuD/DsBl6d0V7h5k9mJv1LH42FSefvddY4k85hdb4AKJ8qqw==
+  </data>
+ </layer>
+ <layer name="Lights" width="42" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzt01EKABAQBUBu6/4n8CtRZAs1870ob19K3FByzEzUW7xpJzs53yWrP7R/Lwd+FbG7szv0AtacdGV0VvcA6FU3bAYo
+  </data>
+ </layer>
+ <objectgroup name="NPCS" width="42" height="30">
+  <object name="Guard Dain" type="NPC_POSITION" x="512" y="128" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="3"/>
+   </properties>
+  </object>
+  <object name="Prisoner Asher" type="NPC_POSITION" x="416" y="448" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="9"/>
+   </properties>
+  </object>
+  <object name="Prisoner David" type="NPC_POSITION" x="352" y="384" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="23"/>
+   </properties>
+  </object>
+  <object name="Prisoner Saer" type="NPC_POSITION" x="96" y="320" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="8"/>
+   </properties>
+  </object>
+  <object name="Prisoner Gamel" type="NPC_POSITION" x="225" y="385" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="7"/>
+   </properties>
+  </object>
+  <object name="Prisoner Gavin" type="NPC_POSITION" x="480" y="352" width="32" height="32">
+   <properties>
+    <property name="gender" value="male"/>
+    <property name="sprite_id" value="21"/>
+   </properties>
+  </object>
+  <object name="Prisoner Berta" type="NPC_POSITION" x="896" y="544" width="32" height="32">
+   <properties>
+    <property name="gender" value="female"/>
+    <property name="sprite_id" value="19"/>
+   </properties>
+  </object>
+  <object name="Prisoner Haunild" type="NPC_POSITION" x="800" y="480" width="32" height="32">
+   <properties>
+    <property name="gender" value="female"/>
+    <property name="sprite_id" value="16"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Waypoints" width="42" height="30">
+  <object name="Prisoner Saer 1" type="WAYPOINT" x="96" y="384" width="32" height="32"/>
+  <object name="Prisoner David 1" type="WAYPOINT" x="316" y="386" width="32" height="32"/>
+  <object name="Prisoner Saer 2" type="WAYPOINT" x="162" y="416" width="32" height="32"/>
+  <object name="Prisoner Saer 3" type="WAYPOINT" x="46" y="400" width="32" height="32"/>
+  <object name="Prisoner Saer 4" type="WAYPOINT" x="96" y="329" width="32" height="32"/>
+  <object name="Prisoner Gamel 1" type="WAYPOINT" x="259" y="386" width="32" height="32"/>
+  <object name="Prisoner Gavin 1" type="WAYPOINT" x="506" y="400" width="32" height="32"/>
+  <object name="Prisoner Gavin 2" type="WAYPOINT" x="441" y="391" width="32" height="32"/>
+  <object name="Prisoner Gavin 3" type="WAYPOINT" x="396" y="401" width="32" height="32"/>
+  <object name="Prisoner Gavin 4" type="WAYPOINT" x="347" y="412" width="32" height="32"/>
+  <object name="Prisoner Gavin 5" type="WAYPOINT" x="466" y="419" width="32" height="32"/>
+  <object name="Prisoner Haunild 1" type="WAYPOINT" x="888" y="450" width="32" height="32"/>
+  <object name="Prisoner Haunild 2" type="WAYPOINT" x="799" y="416" width="32" height="32"/>
+  <object name="Prisoner Haunild 3" type="WAYPOINT" x="811" y="474" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="Warps" width="42" height="30">
+  <object name="stairs up" type="WARP" x="320" y="128" width="32" height="32">
+   <properties>
+    <property name="DEST_MAP" value="goldenfields/casern_north"/>
+    <property name="DEST_NAME" value="Exit cellar"/>
+   </properties>
+  </object>
+  <object name="Exit 1st level" type="WARP" x="352" y="128" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup name="Spawns" width="198" height="150" visible="0">
+  <object name="beetle spawn" type="SPAWN" x="32" y="320" width="512" height="128">
+   <properties>
+    <property name="max_beings" value="3"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="beetle spawn" type="SPAWN" x="416" y="128" width="256" height="128">
+   <properties>
+    <property name="max_beings" value="2"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="beetle spawn" type="SPAWN" x="192" y="704" width="1120" height="128">
+   <properties>
+    <property name="max_beings" value="4"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="beetle spawn" type="SPAWN" x="736" y="384" width="256" height="224">
+   <properties>
+    <property name="max_beings" value="2"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="beetle spawn" type="SPAWN" x="1184" y="96" width="128" height="608">
+   <properties>
+    <property name="max_beings" value="3"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="beetle spawn" type="SPAWN" x="832" y="224" width="288" height="96">
+   <properties>
+    <property name="max_beings" value="2"/>
+    <property name="monster_id" value="2"/>
+    <property name="spawn_rate" value="5"/>
+   </properties>
+  </object>
+  <object name="External Map Events" type="SCRIPT" x="32" y="32" width="192" height="32">
+   <properties>
+    <property name="FILENAME" value="scripts/maps/casern_cellar.lua"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="SoldierPatrol" width="42" height="30" visible="0">
+  <object name="SoldierPatrol 1" type="WAYPOINT" x="1230" y="167" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 2" type="WAYPOINT" x="1200" y="272" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 3" type="WAYPOINT" x="1264" y="336" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 4" type="WAYPOINT" x="1264" y="496" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 5" type="WAYPOINT" x="1264" y="624" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 6" type="WAYPOINT" x="1264" y="707" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 7" type="WAYPOINT" x="1135" y="704" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 8" type="WAYPOINT" x="1136" y="560" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 9" type="WAYPOINT" x="1072" y="464" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 10" type="WAYPOINT" x="1072" y="304" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 11" type="WAYPOINT" x="976" y="240" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 12" type="WAYPOINT" x="784" y="240" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 13" type="WAYPOINT" x="656" y="272" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 14" type="WAYPOINT" x="624" y="336" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 15" type="WAYPOINT" x="624" y="432" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 16" type="WAYPOINT" x="624" y="528" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 17" type="WAYPOINT" x="528" y="560" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 18" type="WAYPOINT" x="416" y="544" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 19" type="WAYPOINT" x="409" y="394" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 20" type="WAYPOINT" x="400" y="560" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 21" type="WAYPOINT" x="240" y="560" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 22" type="WAYPOINT" x="208" y="624" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 23" type="WAYPOINT" x="208" y="752" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 24" type="WAYPOINT" x="368" y="752" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 25" type="WAYPOINT" x="560" y="752" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 26" type="WAYPOINT" x="784" y="752" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 27" type="WAYPOINT" x="976" y="720" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 28" type="WAYPOINT" x="1074" y="705" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 29" type="WAYPOINT" x="1164" y="703" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 30" type="WAYPOINT" x="1265" y="707" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 31" type="WAYPOINT" x="1264" y="624" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 32" type="WAYPOINT" x="1264" y="496" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 33" type="WAYPOINT" x="1265" y="339" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+  <object name="SoldierPatrol 34" type="WAYPOINT" x="1200" y="272" width="32" height="32">
+   <properties>
+    <property name="stroll" value="32"/>
+    <property name="tolerance" value="128"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,0 +1,122 @@
+########################################################################
+# This file and the tmx files in this folder and it's subfolders
+# are licensed as CC BY-SA or GPLv3
+# Stefan Beller
+########################################################################
+
+../automapping/rule001.tmx
+
+########################################################################
+# Water tiles
+########################################################################
+# In the first rule water tiles will be placed on the blue set layer tile.
+# There are so many layer to put the blurry water tiles randomly.
+# To choose a distribution, which tile gets distributed how often, the number
+# of output layers is modified carrying the same tile.
+../automapping/rulewater001.tmx
+
+# straight transition tiles.
+../automapping/rulewater002.tmx
+
+# inside and outside curve transitions.
+../automapping/rulewater003.tmx
+
+# the single spot areas.
+../automapping/rulewater004.tmx
+
+# As you can easily draw the set layer now, you might produce impossible requests
+# due to limitations on the tilesets.
+# Try to raise hand and show where the errors are.
+../automapping/rulewater005.tmx
+
+########################################################################
+# Grass tiles
+########################################################################
+# The first grassland rule is very similar to the water rule, providing
+# random grass tiles at the green set layer.
+../automapping/rulegrass001.tmx
+
+# straight lines. Grassland is dominating, so the border is not on the
+# last green set tile but one beyond.
+../automapping/rulegrass002.tmx
+
+# inside and outside curve translations, also one tile outside of the greens.
+../automapping/rulegrass003.tmx
+
+# make sure that water spots and dirt spots have the right grass.
+../automapping/rulegrass004.tmx
+
+
+########################################################################
+# Dirt tiles
+########################################################################
+../automapping/ruledirt001.tmx
+
+
+# straight transitions
+../automapping/ruledirt002.tmx
+
+# curves
+../automapping/ruledirt003.tmx
+
+# curves of dirt towards water tiles is treated specially
+../automapping/ruledirt004.tmx
+
+../automapping/ruledirt005.tmx
+
+########################################################################
+# Fences in setFences
+########################################################################
+../automapping/rulefence.tmx
+
+
+########################################################################
+# Wheat
+########################################################################
+../automapping/rulewheat001.tmx
+../automapping/rulewheat002.tmx
+../automapping/rulewheat003.tmx
+
+########################################################################
+# Cave
+########################################################################
+../automapping/rulecave000.tmx
+../automapping/rulecave001.tmx
+../automapping/rulecave002.tmx
+../automapping/rulecave003.tmx
+../automapping/rulecave004.tmx
+../automapping/rulecave005.tmx
+../automapping/rulecave006.tmx
+../automapping/rulecave007.tmx
+
+########################################################################
+# Trees are placed in the settree layer,
+########################################################################
+../automapping/ruletree001.tmx
+../automapping/ruletree002.tmx
+
+########################################################################
+# Mountain rules (description on how to use still to come)
+########################################################################
+../automapping/rulemountains001.tmx
+../automapping/rulemountains002.tmx
+
+########################################################################
+# Sand tiles
+########################################################################
+# In the first rule sand tiles will be placed on the light yellow set layer tile.
+# There are so many layer to put the sand tiles randomly.
+../automapping/rulesand001.tmx
+
+# straight transition tiles.
+../automapping/rulesand002.tmx
+
+# inside and outside curve transitions.
+../automapping/rulesand003.tmx
+
+# the single spot areas.
+../automapping/rulesand004.tmx
+
+# 
+#../automapping/rulesand005.tmx
+
