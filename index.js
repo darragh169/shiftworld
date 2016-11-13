@@ -10,11 +10,12 @@ var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
-    game.load.tilemap('levelTest', 'assets/levels/levelTest.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest', 'assets/levels/levelTest2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
+    game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
@@ -27,6 +28,7 @@ var layer;
 
 var player;
 var droid;
+var enemy;
 
 var droidLength = 10;
 
@@ -49,6 +51,8 @@ var healthMeterIcons;
 var damagelevel;
 
 var potionCollection;
+
+var enemyCollection;
 
 
 function create() {
@@ -109,8 +113,9 @@ function create() {
     //****************DROIDS***************//
     droidCollection = game.add.physicsGroup();
 
-    for(var i=0; i<droidLength; i++)    {
-        var droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid');
+    for(var i=0; i<droidLength; i++) {
+        // I made this global so that it can be viewed in the render()
+        droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid'); 
         initDroid(droid);
     }
 
@@ -118,11 +123,28 @@ function create() {
     //****************End DROIDS***************//
 
 
+    //****************ENEMIES***************//
+    enemyCollection = game.add.physicsGroup();
+
+    for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
+        var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
+        
+        // I made this global so that it can be viewed in the render()
+        // X pos, Y pos, sprite
+        enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
+        // Enemy, W & H, Speed, Damage
+        initEnemy(enemy, sizeArray, 25, 2);
+    }
+
+    enemyCollection.forEach(updateAnchor, this);
+    //****************End ENEMIES***************//
+
+
     //****************POTIONS***************//
     potionCollection = game.add.physicsGroup();
 
     // Loop through all objects in potion layer and assign x and y positions
-    for(var i=0; i<map.objects.potionLayer.length; i++)    {
+    for(var i=0; i<map.objects.potionLayer.length; i++) {
         var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
         // Must subtract height from y position because origin in phaser is different to Tiled
         var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
@@ -140,9 +162,12 @@ function create() {
 
 function update() {
     game.physics.arcade.collide(player, layer);
+    game.physics.arcade.collide(enemyCollection, layer);
+
     player.body.velocity.x = 0;
 
     droidCollection.forEach(updateDroids, this);
+    enemyCollection.forEach(updateDroids, this);
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -196,12 +221,13 @@ function update() {
 	
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
+    game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
 }
 
 function render() {
     //game.debug.text(game.time.physicsElapsed, 32, 32);
-    //game.debug.body(droid);
+    //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
 
     //game.debug.body(player);
@@ -228,6 +254,19 @@ function initPotion(potion, size) {
     potion.body.setSize(size[0], size[1]);
 }
 
+function initEnemy(enemy, size, speed, damage) {
+    game.physics.enable(enemy, Phaser.Physics.ARCADE);
+
+    enemy.body.collideWorldBounds = true;
+    enemy.body.setSize(size[0], size[1]);
+    enemy.body.velocity.x = -speed;
+    enemy.damageLevel = damage;
+
+    enemy.currentDirection = 'left';
+
+    enemy.animations.add('move', [0, 1, 2, 3], 10, true);
+}
+
 //damage the play the amount of amountOfDamage
 function takeDamage(player, enemy)   {
 
@@ -245,7 +284,6 @@ function takeDamage(player, enemy)   {
 // Function to restart the game
 function restart () {
     player.kill();
-
 }
 
 function updateAnchor(droid){
