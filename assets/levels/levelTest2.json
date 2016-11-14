@@ -122,12 +122,18 @@
                  "name":"",
                  "properties":
                     {
+                     "damage":2,
+                     "gravity":true,
                      "h":64,
+                     "speed":25,
                      "w":32
                     },
                  "propertytypes":
                     {
+                     "damage":"int",
+                     "gravity":"bool",
                      "h":"int",
+                     "speed":"int",
                      "w":"int"
                     },
                  "rotation":0,
@@ -143,12 +149,18 @@
                  "name":"",
                  "properties":
                     {
+                     "damage":2,
+                     "gravity":true,
                      "h":64,
+                     "speed":25,
                      "w":32
                     },
                  "propertytypes":
                     {
+                     "damage":"int",
+                     "gravity":"bool",
                      "h":"int",
+                     "speed":"int",
                      "w":"int"
                     },
                  "rotation":0,
@@ -157,6 +169,33 @@
                  "width":12,
                  "x":130,
                  "y":352
+                }, 
+                {
+                 "height":14,
+                 "id":17,
+                 "name":"",
+                 "properties":
+                    {
+                     "damage":1,
+                     "gravity":false,
+                     "h":31,
+                     "speed":100,
+                     "w":40
+                    },
+                 "propertytypes":
+                    {
+                     "damage":"int",
+                     "gravity":"bool",
+                     "h":"int",
+                     "speed":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"bird",
+                 "visible":true,
+                 "width":12,
+                 "x":403,
+                 "y":34
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -165,7 +204,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":17,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,

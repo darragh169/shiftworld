@@ -16,6 +16,7 @@ function preload() {
 
     game.load.image('potion', 'assets/images/potion.png');
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
+    game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
@@ -128,12 +129,16 @@ function create() {
 
     for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
         var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
+        var enemyType = map.objects.enemyLayer[i].type;
+        var enemyDamage = map.objects.enemyLayer[i].properties.damage;
+        var enemySpeed = map.objects.enemyLayer[i].properties.speed;
+        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;
         
         // I made this global so that it can be viewed in the render()
         // X pos, Y pos, sprite
         enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
-        // Enemy, W & H, Speed, Damage
-        initEnemy(enemy, sizeArray, 25, 2);
+        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);
     }
 
     enemyCollection.forEach(updateAnchor, this);
@@ -227,6 +232,7 @@ function update() {
 
 function render() {
     //game.debug.text(game.time.physicsElapsed, 32, 32);
+
     //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
 
@@ -254,17 +260,21 @@ function initPotion(potion, size) {
     potion.body.setSize(size[0], size[1]);
 }
 
-function initEnemy(enemy, size, speed, damage) {
+// Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+function initEnemy(enemy, enemyType, size, speed, damage, grav) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
     enemy.body.collideWorldBounds = true;
     enemy.body.setSize(size[0], size[1]);
     enemy.body.velocity.x = -speed;
     enemy.damageLevel = damage;
+    enemy.body.allowGravity = grav;   
 
     enemy.currentDirection = 'left';
 
-    enemy.animations.add('move', [0, 1, 2, 3], 10, true);
+    if(enemyType === "bird" || enemyType === "enemy"){
+        enemy.animations.add('move', [0, 1, 2, 3], 10, true);
+    }
 }
 
 //damage the play the amount of amountOfDamage
@@ -310,6 +320,7 @@ function updateGravity() {
     player.scale.y *= -1;                   // Flip Sprite vertically
 
     droidCollection.forEach(updateDroidGravity, this);
+    enemyCollection.forEach(updateDroidGravity, this);
     
     gravityTimer = game.time.now + 500;     // Ensures that function is called once 
 
