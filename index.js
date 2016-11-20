@@ -323,6 +323,7 @@ function updateDroids(dr){
         dr.currentDirection = 'left';
     }
     dr.body.velocity.x = dr.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+    dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
 }
 
 function updateGravity() {
