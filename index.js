@@ -301,7 +301,7 @@ function fadePlayer(){
 }
 
 function unFadePlayer(){
-    player.alpha = 1;
+    player.alpha = 1; 
 }
 
 // Function to restart the game
