@@ -87,7 +87,6 @@ function create() {
     //****************PLAYER****************//
     player = game.add.sprite(72, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
-
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
@@ -248,6 +247,8 @@ function render() {
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
 
+    game.physics.enable([droid,player], Phaser.Physics.ARCADE);
+
     droid.body.collideWorldBounds = true;
     droid.body.setSize(32, 32);
     droid.body.velocity.x = droidspeed;
@@ -282,12 +283,15 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
     }
 }
 
-//damage the play the amount of amountOfDamage
+//whatever is damaging the player needs to have attribute "damageLevel"
 function takeDamage(player, enemy)   {
 
+    fadePlayer();
+    game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
+
     if (game.time.now > invincibleTimer) {
-        player.damage(enemy.damageLevel);
-        invincibleTimer = game.time.now + 1000;
+            player.damage(enemy.damageLevel);
+            invincibleTimer = game.time.now + 1000;
     }
 
     // player is dead, start over
@@ -296,9 +300,18 @@ function takeDamage(player, enemy)   {
     }
 }
 
+function fadePlayer(){
+    player.alpha = 0.1;
+}
+
+function unFadePlayer(){
+    player.alpha = 1; 
+}
+
 // Function to restart the game
 function restart () {
     player.kill();
+    //create();
 }
 
 function updateAnchor(droid){
@@ -315,8 +328,9 @@ function updateDroids(dr){
         dr.currentDirection = 'left';
     }
 
-    dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
 
+    dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
+    dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
 }
 
 function updateGravity() {
