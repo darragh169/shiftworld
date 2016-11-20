@@ -10,9 +10,10 @@ var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
-    game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('level3', 'assets/levels/level3.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
+    game.load.image('lava', 'assets/images/lava.png');
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
@@ -44,10 +45,11 @@ var gravityDown = true;
 var invincibleTimer;
 var hearts;
 var healthMeterIcons;
-var damagelevel;
+var lava;
+var spike_walls_floors;
 
 
-function create() {;
+function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -57,9 +59,10 @@ function create() {;
     bg.fixedToCamera = true;
 
 
-    map = game.add.tilemap('level1');
+    map = game.add.tilemap('level3');
 
     map.addTilesetImage('tiles-1');
+    map.addTilesetImage('lava');
 
     map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
@@ -214,7 +217,7 @@ function initDroid(droid) {
 }
 
 //whatever is damaging the player needs to have attribute "damageLevel"
-function takeDamage(player, enemy)   {p
+function takeDamage(player, enemy)   {
     if (game.time.now > invincibleTimer) {
             player.damage(enemy.damageLevel);
             invincibleTimer = game.time.now + 1000;
