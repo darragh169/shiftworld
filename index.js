@@ -86,7 +86,6 @@ function create() {
     //****************PLAYER****************//
     player = game.add.sprite(32, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
-
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
@@ -279,15 +278,15 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
     }
 }
 
-//damage the play the amount of amountOfDamage
+//whatever is damaging the player needs to have attribute "damageLevel"
 function takeDamage(player, enemy)   {
 
     fadePlayer();
     game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
 
     if (game.time.now > invincibleTimer) {
-        player.damage(enemy.damageLevel);
-        invincibleTimer = game.time.now + 1000;
+            player.damage(enemy.damageLevel);
+            invincibleTimer = game.time.now + 1000;
     }
 
     // player is dead, start over
