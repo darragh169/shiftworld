@@ -243,6 +243,8 @@ function render() {
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
 
+    game.physics.enable([droid,player], Phaser.Physics.ARCADE);
+
     droid.body.collideWorldBounds = true;
     droid.body.setSize(32, 32);
     droid.body.velocity.x = droidspeed;
@@ -280,6 +282,9 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
 //damage the play the amount of amountOfDamage
 function takeDamage(player, enemy)   {
 
+    fadePlayer();
+    game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
+
     if (game.time.now > invincibleTimer) {
         player.damage(enemy.damageLevel);
         invincibleTimer = game.time.now + 1000;
@@ -291,9 +296,18 @@ function takeDamage(player, enemy)   {
     }
 }
 
+function fadePlayer(){
+    player.alpha = 0.1;
+}
+
+function unFadePlayer(){
+    player.alpha = 1;
+}
+
 // Function to restart the game
 function restart () {
     player.kill();
+    //create();
 }
 
 function updateAnchor(droid){
