@@ -1,6 +1,6 @@
 'use strict'
 
-var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { 
+var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
     update: update, 
@@ -10,16 +10,17 @@ var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
-    game.load.tilemap('levelTest', 'assets/levels/levelTest2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
-    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
+  
     game.load.image('heart', 'assets/heartFull.png');
 }
 
@@ -62,7 +63,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
-    bg = game.add.tileSprite(0, 0, 800, 500, 'background');
+    bg = game.add.tileSprite(0, 0, 800, 510, 'background');
     bg.fixedToCamera = true;
 
 
@@ -77,14 +78,14 @@ function create() {
 	
 	 
     //  Un-comment this on to see the collision tiles
-    // layer.debug = true;
+    //layer.debug = true;
 
     layer.resizeWorld();
 
     game.physics.arcade.gravity.y = 1000;
 
     //****************PLAYER****************//
-    player = game.add.sprite(32, 32, 'dude');
+    player = game.add.sprite(72, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
@@ -114,11 +115,11 @@ function create() {
     //****************DROIDS***************//
     droidCollection = game.add.physicsGroup();
 
-    for(var i=0; i<droidLength; i++) {
+    //for(var i=0; i<droidLength; i++) {
         // I made this global so that it can be viewed in the render()
-        droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid'); 
-        initDroid(droid);
-    }
+        //droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid'); 
+        //initDroid(droid);
+    //}
 
     droidCollection.forEach(updateAnchor, this);
     //****************End DROIDS***************//
@@ -137,8 +138,11 @@ function create() {
         // I made this global so that it can be viewed in the render()
         // X pos, Y pos, sprite
         enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
+        
         // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+
         initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);
+       
     }
 
     enemyCollection.forEach(updateAnchor, this);
@@ -153,7 +157,7 @@ function create() {
         var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
         // Must subtract height from y position because origin in phaser is different to Tiled
         var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
-        initPotion(potion, sizeArray[1]);
+        initPotion(potion, sizeArray);
     }
      //****************End POTIONS***************//
 
@@ -171,8 +175,8 @@ function update() {
 
     player.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this);
-    enemyCollection.forEach(updateDroids, this);
+    droidCollection.forEach(updateDroids, this, 'trrt');
+    enemyCollection.forEach(updateDroids, this, 'trrt');
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -238,6 +242,7 @@ function render() {
 
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
+    //layer.debug = true;
 }
 
 function initDroid(droid) {
@@ -266,9 +271,9 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
 
     enemy.body.collideWorldBounds = true;
     enemy.body.setSize(size[0], size[1]);
-    enemy.body.velocity.x = -speed;
     enemy.damageLevel = damage;
     enemy.body.allowGravity = grav;   
+    enemy.customSpeed = speed;
 
     enemy.currentDirection = 'left';
 
@@ -309,7 +314,9 @@ function updateDroids(dr){
     if(dr.body.blocked.right){
         dr.currentDirection = 'left';
     }
-    dr.body.velocity.x = dr.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+
+    dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
+
 }
 
 function updateGravity() {
