@@ -145,8 +145,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":12,
-                 "x":130,
-                 "y":335
+                 "x":702,
+                 "y":207
                 }, 
                 {
                  "height":14,
@@ -230,8 +230,8 @@
                  "type":"droid",
                  "visible":true,
                  "width":16,
-                 "x":310.175268983121,
-                 "y":224.320400972099
+                 "x":673.175,
+                 "y":49.32
                 }],
          "opacity":1,
          "type":"objectgroup",

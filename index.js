@@ -48,6 +48,11 @@ var playerSpeed = 290;
 var playerJumpPower = 500;
 var gravityDown = true;
 var invincibleTimer;
+
+var gameStartTimer;
+var timeTillSpawn = 3000;
+var prevSpawnTime;
+
 var hearts;
 var healthMeterIcons;
 var damagelevel;
@@ -58,6 +63,8 @@ var enemyCollection;
 
 
 function create() {
+    gameStartTimer = game.time.now;
+    prevSpawnTime = game.time.now;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -126,24 +133,7 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
-
-    for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
-        var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
-        var enemyType = map.objects.enemyLayer[i].type;
-        var enemyDamage = map.objects.enemyLayer[i].properties.damage;
-        var enemySpeed = map.objects.enemyLayer[i].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;
-        
-        // I made this global so that it can be viewed in the render()
-        // X pos, Y pos, sprite
-        enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
-        
-        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);
-       
-    }
-
+    createEnemy();
     enemyCollection.forEach(updateAnchor, this);
     //****************End ENEMIES***************//
 
@@ -158,7 +148,14 @@ function create() {
         var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
         initPotion(potion, sizeArray);
     }
-     //****************End POTIONS***************//
+    //****************End POTIONS***************//
+
+    /*****************/
+    // SPAWN ENEMIES
+    /******************/
+    // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn)
+    spawnEnemy(4, 5000, 3);
+    spawnEnemy(1, 3000, 2);
 
 
     game.camera.follow(player);
@@ -174,8 +171,8 @@ function update() {
 
     player.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this, 'trrt');
-    enemyCollection.forEach(updateDroids, this, 'trrt');
+    droidCollection.forEach(updateDroids, this);
+    enemyCollection.forEach(updateDroids, this);
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -226,6 +223,17 @@ function update() {
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
         updateGravity();
     }
+
+
+    /*================
+     SPAWNING ENEMIES
+    ================*/
+    /*if(game.time.now - prevSpawnTime > timeTillSpawn){
+        prevSpawnTime = game.time.now;
+        spawnEnemy(4);
+        spawnEnemy(3);
+    }*/
+
 	
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
@@ -283,6 +291,48 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
     }
 }
 
+function createEnemy(){
+    // Go through every enemy spawn point and create enemy
+    for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
+        var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
+        var enemyType = map.objects.enemyLayer[i].type;
+        var enemyDamage = map.objects.enemyLayer[i].properties.damage;
+        var enemySpeed = map.objects.enemyLayer[i].properties.speed;
+        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;          
+
+        // I made this global so that it can be viewed in the render()
+        // X pos, Y pos minus its height, sprite
+        enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
+        
+        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);       
+    }
+}
+
+function spawnEnemy(b, interval, max) {
+    var spawnInterval = setInterval(function(){
+        var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
+        var enemyType = map.objects.enemyLayer[b].type;
+        var enemyDamage = map.objects.enemyLayer[b].properties.damage;
+        var enemySpeed = map.objects.enemyLayer[b].properties.speed;
+        var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
+
+        // I made this global so that it can be viewed in the render()
+        // X pos, Y pos minus its height, sprite
+        enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
+            
+        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
+        console.log(max);
+        max -= 1;
+
+        if(max <= 0){
+            clearInterval(spawnInterval);
+        }
+    }, interval) ;
+    
+}
+
 //whatever is damaging the player needs to have attribute "damageLevel"
 function takeDamage(player, enemy)   {
 
@@ -290,8 +340,8 @@ function takeDamage(player, enemy)   {
     game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
 
     if (game.time.now > invincibleTimer) {
-            player.damage(enemy.damageLevel);
-            invincibleTimer = game.time.now + 1000;
+        player.damage(enemy.damageLevel);
+        invincibleTimer = game.time.now + 1000;
     }
 
     // player is dead, start over
