@@ -14,7 +14,6 @@ function preload() {
     game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
     
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
-
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
@@ -53,11 +52,6 @@ var playerSpeed = 290;
 var playerJumpPower = 500;
 var gravityDown = true;
 var invincibleTimer;
-
-var gameStartTimer;
-var timeTillSpawn = 3000;
-var prevSpawnTime;
-
 var hearts;
 var healthMeterIcons;
 var damagelevel;
@@ -73,8 +67,6 @@ var endGametext;
 var endGameSubtext;
 
 function create() {
-    gameStartTimer = game.time.now;
-    prevSpawnTime = game.time.now;
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -104,18 +96,18 @@ function create() {
     player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
-	player.health = 3;
+    player.health = 3;
     player.maxHealth = 8;
-	//****************End PLAYER***************//
+    //****************End PLAYER***************//
 
 
-	//*******************HEARTS*****************//
-	game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
-	hearts = game.add.group();
+    //*******************HEARTS*****************//
+    game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
+    hearts = game.add.group();
     hearts.enableBody = true;
-	 // set up a timer so player is briefly invincible after being damaged
+     // set up a timer so player is briefly invincible after being damaged
     invincibleTimer = game.time.now + 1000;
-	healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
+    healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
     healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
     //****************End HEARTS***************//
 
@@ -135,39 +127,32 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
+    if(currentLevel > 0){
+        createEnemy();
+        enemyCollection.forEach(updateAnchor, this);
+        //****************End ENEMIES***************//
 
-    createEnemy();
 
-    enemyCollection.forEach(updateAnchor, this);
-    //****************End ENEMIES***************//
+        //****************POTIONS***************//
+        potionCollection = game.add.physicsGroup();
 
+        // Loop through all objects in potion layer and assign x and y positions
+        for(var i=0; i<map.objects.potionLayer.length; i++) {
+            var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
+            // Must subtract height from y position because origin in phaser is different to Tiled
+            var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
+            initPotion(potion, sizeArray);
+        }
+        //****************End POTIONS***************//
 
-    //****************POTIONS***************//
-    potionCollection = game.add.physicsGroup();
-
-    // Loop through all objects in potion layer and assign x and y positions
-    for(var i=0; i<map.objects.potionLayer.length; i++) {
-        var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
-        // Must subtract height from y position because origin in phaser is different to Tiled
-        var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
-        initPotion(potion, sizeArray);
+        /*****************/
+        // SPAWN ENEMIES
+        /******************/
+        // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn)
+        spawnEnemy(4, 5000, 3);
+        spawnEnemy(1, 3000, 2);
     }
-
-    //****************End POTIONS***************//
-
-    /*****************/
-    // SPAWN ENEMIES
-    /******************/
-    // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn)
-    spawnEnemy(4, 5000, 3);
-    spawnEnemy(1, 3000, 2);
-
-
-     //****************End POTIONS***************//
-    ////////////////////////////////////////////}
     endLevel = game.add.sprite(700, 420, 'endLevel');
-
-
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -176,14 +161,13 @@ function create() {
 }
 
 function update() {
-
     game.physics.arcade.collide(player, layer);
     game.physics.arcade.collide(enemyCollection, layer);
 
     player.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this);
-    enemyCollection.forEach(updateDroids, this);
+    droidCollection.forEach(updateDroids, this, 'trrt');
+    enemyCollection.forEach(updateDroids, this, 'trrt');
 
     checkForLevelEnd();
 
@@ -236,18 +220,7 @@ function update() {
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
         updateGravity();
     }
-
-
-    /*================
-     SPAWNING ENEMIES
-    ================*/
-    /*if(game.time.now - prevSpawnTime > timeTillSpawn){
-        prevSpawnTime = game.time.now;
-        spawnEnemy(4);
-        spawnEnemy(3);
-    }*/
-
-	
+    
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
@@ -276,6 +249,7 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
+        debugger;
         map = game.add.tilemap('levelTest2');
         console.log(layer);
         if(layer) 
@@ -317,12 +291,10 @@ function loadLevel(level){
 }
 
 function render() {
-    //game.debug.text(endLevel.x + " " + endLevel.y, 32, 32);
-    //game.debug.text(player.body.x + " " + player.body.y, 32, 45);
+    //game.debug.text(game.time.physicsElapsed, 32, 32);
 
-    //game.debug.body(endLevel);
+    //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
-
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
     //layer.debug = true;
