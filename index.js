@@ -11,7 +11,10 @@ var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', {
 function preload() {
 
     game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
+    
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
+
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
@@ -22,6 +25,8 @@ function preload() {
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
   
     game.load.image('heart', 'assets/heartFull.png');
+
+    game.load.spritesheet('endLevel', 'assets/images/enemy.png', 20, 20);
 }
 
 var map;
@@ -61,6 +66,11 @@ var potionCollection;
 
 var enemyCollection;
 
+var endLevel;
+var currentLevel = 0;
+
+var endGametext;
+var endGameSubtext;
 
 function create() {
     gameStartTimer = game.time.now;
@@ -73,21 +83,7 @@ function create() {
     bg = game.add.tileSprite(0, 0, 800, 510, 'background');
     bg.fixedToCamera = true;
 
-
-    map = game.add.tilemap('levelTest');
-
-    map.addTilesetImage('tiles-1');
-
-    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
-
-    layer = map.createLayer('Tile Layer 1');
-
-	
-	 
-    //  Un-comment this on to see the collision tiles
-    //layer.debug = true;
-
-    layer.resizeWorld();
+    loadLevel(currentLevel);
 
     game.physics.arcade.gravity.y = 1000;
 
@@ -97,6 +93,12 @@ function create() {
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
+    if(currentLevel === 0){
+        player.body.height = 100;    
+    } else {
+        player.body.height = 46;
+    }
+    
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
     player.animations.add('left', [5, 6, 7, 8], 10, true);
@@ -133,7 +135,9 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
+
     createEnemy();
+
     enemyCollection.forEach(updateAnchor, this);
     //****************End ENEMIES***************//
 
@@ -148,6 +152,7 @@ function create() {
         var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
         initPotion(potion, sizeArray);
     }
+
     //****************End POTIONS***************//
 
     /*****************/
@@ -158,6 +163,11 @@ function create() {
     spawnEnemy(1, 3000, 2);
 
 
+     //****************End POTIONS***************//
+    ////////////////////////////////////////////}
+    endLevel = game.add.sprite(700, 420, 'endLevel');
+
+
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -166,6 +176,7 @@ function create() {
 }
 
 function update() {
+
     game.physics.arcade.collide(player, layer);
     game.physics.arcade.collide(enemyCollection, layer);
 
@@ -173,6 +184,8 @@ function update() {
 
     droidCollection.forEach(updateDroids, this);
     enemyCollection.forEach(updateDroids, this);
+
+    checkForLevelEnd();
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -239,12 +252,75 @@ function update() {
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    if(player.health <= 0){
+        if (game.input.activePointer.isDown) {
+            location.reload();
+        }
+    }
+    
+}
+
+function checkForLevelEnd(){
+    if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
+        console.log('success');
+        currentLevel++;
+        create();
+    }
+}
+
+function loadLevel(level){
+    if(level === 0){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
+        map = game.add.tilemap('levelTest2');
+        console.log(layer);
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 1');
+    } else if (level === 1){
+        map = game.add.tilemap('levelTest');
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 1');
+    } else if(level === 2){
+        map = game.add.tilemap('levelTest2');
+        
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 2'); 
+    } else if(level === 3){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+
+        endGametext.anchor.setTo(0.5, 0.5);
+    } else if (level === 999){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
+    }
+    
+        map.addTilesetImage('tiles-1');
+        map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+    if(layer){
+        layer.resizeWorld();
+    }
 }
 
 function render() {
-    //game.debug.text(game.time.physicsElapsed, 32, 32);
+    //game.debug.text(endLevel.x + " " + endLevel.y, 32, 32);
+    //game.debug.text(player.body.x + " " + player.body.y, 32, 45);
 
-    //game.debug.body(enemy);
+    //game.debug.body(endLevel);
     //game.debug.bodyInfo(droid, 16, 24);
 
     //game.debug.body(player);
@@ -361,7 +437,7 @@ function unFadePlayer(){
 // Function to restart the game
 function restart () {
     player.kill();
-    //create();
+    loadLevel(999);
 }
 
 function updateAnchor(droid){
