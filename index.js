@@ -62,9 +62,10 @@ var potionCollection;
 var enemyCollection;
 
 var endLevel;
-var currentLevel = 1;
+var currentLevel = 0;
 
 var endGametext;
+var endGameSubtext;
 
 function create() {
 
@@ -85,6 +86,12 @@ function create() {
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
+    if(currentLevel === 0){
+        player.body.height = 100;    
+    } else {
+        player.body.height = 46;
+    }
+    
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
     player.animations.add('left', [5, 6, 7, 8], 10, true);
@@ -121,7 +128,7 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
-
+    if(currentLevel > 0){
     for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
         var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
         var enemyType = map.objects.enemyLayer[i].type;
@@ -154,7 +161,7 @@ function create() {
         initPotion(potion, sizeArray);
     }
      //****************End POTIONS***************//
-
+    }
     endLevel = game.add.sprite(700, 420, 'endLevel');
 
     game.camera.follow(player);
@@ -230,6 +237,12 @@ function update() {
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    if(player.health <= 0){
+        if (game.input.activePointer.isDown) {
+            location.reload();
+        }
+    }
+    
 }
 
 function checkForLevelEnd(){
@@ -241,32 +254,48 @@ function checkForLevelEnd(){
 }
 
 function loadLevel(level){
-    if(level === 1){
+    if(level === 0){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
+        map = game.add.tilemap('levelTest2');
+        console.log(layer);
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 1');
+    } else if (level === 1){
         map = game.add.tilemap('levelTest');
         if(layer) 
             layer.destroy();
         layer = map.createLayer('Tile Layer 1');
-    }
-    if(level === 2){
+    } else if(level === 2){
         map = game.add.tilemap('levelTest2');
         
         if(layer) 
             layer.destroy();
         layer = map.createLayer('Tile Layer 2'); 
-    }
-    if(level === 3){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!!", {
+    } else if(level === 3){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
             font: "65px Arial",
             fill: "#ff0044",
             align: "center"
         });
 
         endGametext.anchor.setTo(0.5, 0.5);
+    } else if (level === 999){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
     }
-
-    map.addTilesetImage('tiles-1');
-    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
     
+        map.addTilesetImage('tiles-1');
+        map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
     if(layer){
         layer.resizeWorld();
     }
@@ -351,7 +380,7 @@ function unFadePlayer(){
 // Function to restart the game
 function restart () {
     player.kill();
-    //create();
+    loadLevel(999);
 }
 
 function updateAnchor(droid){
