@@ -11,7 +11,10 @@ var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', {
 function preload() {
 
     game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
+    
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
+
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
@@ -22,6 +25,8 @@ function preload() {
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
   
     game.load.image('heart', 'assets/heartFull.png');
+
+    game.load.spritesheet('endLevel', 'assets/images/enemy.png', 20, 20);
 }
 
 var map;
@@ -56,6 +61,10 @@ var potionCollection;
 
 var enemyCollection;
 
+var endLevel;
+var currentLevel = 1;
+
+var endGametext;
 
 function create() {
 
@@ -66,21 +75,7 @@ function create() {
     bg = game.add.tileSprite(0, 0, 800, 510, 'background');
     bg.fixedToCamera = true;
 
-
-    map = game.add.tilemap('levelTest');
-
-    map.addTilesetImage('tiles-1');
-
-    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
-
-    layer = map.createLayer('Tile Layer 1');
-
-	
-	 
-    //  Un-comment this on to see the collision tiles
-    //layer.debug = true;
-
-    layer.resizeWorld();
+    loadLevel(currentLevel);
 
     game.physics.arcade.gravity.y = 1000;
 
@@ -160,6 +155,7 @@ function create() {
     }
      //****************End POTIONS***************//
 
+    endLevel = game.add.sprite(700, 420, 'endLevel');
 
     game.camera.follow(player);
 
@@ -169,6 +165,7 @@ function create() {
 }
 
 function update() {
+
     game.physics.arcade.collide(player, layer);
     game.physics.arcade.collide(enemyCollection, layer);
 
@@ -176,6 +173,8 @@ function update() {
 
     droidCollection.forEach(updateDroids, this, 'trrt');
     enemyCollection.forEach(updateDroids, this, 'trrt');
+
+    checkForLevelEnd();
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -233,10 +232,51 @@ function update() {
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
 }
 
-function render() {
-    //game.debug.text(game.time.physicsElapsed, 32, 32);
+function checkForLevelEnd(){
+    if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
+        console.log('success');
+        currentLevel++;
+        create();
+    }
+}
 
-    //game.debug.body(enemy);
+function loadLevel(level){
+    if(level === 1){
+        map = game.add.tilemap('levelTest');
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 1');
+    }
+    if(level === 2){
+        map = game.add.tilemap('levelTest2');
+        
+        if(layer) 
+            layer.destroy();
+        layer = map.createLayer('Tile Layer 2'); 
+    }
+    if(level === 3){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!!", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+
+        endGametext.anchor.setTo(0.5, 0.5);
+    }
+
+    map.addTilesetImage('tiles-1');
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+    
+    if(layer){
+        layer.resizeWorld();
+    }
+}
+
+function render() {
+    //game.debug.text(endLevel.x + " " + endLevel.y, 32, 32);
+    //game.debug.text(player.body.x + " " + player.body.y, 32, 45);
+
+    //game.debug.body(endLevel);
     //game.debug.bodyInfo(droid, 16, 24);
 
     //game.debug.body(player);
