@@ -1,6 +1,6 @@
 'use strict'
 
-var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', { 
+var game = new Phaser.Game(800, 512, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
     update: update, 
@@ -10,6 +10,7 @@ var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
+    game.load.tilemap('levelTest0', 'assets/levels/levelTestRevamp0.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
     
@@ -72,7 +73,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
-    bg = game.add.tileSprite(0, 0, 800, 510, 'background');
+    bg = game.add.tileSprite(0, 0, 800, 512, 'background');
     bg.fixedToCamera = true;
 
     loadLevel(currentLevel);
@@ -85,11 +86,8 @@ function create() {
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
-    if(currentLevel === 0){
-        player.body.height = 100;    
-    } else {
-        player.body.height = 46;
-    }
+    player.body.height = 46;
+
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
@@ -145,13 +143,20 @@ function create() {
         }
         //****************End POTIONS***************//
 
-        /*****************/
-        // SPAWN ENEMIES
-        /******************/
-        // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn)
-        spawnEnemy(4, 5000, 3);
-        spawnEnemy(1, 3000, 2);
+        
     }
+
+    /*****************/
+    // SPAWN ENEMIES
+    /******************/
+    // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn, level)
+    
+    if(currentLevel === 1){
+        console.log()
+        spawnEnemy(4, 5000, 3, 1);
+        spawnEnemy(1, 3000, 2, 1);
+    }
+
     endLevel = game.add.sprite(700, 420, 'endLevel');
     game.camera.follow(player);
 
@@ -166,8 +171,8 @@ function update() {
 
     player.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this, 'trrt');
-    enemyCollection.forEach(updateDroids, this, 'trrt');
+    droidCollection.forEach(updateDroids, this);
+    enemyCollection.forEach(updateDroids, this);
 
     checkForLevelEnd();
 
@@ -249,24 +254,34 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
-        debugger;
-        map = game.add.tilemap('levelTest2');
+        //debugger;
+        map = game.add.tilemap('levelTest0');
         console.log(layer);
-        if(layer) 
+
+        if(layer){ 
             layer.destroy();
+        }
         layer = map.createLayer('Tile Layer 1');
-    } else if (level === 1){
+    } 
+
+    else if (level === 1){
         map = game.add.tilemap('levelTest');
-        if(layer) 
+        if(layer) {
             layer.destroy();
+        }
         layer = map.createLayer('Tile Layer 1');
-    } else if(level === 2){
+    } 
+
+    else if(level === 2){
         map = game.add.tilemap('levelTest2');
         
-        if(layer) 
+        if(layer) {
             layer.destroy();
-        layer = map.createLayer('Tile Layer 2'); 
-    } else if(level === 3){
+        }
+        layer = map.createLayer('Tile Layer 1'); 
+    } 
+
+    else if(level === 3){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
             font: "65px Arial",
             fill: "#ff0044",
@@ -274,7 +289,8 @@ function loadLevel(level){
         });
 
         endGametext.anchor.setTo(0.5, 0.5);
-    } else if (level === 999){
+    } 
+    else if (level === 999){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
             font: "65px Arial",
             fill: "#ff0044",
@@ -283,8 +299,9 @@ function loadLevel(level){
         endGametext.anchor.setTo(0.5, 0.5);
     }
     
-        map.addTilesetImage('tiles-1');
-        map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+    map.addTilesetImage('tiles-1');
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+
     if(layer){
         layer.resizeWorld();
     }
@@ -357,28 +374,33 @@ function createEnemy(){
     }
 }
 
-function spawnEnemy(b, interval, max) {
-    var spawnInterval = setInterval(function(){
-        var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
-        var enemyType = map.objects.enemyLayer[b].type;
-        var enemyDamage = map.objects.enemyLayer[b].properties.damage;
-        var enemySpeed = map.objects.enemyLayer[b].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
+function spawnEnemy(b, interval, max, level) {
+    if(currentLevel === level) {
+        var spawnInterval = setInterval(function(){
+            var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
+            var enemyType = map.objects.enemyLayer[b].type;
+            var enemyDamage = map.objects.enemyLayer[b].properties.damage;
+            var enemySpeed = map.objects.enemyLayer[b].properties.speed;
+            var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
 
-        // I made this global so that it can be viewed in the render()
-        // X pos, Y pos minus its height, sprite
-        enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
-            
-        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
-        console.log(max);
-        max -= 1;
+            // I made this global so that it can be viewed in the render()
+            // X pos, Y pos minus its height, sprite
+            enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
+                
+            // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
+            console.log(max);
+            max -= 1;
 
-        if(max <= 0){
-            clearInterval(spawnInterval);
-        }
-    }, interval) ;
-    
+            if(currentLevel != level) {
+                console.log(currentLevel + " " + level);
+            }
+
+            if(max <= 0 || currentLevel != level){
+                clearInterval(spawnInterval);
+            }
+        }, interval);
+    }
 }
 
 //whatever is damaging the player needs to have attribute "damageLevel"
