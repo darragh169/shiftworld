@@ -6,13 +6,16 @@
 
 		<link href="https://fonts.googleapis.com/css?family=Squada+One" rel="stylesheet">
 		<script type="text/javascript" src="js/phaser.min.js"></script>
+		<script type="text/javascript" src="node_modules/phaser/build/phaser.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 		<style>
 			canvas {
-				 margin:auto;
+				margin:auto;
 			}
 			h1 {
-				text-align:center; font-family: 'Squada One', cursive; font-size:2em;
+				text-align: center;
+				font-family: 'Squada One', cursive; font-size:2em;
 				font-size:3em; margin:10px; color:#99d9ea;
 				text-shadow: 3px 3px 0px #eee;
 
@@ -20,10 +23,13 @@
 			}
 
 		</style>
+		<script src="plugins/healthMeter.js"></script>
 	</head>
 
 	<body>
-		<h1>Super Shift World</h1>
+		<div class="gameWrapper">
+			<h1>Super Shift World</h1>
+		</div>
 		<script type="text/javascript" src="index.js"></script>
 	</body>
 </html>
