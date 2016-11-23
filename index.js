@@ -48,6 +48,7 @@ var cursors;
 var jumpButton;
 var gravityButton;
 var bg;
+var attackButton;
 
 var droidspeed = 50;
 var playerSpeed = 290;
@@ -68,6 +69,11 @@ var currentLevel = 0;
 
 var endGametext;
 var endGameSubtext;
+var weaponLength;
+var weaponArcAbove;
+var weaponArcBelow;
+var weaponDamage;
+var weapon;
 
 function create() {
 
@@ -82,6 +88,17 @@ function create() {
 
     game.physics.arcade.gravity.y = 1000;
 
+    //********************************Weapon*********************************//
+    weaponLength = 400;
+    weaponArcAbove = 90;
+    weaponArcBelow = 45;
+    weaponDamage = 1;
+    weapon.length = weaponLength;
+    weapon.arcUp = weaponArcAbove;
+    weapon.arcDown = weaponArcBelow;
+    weapon.damage = weaponDamage;
+//********************************END Weapon*********************************//
+
     //****************PLAYER****************//
     player = game.add.sprite(72, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -89,6 +106,7 @@ function create() {
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
     player.body.height = 46;
+    player.weapon = weapon;
 
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
@@ -98,21 +116,7 @@ function create() {
     player.animations.add('right', [0, 1, 2, 3], 10, true);
     player.health = 3;
     player.maxHealth = 8;
-    attackboxes = game.add.group();
-    attackboxes.enableBody = true;
-    player.addChild(attackboxes);
-    attackbox1 = game.make.sprite(20,20,'axe');
-    attackboxes.add(attackbox1);
-    attackboxes.add(attackbox2);
-    attackboxes.add(attackbox3);
-    attackboxes.forEach(initAttackBoxes(player.width,player.height,weaponDamage,knockbackDir,knockAmt));{
-        attackbox.body.setSize(50, 50, player.width, player.height / 2);
-        attackbox1.damage = 50;
-        attackbox1.knockbackDirection = 0.5;
-        attackbox1.knockbackAmt = 600;
-    }
-    var attackbox1 = attackboxes.create(0,0,null);     // set the size of the attackbox, and its position relative to the player
-    attackbox1.body.setSize(50, 50, player.width, player.height / 2);
+
 
 
     //****************End PLAYER***************//
@@ -182,6 +186,7 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
+    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
 function update() {
@@ -254,7 +259,22 @@ function update() {
             location.reload();
         }
     }
-    
+
+    if(attackButton.isDown && game.time.now > attackTimer){
+        foreach (enemy in enemyCollection)
+        {
+            if(game.physics.arcade.distanceBetween(player,enemy) < weaponLength)
+            {
+                var angle = game.physics.arcade.angleBetween(player,enemy);
+                if((angle <= 0 && Math.abs(angle) < weapon.arcUp)|| (angle >= 0 && angle < weapon.arcDown))
+                {
+                    giveDamage(player,enemy);
+                }
+            }
+        }
+        attackTimer = game.time.now + Phaser.Timer.SECOND*.3;
+        attackAnimation();
+    }
 }
 
 function checkForLevelEnd(){
@@ -335,7 +355,6 @@ function render() {
     //game.debug.bodyInfo(player, 16, 24);
     //layer.debug = true;
 }
-function initAttackBoxes(width,height,damage,direction,amt,weapon){}
 
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
@@ -440,12 +459,29 @@ function takeDamage(player, enemy)   {
     }
 }
 
+function giveDamage(enemy){
+    fadeEnemy(enemy);
+    game.time.events.add(Phaser.Timer.SECOND * .5, unFadeEnemy, this);
+
+    enemy.damage(player.weapon.damage);
+}
+function attackAnimation(){
+
+}
+
 function fadePlayer(){
     player.alpha = 0.1;
 }
 
 function unFadePlayer(){
-    player.alpha = 1; 
+    player.alpha = 1;
+}
+function unFadeEnemy(){
+    enemy.alpha = 1;
+}
+
+function fadeEnemy(){
+    enemy.alpha = 0.1;
 }
 
 // Function to restart the game
