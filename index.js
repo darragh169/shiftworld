@@ -1,6 +1,6 @@
 'use strict'
 
-var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', { 
+var game = new Phaser.Game(800, 512, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
     update: update, 
@@ -10,18 +10,24 @@ var game = new Phaser.Game(800, 500, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
-    game.load.tilemap('levelTest', 'assets/levels/levelTest2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest0', 'assets/levels/levelTestRevamp0.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
+    
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
 
     game.load.image('potion', 'assets/images/potion.png');
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
+    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
-    game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
+  
     game.load.image('heart', 'assets/heartFull.png');
-    game.load.image('axe','assets/axe-iron.png')
+
+    game.load.spritesheet('endLevel', 'assets/images/enemy.png', 20, 20);
+game.load.image('axe','assets/axe-iron.png');
 }
 
 var map;
@@ -57,6 +63,11 @@ var potionCollection;
 var enemyCollection;
 var attackboxes;
 
+var endLevel;
+var currentLevel = 0;
+
+var endGametext;
+var endGameSubtext;
 
 function create() {
 
@@ -64,39 +75,28 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
-    bg = game.add.tileSprite(0, 0, 800, 500, 'background');
+    bg = game.add.tileSprite(0, 0, 800, 512, 'background');
     bg.fixedToCamera = true;
 
-
-    map = game.add.tilemap('levelTest');
-
-    map.addTilesetImage('tiles-1');
-
-    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
-
-    layer = map.createLayer('Tile Layer 1');
-
-	
-	 
-    //  Un-comment this on to see the collision tiles
-    // layer.debug = true;
-
-    layer.resizeWorld();
+    loadLevel(currentLevel);
 
     game.physics.arcade.gravity.y = 1000;
 
     //****************PLAYER****************//
-    player = game.add.sprite(32, 32, 'dude');
+    player = game.add.sprite(72, 32, 'dude');
     game.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
+    player.body.height = 46;
+
+    
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
     player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
-	player.health = 3;
+    player.health = 3;
     player.maxHealth = 8;
     attackboxes = game.add.group();
     attackboxes.enableBody = true;
@@ -118,13 +118,13 @@ function create() {
     //****************End PLAYER***************//
 
 
-	//*******************HEARTS*****************//
-	game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
-	hearts = game.add.group();
+    //*******************HEARTS*****************//
+    game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
+    hearts = game.add.group();
     hearts.enableBody = true;
-	 // set up a timer so player is briefly invincible after being damaged
+     // set up a timer so player is briefly invincible after being damaged
     invincibleTimer = game.time.now + 1000;
-	healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
+    healthMeterIcons = game.add.plugin(Phaser.Plugin.HealthMeter);
     healthMeterIcons.icons(player, {icon: 'heart', y: 20, x: 32, width: 16, height: 16, rows: 1});
     //****************End HEARTS***************//
 
@@ -132,11 +132,11 @@ function create() {
     //****************DROIDS***************//
     droidCollection = game.add.physicsGroup();
 
-    for(var i=0; i<droidLength; i++) {
+    //for(var i=0; i<droidLength; i++) {
         // I made this global so that it can be viewed in the render()
-        droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid'); 
-        initDroid(droid);
-    }
+        //droid = droidCollection.create(game.world.randomX, game.world.randomY, 'droid'); 
+        //initDroid(droid);
+    //}
 
     droidCollection.forEach(updateAnchor, this);
     //****************End DROIDS***************//
@@ -144,38 +144,39 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
+    if(currentLevel > 0){
+        createEnemy();
+        enemyCollection.forEach(updateAnchor, this);
+        //****************End ENEMIES***************//
 
-    for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
-        var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
-        var enemyType = map.objects.enemyLayer[i].type;
-        var enemyDamage = map.objects.enemyLayer[i].properties.damage;
-        var enemySpeed = map.objects.enemyLayer[i].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;
+
+        //****************POTIONS***************//
+        potionCollection = game.add.physicsGroup();
+
+        // Loop through all objects in potion layer and assign x and y positions
+        for(var i=0; i<map.objects.potionLayer.length; i++) {
+            var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
+            // Must subtract height from y position because origin in phaser is different to Tiled
+            var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
+            initPotion(potion, sizeArray);
+        }
+        //****************End POTIONS***************//
+
         
-        // I made this global so that it can be viewed in the render()
-        // X pos, Y pos, sprite
-        enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
-        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);
     }
 
-    enemyCollection.forEach(updateAnchor, this);
-    //****************End ENEMIES***************//
-
-
-    //****************POTIONS***************//
-    potionCollection = game.add.physicsGroup();
-
-    // Loop through all objects in potion layer and assign x and y positions
-    for(var i=0; i<map.objects.potionLayer.length; i++) {
-        var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
-        // Must subtract height from y position because origin in phaser is different to Tiled
-        var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
-        initPotion(potion, sizeArray[1]);
+    /*****************/
+    // SPAWN ENEMIES
+    /******************/
+    // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn, level)
+    
+    if(currentLevel === 1){
+        console.log()
+        spawnEnemy(4, 5000, 3, 1);
+        spawnEnemy(1, 3000, 2, 1);
     }
-     //****************End POTIONS***************//
 
-
+    endLevel = game.add.sprite(700, 420, 'endLevel');
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -191,6 +192,8 @@ function update() {
 
     droidCollection.forEach(updateDroids, this);
     enemyCollection.forEach(updateDroids, this);
+
+    checkForLevelEnd();
 
     // PLAYER MOVEMENT
     if (cursors.left.isDown) {
@@ -241,11 +244,86 @@ function update() {
     if(gravityButton.isDown && game.time.now > gravityTimer) {  
         updateGravity();
     }
-	
+    
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    if(player.health <= 0){
+        if (game.input.activePointer.isDown) {
+            location.reload();
+        }
+    }
+    
+}
+
+function checkForLevelEnd(){
+    if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
+        console.log('success');
+        currentLevel++;
+        create();
+    }
+}
+
+function loadLevel(level){
+    if(level === 0){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
+        //debugger;
+        map = game.add.tilemap('levelTest0');
+        console.log(layer);
+
+        if(layer){ 
+            layer.destroy();
+        }
+        layer = map.createLayer('Tile Layer 1');
+    } 
+
+    else if (level === 1){
+        map = game.add.tilemap('levelTest');
+        if(layer) {
+            layer.destroy();
+        }
+        layer = map.createLayer('Tile Layer 1');
+    } 
+
+    else if(level === 2){
+        map = game.add.tilemap('levelTest2');
+        
+        if(layer) {
+            layer.destroy();
+        }
+        layer = map.createLayer('Tile Layer 1'); 
+    } 
+
+    else if(level === 3){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+
+        endGametext.anchor.setTo(0.5, 0.5);
+    } 
+    else if (level === 999){
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
+            font: "65px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+        endGametext.anchor.setTo(0.5, 0.5);
+    }
+    
+    map.addTilesetImage('tiles-1');
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+
+    if(layer){
+        layer.resizeWorld();
+    }
 }
 
 function render() {
@@ -253,9 +331,9 @@ function render() {
 
     //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
-
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
+    //layer.debug = true;
 }
 function initAttackBoxes(width,height,damage,direction,amt,weapon){}
 
@@ -287,14 +365,61 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav) {
 
     enemy.body.collideWorldBounds = true;
     enemy.body.setSize(size[0], size[1]);
-    enemy.body.velocity.x = -speed;
     enemy.damageLevel = damage;
     enemy.body.allowGravity = grav;   
+    enemy.customSpeed = speed;
 
     enemy.currentDirection = 'left';
 
     if(enemyType === "bird" || enemyType === "enemy"){
         enemy.animations.add('move', [0, 1, 2, 3], 10, true);
+    }
+}
+
+function createEnemy(){
+    // Go through every enemy spawn point and create enemy
+    for(var i=0; i<map.objects.enemyLayer.length; i+=1) {
+        var sizeArray = [map.objects.enemyLayer[i].properties.w, map.objects.enemyLayer[i].properties.h];
+        var enemyType = map.objects.enemyLayer[i].type;
+        var enemyDamage = map.objects.enemyLayer[i].properties.damage;
+        var enemySpeed = map.objects.enemyLayer[i].properties.speed;
+        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;          
+
+        // I made this global so that it can be viewed in the render()
+        // X pos, Y pos minus its height, sprite
+        enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
+        
+        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);       
+    }
+}
+
+function spawnEnemy(b, interval, max, level) {
+    if(currentLevel === level) {
+        var spawnInterval = setInterval(function(){
+            var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
+            var enemyType = map.objects.enemyLayer[b].type;
+            var enemyDamage = map.objects.enemyLayer[b].properties.damage;
+            var enemySpeed = map.objects.enemyLayer[b].properties.speed;
+            var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
+
+            // I made this global so that it can be viewed in the render()
+            // X pos, Y pos minus its height, sprite
+            enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
+                
+            // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
+            console.log(max);
+            max -= 1;
+
+            if(currentLevel != level) {
+                console.log(currentLevel + " " + level);
+            }
+
+            if(max <= 0 || currentLevel != level){
+                clearInterval(spawnInterval);
+            }
+        }, interval);
     }
 }
 
@@ -305,8 +430,8 @@ function takeDamage(player, enemy)   {
     game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
 
     if (game.time.now > invincibleTimer) {
-            player.damage(enemy.damageLevel);
-            invincibleTimer = game.time.now + 1000;
+        player.damage(enemy.damageLevel);
+        invincibleTimer = game.time.now + 1000;
     }
 
     // player is dead, start over
@@ -326,7 +451,7 @@ function unFadePlayer(){
 // Function to restart the game
 function restart () {
     player.kill();
-    //create();
+    loadLevel(999);
 }
 
 function updateAnchor(droid){
@@ -342,7 +467,9 @@ function updateDroids(dr){
     if(dr.body.blocked.right){
         dr.currentDirection = 'left';
     }
-    dr.body.velocity.x = dr.currentDirection === 'left' ? (droidspeed * -1) : droidspeed;
+
+
+    dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
     dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
 }
 
