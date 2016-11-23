@@ -74,6 +74,8 @@ var weaponArcAbove;
 var weaponArcBelow;
 var weaponDamage;
 var weapon;
+var weaponWidth;
+var playerCollection;
 
 function create() {
 
@@ -89,14 +91,14 @@ function create() {
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
+
     weaponLength = 400;
     weaponArcAbove = 90;
     weaponArcBelow = 45;
     weaponDamage = 1;
-    weapon.length = weaponLength;
-    weapon.arcUp = weaponArcAbove;
-    weapon.arcDown = weaponArcBelow;
-    weapon.damage = weaponDamage;
+    weaponWidth = 3;
+
+
 //********************************END Weapon*********************************//
 
     //****************PLAYER****************//
@@ -106,7 +108,13 @@ function create() {
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
     player.body.height = 46;
-    player.weapon = weapon;
+    weapon = playerCollection.add(game.make.sprite(0,0));
+    weapon.setSize(weaponLength,weaponWidth);
+    weapon.anchor.setTo(1,0);
+    weapon.damage = weaponDamage;
+    game.physics.enable(weapon, Phaser.Physics.P2JS);
+    weapon.body.enable = false;
+    weapon.body.moves = false;
 
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
@@ -186,7 +194,7 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
-    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 }
 
 function update() {
@@ -254,6 +262,7 @@ function update() {
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    game.physics.arcade.collide(weapon, enemyCollection, giveDamage, null, null);
     if(player.health <= 0){
         if (game.input.activePointer.isDown) {
             location.reload();
@@ -261,18 +270,12 @@ function update() {
     }
 
     if(attackButton.isDown && game.time.now > attackTimer){
-        foreach (enemy in enemyCollection)
-        {
-            if(game.physics.arcade.distanceBetween(player,enemy) < weaponLength)
-            {
-                var angle = game.physics.arcade.angleBetween(player,enemy);
-                if((angle <= 0 && Math.abs(angle) < weapon.arcUp)|| (angle >= 0 && angle < weapon.arcDown))
-                {
-                    giveDamage(player,enemy);
-                }
-            }
+        weapon.body.enable = true;
+        for (var i = 0; i < weaponArcAbove; i++){
+            game.time.events.add(Phaser.Timer.SECOND * .01, swing, this);
         }
-        attackTimer = game.time.now + Phaser.Timer.SECOND*.3;
+        weapon.body.rotate(180,true);
+        weapon.body.enable = false;
         attackAnimation();
     }
 }
@@ -457,6 +460,10 @@ function takeDamage(player, enemy)   {
     if (player.health <= 0) {
         restart();
     }
+}
+
+function swing(){
+    weapon.body.angle = weapon.body.angle + 1;
 }
 
 function giveDamage(enemy){
