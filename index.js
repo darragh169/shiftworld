@@ -21,6 +21,7 @@ function preload() {
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32);   
     game.load.image('heart', 'assets/heartFull.png');
+    game.load.image('axe','assets/axe-iron.png')
 }
 
 var map;
@@ -54,6 +55,7 @@ var damagelevel;
 var potionCollection;
 
 var enemyCollection;
+var attackboxes;
 
 
 function create() {
@@ -96,7 +98,24 @@ function create() {
     player.animations.add('right', [0, 1, 2, 3], 10, true);
 	player.health = 3;
     player.maxHealth = 8;
-	//****************End PLAYER***************//
+    attackboxes = game.add.group();
+    attackboxes.enableBody = true;
+    player.addChild(attackboxes);
+    attackbox1 = game.make.sprite(20,20,'axe');
+    attackboxes.add(attackbox1);
+    attackboxes.add(attackbox2);
+    attackboxes.add(attackbox3);
+    attackboxes.forEach(initAttackBoxes(player.width,player.height,weaponDamage,knockbackDir,knockAmt));{
+        attackbox.body.setSize(50, 50, player.width, player.height / 2);
+        attackbox1.damage = 50;
+        attackbox1.knockbackDirection = 0.5;
+        attackbox1.knockbackAmt = 600;
+    }
+    var attackbox1 = attackboxes.create(0,0,null);     // set the size of the attackbox, and its position relative to the player
+    attackbox1.body.setSize(50, 50, player.width, player.height / 2);
+
+
+    //****************End PLAYER***************//
 
 
 	//*******************HEARTS*****************//
@@ -238,6 +257,7 @@ function render() {
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
 }
+function initAttackBoxes(width,height,damage,direction,amt,weapon){}
 
 function initDroid(droid) {
     game.physics.enable(droid, Phaser.Physics.ARCADE);
@@ -361,6 +381,10 @@ function updateDroidGravity(droid){
 function collectedPotion(player, potion) {
     potion.kill();
     if (player.health < player.maxHealth) {
-        player.heal(1);
+        player.health(1);
     }
 }
+
+
+
+
