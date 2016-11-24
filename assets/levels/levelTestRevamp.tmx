@@ -72,7 +72,7 @@
     <property name="w" type="int" value="32"/>
    </properties>
   </object>
-  <object id="16" type="enemy" x="702" y="207" width="12" height="14">
+  <object id="16" type="enemy" x="130" y="335" width="12" height="14">
    <properties>
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
@@ -99,7 +99,7 @@
     <property name="w" type="int" value="40"/>
    </properties>
   </object>
-  <object id="19" type="droid" x="673.175" y="49.32" width="16" height="16">
+  <object id="19" type="droid" x="310.175" y="224.32" width="16" height="16">
    <properties>
     <property name="damage" type="int" value="1"/>
     <property name="delay" type="int" value="3000"/>
@@ -111,4 +111,5 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="spikesLayer"/>
 </map>

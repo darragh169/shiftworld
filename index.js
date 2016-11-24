@@ -21,6 +21,8 @@ function preload() {
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
+    game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
+    game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
   
@@ -58,7 +60,7 @@ var healthMeterIcons;
 var damagelevel;
 
 var potionCollection;
-
+var spikesCollection;
 var enemyCollection;
 
 var endLevel;
@@ -125,26 +127,50 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
-    if(currentLevel > 0){
-        createEnemy();
-        enemyCollection.forEach(updateAnchor, this);
-        //****************End ENEMIES***************//
+    //if(currentLevel > 0){
+    createEnemy();
+    enemyCollection.forEach(updateAnchor, this);
+    //****************End ENEMIES***************//
 
 
-        //****************POTIONS***************//
-        potionCollection = game.add.physicsGroup();
+    //****************POTIONS***************//
+    potionCollection = game.add.physicsGroup();
 
-        // Loop through all objects in potion layer and assign x and y positions
-        for(var i=0; i<map.objects.potionLayer.length; i++) {
-            var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
-            // Must subtract height from y position because origin in phaser is different to Tiled
-            var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
-            initPotion(potion, sizeArray);
+    // Loop through all objects in potion layer and assign x and y positions
+    
+    for(var i=0; i<map.objects.potionLayer.length; i++) {
+        var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
+        // Must subtract height from y position because origin in phaser is different to Tiled
+        var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
+        initPotion(potion, sizeArray);
+    }
+    //****************End POTIONS***************//
+
+
+    //****************SPIKES***************//
+    spikesCollection = game.add.physicsGroup();
+
+    // Loop through all objects in potion layer and assign x and y positions
+    for(var i=0; i<map.objects.spikesLayer.length; i++) {
+        var sizeArray = [map.objects.spikesLayer[i].properties.w, map.objects.spikesLayer[i].properties.h];
+
+        var spr;
+
+        if(map.objects.spikesLayer[i].type === "spikes"){
+            spr = "spikes";
         }
-        //****************End POTIONS***************//
+        else {
+            spr = "spikes_down";
+        }
+
+        // Must subtract height from y position because origin in phaser is different to Tiled
+        var spikes = spikesCollection.create(map.objects.spikesLayer[i].x, map.objects.spikesLayer[i].y - sizeArray[1], spr);
+        initSpikes(spikes, sizeArray);
+    }
+    //****************End POTIONS***************//
 
         
-    }
+    //}
 
     /*****************/
     // SPAWN ENEMIES
@@ -229,7 +255,11 @@ function update() {
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
+
+    game.physics.arcade.collide(player, spikesCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    
+
     if(player.health <= 0){
         if (game.input.activePointer.isDown) {
             location.reload();
@@ -337,6 +367,16 @@ function initPotion(potion, size) {
     potion.body.collideWorldBounds = true;  
     potion.body.allowGravity = false;   // Ensure potions stays put in spot
     potion.body.setSize(size[0], size[1]);
+}
+
+function initSpikes(spikes, size) {
+    game.physics.enable(spikes, Phaser.Physics.ARCADE);
+    spikes.body.collideWorldBounds = true;  
+    spikes.body.allowGravity = false;   // Ensure spikes stays put in spot
+    spikes.body.setSize(size[0], size[1]);
+    spikes.damageLevel = 1;
+    spikes.body.immovable = true;
+    spikes.body.moves = false;
 }
 
 // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
@@ -491,3 +531,5 @@ function collectedPotion(player, potion) {
         player.heal(1);
     }
 }
+
+

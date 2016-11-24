@@ -145,8 +145,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":12,
-                 "x":702,
-                 "y":207
+                 "x":130,
+                 "y":335
                 }, 
                 {
                  "height":14,
@@ -230,13 +230,25 @@
                  "type":"droid",
                  "visible":true,
                  "width":16,
-                 "x":673.175,
-                 "y":49.32
+                 "x":310.175,
+                 "y":224.32
                 }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
          "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":32,
+         "name":"spikesLayer",
+         "objects":[],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
          "x":0,
          "y":0
         }],

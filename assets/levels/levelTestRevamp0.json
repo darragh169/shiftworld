@@ -36,8 +36,64 @@
          "width":0,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":32,
+         "name":"spikesLayer",
+         "objects":[
+                {
+                 "gid":71,
+                 "height":28,
+                 "id":32,
+                 "name":"",
+                 "properties":
+                    {
+                     "h":28,
+                     "w":61
+                    },
+                 "propertytypes":
+                    {
+                     "h":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"spikes",
+                 "visible":true,
+                 "width":61,
+                 "x":351,
+                 "y":481
+                }, 
+                {
+                 "gid":70,
+                 "height":28,
+                 "id":36,
+                 "name":"",
+                 "properties":
+                    {
+                     "h":28,
+                     "w":61
+                    },
+                 "propertytypes":
+                    {
+                     "h":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"spikes_down",
+                 "visible":true,
+                 "width":61,
+                 "x":353,
+                 "y":59
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":27,
+ "nextobjectid":38,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,
@@ -67,6 +123,48 @@
          "tilecount":1,
          "tileheight":16,
          "tilewidth":16
+        }, 
+        {
+         "columns":1,
+         "firstgid":70,
+         "image":"..\/images\/spikes_down.png",
+         "imageheight":28,
+         "imagewidth":61,
+         "margin":0,
+         "name":"spikes_down",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":28,
+         "tilewidth":61
+        }, 
+        {
+         "columns":1,
+         "firstgid":71,
+         "image":"..\/images\/spikes.png",
+         "imageheight":28,
+         "imagewidth":61,
+         "margin":0,
+         "name":"spikes",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":28,
+         "tileproperties":
+            {
+             "0":
+                {
+                 "h":28,
+                 "w":61
+                }
+            },
+         "tilepropertytypes":
+            {
+             "0":
+                {
+                 "h":"int",
+                 "w":"int"
+                }
+            },
+         "tilewidth":61
         }],
  "tilewidth":16,
  "version":1,

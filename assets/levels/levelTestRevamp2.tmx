@@ -118,4 +118,5 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="spikesLayer"/>
 </map>
