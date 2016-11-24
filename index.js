@@ -42,6 +42,7 @@ var droidLength = 10;
 
 var droidCollection;
 var facing = 'left';
+var weaponDir = 'right';
 var jumpTimer = 0;
 var gravityTimer = 0;
 var cursors;
@@ -75,11 +76,11 @@ var weaponArcBelow;
 var weaponDamage;
 var weapon;
 var weaponWidth;
-var playerCollection;
+var attackTimer;
 
 function create() {
 
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    //game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
@@ -92,11 +93,12 @@ function create() {
 
     //********************************Weapon*********************************//
 
-    weaponLength = 400;
+    weaponLength = 40;
     weaponArcAbove = 90;
     weaponArcBelow = 45;
     weaponDamage = 1;
-    weaponWidth = 3;
+    weaponWidth = 10;
+    attackTimer = 0;
 
 
 //********************************END Weapon*********************************//
@@ -108,13 +110,21 @@ function create() {
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
     player.body.height = 46;
-    weapon = playerCollection.add(game.make.sprite(0,0));
-    weapon.setSize(weaponLength,weaponWidth);
-    weapon.anchor.setTo(1,0);
+    weapon = player.addChild(game.make.sprite(0,0,'axe'));
+    weapon.anchor.setTo(.3,.5);
     weapon.damage = weaponDamage;
-    game.physics.enable(weapon, Phaser.Physics.P2JS);
-    weapon.body.enable = false;
-    weapon.body.moves = false;
+
+    game.physics.enable(weapon,Phaser.Physics.P2JS);
+    //debugger;
+     weapon.body.enable = false;
+     weapon.body.mass = 0;
+    weapon.body.allowGravity = false;
+    weapon.body.angularVelocity = 0;
+    // weapon.velocity.y = 0;
+    // weapon.velocity.x = 0;
+    //weapon.body.setSize(weaponLength,weaponWidth);
+
+
 
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
@@ -194,7 +204,7 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
-    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
 }
 
 function update() {
@@ -202,8 +212,12 @@ function update() {
     game.physics.arcade.collide(enemyCollection, layer);
 
     player.body.velocity.x = 0;
+    // weapon.velocity.x  = 0;
+    // weapon.velocity.y = player.body.velocity.y;
+    //weapon.body.velocity.y = 0;
+    //weapon.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this);
+    //droidCollection.forEach(updateDroids, this);
     enemyCollection.forEach(updateDroids, this);
 
     checkForLevelEnd();
@@ -216,6 +230,11 @@ function update() {
             player.animations.play('left');
             facing = 'left';
         }
+        if(weaponDir !='left'){
+            weapon.scale.x *= -1;
+            weapon.x = -32;
+            weaponDir = 'left';
+        }
     }
     else if (cursors.right.isDown) {
         player.body.velocity.x = playerSpeed;
@@ -223,6 +242,11 @@ function update() {
         if (facing != 'right') {
             player.animations.play('right');
             facing = 'right';
+        }
+        if(weaponDir !='right'){
+            weapon.scale.x *= -1;
+            weapon.x = 0;
+            weaponDir = 'right';
         }
     }
     else {
@@ -271,11 +295,13 @@ function update() {
 
     if(attackButton.isDown && game.time.now > attackTimer){
         weapon.body.enable = true;
-        for (var i = 0; i < weaponArcAbove; i++){
-            game.time.events.add(Phaser.Timer.SECOND * .01, swing, this);
-        }
-        weapon.body.rotate(180,true);
+        weapon.body.angle = 90;
+        // for (var i = 0; i < weaponArcAbove; i++){
+        //      wea
+        //  }
+        weapon.body.angularVelocity = 100;
         weapon.body.enable = false;
+
         attackAnimation();
     }
 }
@@ -350,13 +376,14 @@ function loadLevel(level){
 }
 
 function render() {
-    //game.debug.text(game.time.physicsElapsed, 32, 32);
+   //game.debug.text(game.time.physicsElapsed, 32, 32);
 
-    //game.debug.body(enemy);
+    game.debug.body(weapon);
     //game.debug.bodyInfo(droid, 16, 24);
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
     //layer.debug = true;
+    game.debug.body(weapon);
 }
 
 function initDroid(droid) {
@@ -551,7 +578,7 @@ function updateDroidGravity(droid){
 function collectedPotion(player, potion) {
     potion.kill();
     if (player.health < player.maxHealth) {
-        player.health(1);
+        player.health += 1;
     }
 }
 
