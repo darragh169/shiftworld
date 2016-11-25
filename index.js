@@ -13,6 +13,7 @@ function preload() {
     game.load.tilemap('levelTest0', 'assets/levels/levelTestRevamp0.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest3', 'assets/levels/levelTestRevamp3.json', null, Phaser.Tilemap.TILED_JSON);
     
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
@@ -179,8 +180,8 @@ function create() {
     
     if(currentLevel === 1){
         console.log()
-        spawnEnemy(4, 5000, 3, 1);
-        spawnEnemy(1, 3000, 2, 1);
+        spawnEnemy(0, 4000, 2, 1);
+        spawnEnemy(3, 3000, 2, 1);
     }
 
     endLevel = game.add.sprite(700, 420, 'endLevel');
@@ -256,6 +257,8 @@ function update() {
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
 
+    game.physics.arcade.collide(enemyCollection, spikesCollection, killEnemy, null, this);
+
     game.physics.arcade.collide(player, spikesCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
     
@@ -312,6 +315,15 @@ function loadLevel(level){
     } 
 
     else if(level === 3){
+        map = game.add.tilemap('levelTest3');
+        
+        if(layer) {
+            layer.destroy();
+        }
+        layer = map.createLayer('Tile Layer 1'); 
+    } 
+
+    else if(level === 4){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
             font: "65px Arial",
             fill: "#ff0044",
@@ -425,7 +437,7 @@ function spawnEnemy(b, interval, max, level) {
 
             // I made this global so that it can be viewed in the render()
             // X pos, Y pos minus its height, sprite
-            enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
+            enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y - sizeArray[1]*0.5, map.objects.enemyLayer[b].type);
                 
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
             initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
@@ -458,6 +470,10 @@ function takeDamage(player, enemy)   {
     if (player.health <= 0) {
         restart();
     }
+}
+
+function killEnemy(enemy, spike) {
+    enemy.kill();
 }
 
 function fadePlayer(){
