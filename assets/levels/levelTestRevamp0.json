@@ -34,6 +34,7 @@
                  "name":"",
                  "properties":
                     {
+                     "colEnv":true,
                      "damage":1,
                      "gravity":true,
                      "h":32,
@@ -42,6 +43,7 @@
                     },
                  "propertytypes":
                     {
+                     "colEnv":"bool",
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
@@ -54,6 +56,35 @@
                  "width":16,
                  "x":588,
                  "y":391
+                }, 
+                {
+                 "height":16,
+                 "id":40,
+                 "name":"",
+                 "properties":
+                    {
+                     "colEnv":false,
+                     "damage":1,
+                     "gravity":false,
+                     "h":60,
+                     "speed":150,
+                     "w":60
+                    },
+                 "propertytypes":
+                    {
+                     "colEnv":"bool",
+                     "damage":"int",
+                     "gravity":"bool",
+                     "h":"int",
+                     "speed":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"ghost",
+                 "visible":true,
+                 "width":16,
+                 "x":610,
+                 "y":217
                 }],
          "offsetx":-2,
          "offsety":-1,
@@ -66,7 +97,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":32,
+         "height":0,
          "name":"spikesLayer",
          "objects":[
                 {
@@ -116,11 +147,11 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":50,
+         "width":0,
          "x":0,
          "y":0
         }],
- "nextobjectid":39,
+ "nextobjectid":41,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,

@@ -120,6 +120,7 @@
  <objectgroup name="enemyLayer" offsetx="-2" offsety="-1">
   <object id="39" type="enemy" x="356" y="163" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="64"/>
@@ -129,6 +130,7 @@
   </object>
   <object id="40" type="droid" x="291" y="277" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
@@ -138,11 +140,10 @@
   </object>
   <object id="41" type="droid" x="683" y="435" width="16" height="16">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
-    <property name="delay" type="int" value="3000"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
-    <property name="spawn" type="int" value="2"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>

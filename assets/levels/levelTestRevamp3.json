@@ -2,7 +2,7 @@
  "layers":[
         {
          "draworder":"topdown",
-         "height":32,
+         "height":0,
          "name":"spikesLayer",
          "objects":[
                 {
@@ -250,7 +250,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":50,
+         "width":0,
          "x":0,
          "y":0
         }, 
@@ -288,6 +288,7 @@
                  "name":"",
                  "properties":
                     {
+                     "colEnv":true,
                      "damage":2,
                      "gravity":true,
                      "h":64,
@@ -296,6 +297,7 @@
                     },
                  "propertytypes":
                     {
+                     "colEnv":"bool",
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
@@ -315,6 +317,7 @@
                  "name":"",
                  "properties":
                     {
+                     "colEnv":true,
                      "damage":1,
                      "gravity":true,
                      "h":32,
@@ -323,6 +326,7 @@
                     },
                  "propertytypes":
                     {
+                     "colEnv":"bool",
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
@@ -342,21 +346,19 @@
                  "name":"",
                  "properties":
                     {
+                     "colEnv":true,
                      "damage":1,
-                     "delay":3000,
                      "gravity":true,
                      "h":32,
-                     "spawn":2,
                      "speed":50,
                      "w":32
                     },
                  "propertytypes":
                     {
+                     "colEnv":"bool",
                      "damage":"int",
-                     "delay":"int",
                      "gravity":"bool",
                      "h":"int",
-                     "spawn":"int",
                      "speed":"int",
                      "w":"int"
                     },

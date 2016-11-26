@@ -65,6 +65,7 @@
  <objectgroup name="enemyLayer">
   <object id="15" type="enemy" x="481" y="129" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="64"/>
@@ -74,6 +75,7 @@
   </object>
   <object id="16" type="enemy" x="130" y="335" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="64"/>
@@ -83,6 +85,7 @@
   </object>
   <object id="17" type="bird" x="400" y="32" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
@@ -92,6 +95,7 @@
   </object>
   <object id="18" type="bird" x="385" y="354" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
@@ -101,6 +105,7 @@
   </object>
   <object id="19" type="droid" x="310.175" y="224.32" width="16" height="16">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>

@@ -22,6 +22,9 @@ function preload() {
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
+    game.load.spritesheet('ghost', 'assets/images/ghost.png', 60, 60); 
+    
+
     game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
     game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
@@ -392,18 +395,21 @@ function initSpikes(spikes, size) {
 }
 
 // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-function initEnemy(enemy, enemyType, size, speed, damage, grav) {
+function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
     enemy.body.collideWorldBounds = true;
+    enemy.body.checkCollision.left = enemy.body.checkCollision.right = colEnv;
+
     enemy.body.setSize(size[0], size[1]);
     enemy.damageLevel = damage;
     enemy.body.allowGravity = grav;   
     enemy.customSpeed = speed;
+    enemy.enemyType = enemyType;
 
     enemy.currentDirection = 'left';
 
-    if(enemyType === "bird" || enemyType === "enemy"){
+    if(enemyType === "bird" || enemyType === "enemy" || enemyType === "ghost"){
         enemy.animations.add('move', [0, 1, 2, 3], 10, true);
     }
 }
@@ -415,14 +421,15 @@ function createEnemy(){
         var enemyType = map.objects.enemyLayer[i].type;
         var enemyDamage = map.objects.enemyLayer[i].properties.damage;
         var enemySpeed = map.objects.enemyLayer[i].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;          
+        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity; 
+        var colEnv = map.objects.enemyLayer[i].properties.colEnv;          
 
         // I made this global so that it can be viewed in the render()
         // X pos, Y pos minus its height, sprite
         enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
         
         // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);       
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);       
     }
 }
 
@@ -433,14 +440,16 @@ function spawnEnemy(b, interval, max, level) {
             var enemyType = map.objects.enemyLayer[b].type;
             var enemyDamage = map.objects.enemyLayer[b].properties.damage;
             var enemySpeed = map.objects.enemyLayer[b].properties.speed;
-            var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
+            var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;  
+            var colEnv = map.objects.enemyLayer[b].properties.colEnv;         
 
             // I made this global so that it can be viewed in the render()
             // X pos, Y pos minus its height, sprite
             enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y - sizeArray[1]*0.5, map.objects.enemyLayer[b].type);
                 
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
+            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
+            updateAnchor(enemy); 
             console.log(max);
             max -= 1;
 
@@ -504,6 +513,12 @@ function updateDroids(dr){
         dr.currentDirection = 'left';
     }
 
+    if(dr.enemyType === "ghost"){
+        //console.log(dr.enemyType);
+
+        dr.body.velocity.y =  (Math.sin(0.5*Math.PI*(dr.body.x/40))*180);
+
+    }
 
     dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
     dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
