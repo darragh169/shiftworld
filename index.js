@@ -1,6 +1,6 @@
 'use strict'
 
-var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', { 
+var game = new Phaser.Game(800, 512, Phaser.CANVAS, 'phaser-example', { 
     preload: preload, 
     create: create, 
     update: update, 
@@ -10,8 +10,10 @@ var game = new Phaser.Game(800, 510, Phaser.CANVAS, 'phaser-example', {
 
 function preload() {
 
+    game.load.tilemap('levelTest0', 'assets/levels/levelTestRevamp0.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest', 'assets/levels/levelTestRevamp.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.tilemap('levelTest2', 'assets/levels/levelTestRevamp2.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('levelTest3', 'assets/levels/levelTestRevamp3.json', null, Phaser.Tilemap.TILED_JSON);
     
     game.load.image('tiles-1', 'assets/images/tiles-1.png');
     game.load.image('background', 'assets/images/background2.png');
@@ -20,6 +22,11 @@ function preload() {
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
+    game.load.spritesheet('ghost', 'assets/images/ghost.png', 60, 60); 
+    
+
+    game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
+    game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
     game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
   
@@ -57,7 +64,7 @@ var healthMeterIcons;
 var damagelevel;
 
 var potionCollection;
-
+var spikesCollection;
 var enemyCollection;
 
 var endLevel;
@@ -72,7 +79,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
 
-    bg = game.add.tileSprite(0, 0, 800, 510, 'background');
+    bg = game.add.tileSprite(0, 0, 800, 512, 'background');
     bg.fixedToCamera = true;
 
     loadLevel(currentLevel);
@@ -85,11 +92,8 @@ function create() {
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
     player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
-    if(currentLevel === 0){
-        player.body.height = 100;    
-    } else {
-        player.body.height = 46;
-    }
+    player.body.height = 46;
+
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
@@ -127,31 +131,62 @@ function create() {
 
     //****************ENEMIES***************//
     enemyCollection = game.add.physicsGroup();
-    if(currentLevel > 0){
-        createEnemy();
-        enemyCollection.forEach(updateAnchor, this);
-        //****************End ENEMIES***************//
+    //if(currentLevel > 0){
+    createEnemy();
+    enemyCollection.forEach(updateAnchor, this);
+    //****************End ENEMIES***************//
 
 
-        //****************POTIONS***************//
-        potionCollection = game.add.physicsGroup();
+    //****************POTIONS***************//
+    potionCollection = game.add.physicsGroup();
 
-        // Loop through all objects in potion layer and assign x and y positions
-        for(var i=0; i<map.objects.potionLayer.length; i++) {
-            var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
-            // Must subtract height from y position because origin in phaser is different to Tiled
-            var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
-            initPotion(potion, sizeArray);
-        }
-        //****************End POTIONS***************//
-
-        /*****************/
-        // SPAWN ENEMIES
-        /******************/
-        // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn)
-        spawnEnemy(4, 5000, 3);
-        spawnEnemy(1, 3000, 2);
+    // Loop through all objects in potion layer and assign x and y positions
+    
+    for(var i=0; i<map.objects.potionLayer.length; i++) {
+        var sizeArray = [map.objects.potionLayer[i].properties.w, map.objects.potionLayer[i].properties.h];
+        // Must subtract height from y position because origin in phaser is different to Tiled
+        var potion = potionCollection.create(map.objects.potionLayer[i].x, map.objects.potionLayer[i].y - sizeArray[1], 'potion');
+        initPotion(potion, sizeArray);
     }
+    //****************End POTIONS***************//
+
+
+    //****************SPIKES***************//
+    spikesCollection = game.add.physicsGroup();
+
+    // Loop through all objects in potion layer and assign x and y positions
+    for(var i=0; i<map.objects.spikesLayer.length; i++) {
+        var sizeArray = [map.objects.spikesLayer[i].properties.w, map.objects.spikesLayer[i].properties.h];
+
+        var spr;
+
+        if(map.objects.spikesLayer[i].type === "spikes"){
+            spr = "spikes";
+        }
+        else {
+            spr = "spikes_down";
+        }
+
+        // Must subtract height from y position because origin in phaser is different to Tiled
+        var spikes = spikesCollection.create(map.objects.spikesLayer[i].x, map.objects.spikesLayer[i].y - sizeArray[1], spr);
+        initSpikes(spikes, sizeArray);
+    }
+    //****************End POTIONS***************//
+
+        
+    //}
+
+    /*****************/
+    // SPAWN ENEMIES
+    /******************/
+    // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn, level)
+    
+    if(currentLevel === 1){
+        console.log()
+        spawnEnemy(0, 4000, 2, 1);
+        spawnEnemy(3, 3000, 2, 1);
+    }
+
     endLevel = game.add.sprite(700, 420, 'endLevel');
     game.camera.follow(player);
 
@@ -166,8 +201,8 @@ function update() {
 
     player.body.velocity.x = 0;
 
-    droidCollection.forEach(updateDroids, this, 'trrt');
-    enemyCollection.forEach(updateDroids, this, 'trrt');
+    droidCollection.forEach(updateDroids, this);
+    enemyCollection.forEach(updateDroids, this);
 
     checkForLevelEnd();
 
@@ -224,7 +259,13 @@ function update() {
     // COLLISIONS
     game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
+
+    game.physics.arcade.collide(enemyCollection, spikesCollection, killEnemy, null, this);
+
+    game.physics.arcade.collide(player, spikesCollection, takeDamage, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
+    
+
     if(player.health <= 0){
         if (game.input.activePointer.isDown) {
             location.reload();
@@ -249,24 +290,43 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
-        debugger;
-        map = game.add.tilemap('levelTest2');
+        //debugger;
+        map = game.add.tilemap('levelTest0');
         console.log(layer);
-        if(layer) 
+
+        if(layer){ 
             layer.destroy();
+        }
         layer = map.createLayer('Tile Layer 1');
-    } else if (level === 1){
+    } 
+
+    else if (level === 1){
         map = game.add.tilemap('levelTest');
-        if(layer) 
+        if(layer) {
             layer.destroy();
+        }
         layer = map.createLayer('Tile Layer 1');
-    } else if(level === 2){
+    } 
+
+    else if(level === 2){
         map = game.add.tilemap('levelTest2');
         
-        if(layer) 
+        if(layer) {
             layer.destroy();
-        layer = map.createLayer('Tile Layer 2'); 
-    } else if(level === 3){
+        }
+        layer = map.createLayer('Tile Layer 1'); 
+    } 
+
+    else if(level === 3){
+        map = game.add.tilemap('levelTest3');
+        
+        if(layer) {
+            layer.destroy();
+        }
+        layer = map.createLayer('Tile Layer 1'); 
+    } 
+
+    else if(level === 4){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
             font: "65px Arial",
             fill: "#ff0044",
@@ -274,7 +334,8 @@ function loadLevel(level){
         });
 
         endGametext.anchor.setTo(0.5, 0.5);
-    } else if (level === 999){
+    } 
+    else if (level === 999){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
             font: "65px Arial",
             fill: "#ff0044",
@@ -283,8 +344,9 @@ function loadLevel(level){
         endGametext.anchor.setTo(0.5, 0.5);
     }
     
-        map.addTilesetImage('tiles-1');
-        map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+    map.addTilesetImage('tiles-1');
+    map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+
     if(layer){
         layer.resizeWorld();
     }
@@ -322,19 +384,32 @@ function initPotion(potion, size) {
     potion.body.setSize(size[0], size[1]);
 }
 
+function initSpikes(spikes, size) {
+    game.physics.enable(spikes, Phaser.Physics.ARCADE);
+    spikes.body.collideWorldBounds = true;  
+    spikes.body.allowGravity = false;   // Ensure spikes stays put in spot
+    spikes.body.setSize(size[0], size[1]);
+    spikes.damageLevel = 1;
+    spikes.body.immovable = true;
+    spikes.body.moves = false;
+}
+
 // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-function initEnemy(enemy, enemyType, size, speed, damage, grav) {
+function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
     enemy.body.collideWorldBounds = true;
+    enemy.body.checkCollision.left = enemy.body.checkCollision.right = colEnv;
+
     enemy.body.setSize(size[0], size[1]);
     enemy.damageLevel = damage;
     enemy.body.allowGravity = grav;   
     enemy.customSpeed = speed;
+    enemy.enemyType = enemyType;
 
     enemy.currentDirection = 'left';
 
-    if(enemyType === "bird" || enemyType === "enemy"){
+    if(enemyType === "bird" || enemyType === "enemy" || enemyType === "ghost"){
         enemy.animations.add('move', [0, 1, 2, 3], 10, true);
     }
 }
@@ -346,39 +421,47 @@ function createEnemy(){
         var enemyType = map.objects.enemyLayer[i].type;
         var enemyDamage = map.objects.enemyLayer[i].properties.damage;
         var enemySpeed = map.objects.enemyLayer[i].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity;          
+        var affectedByGravity = map.objects.enemyLayer[i].properties.gravity; 
+        var colEnv = map.objects.enemyLayer[i].properties.colEnv;          
 
         // I made this global so that it can be viewed in the render()
         // X pos, Y pos minus its height, sprite
         enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
         
         // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity);       
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);       
     }
 }
 
-function spawnEnemy(b, interval, max) {
-    var spawnInterval = setInterval(function(){
-        var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
-        var enemyType = map.objects.enemyLayer[b].type;
-        var enemyDamage = map.objects.enemyLayer[b].properties.damage;
-        var enemySpeed = map.objects.enemyLayer[b].properties.speed;
-        var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;          
+function spawnEnemy(b, interval, max, level) {
+    if(currentLevel === level) {
+        var spawnInterval = setInterval(function(){
+            var sizeArray = [map.objects.enemyLayer[b].properties.w, map.objects.enemyLayer[b].properties.h];
+            var enemyType = map.objects.enemyLayer[b].type;
+            var enemyDamage = map.objects.enemyLayer[b].properties.damage;
+            var enemySpeed = map.objects.enemyLayer[b].properties.speed;
+            var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;  
+            var colEnv = map.objects.enemyLayer[b].properties.colEnv;         
 
-        // I made this global so that it can be viewed in the render()
-        // X pos, Y pos minus its height, sprite
-        enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y + sizeArray[1], map.objects.enemyLayer[b].type);
-            
-        // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity); 
-        console.log(max);
-        max -= 1;
+            // I made this global so that it can be viewed in the render()
+            // X pos, Y pos minus its height, sprite
+            enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y - sizeArray[1]*0.5, map.objects.enemyLayer[b].type);
+                
+            // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
+            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
+            updateAnchor(enemy); 
+            console.log(max);
+            max -= 1;
 
-        if(max <= 0){
-            clearInterval(spawnInterval);
-        }
-    }, interval) ;
-    
+            if(currentLevel != level) {
+                console.log(currentLevel + " " + level);
+            }
+
+            if(max <= 0 || currentLevel != level){
+                clearInterval(spawnInterval);
+            }
+        }, interval);
+    }
 }
 
 //whatever is damaging the player needs to have attribute "damageLevel"
@@ -396,6 +479,10 @@ function takeDamage(player, enemy)   {
     if (player.health <= 0) {
         restart();
     }
+}
+
+function killEnemy(enemy, spike) {
+    enemy.kill();
 }
 
 function fadePlayer(){
@@ -426,6 +513,12 @@ function updateDroids(dr){
         dr.currentDirection = 'left';
     }
 
+    if(dr.enemyType === "ghost"){
+        //console.log(dr.enemyType);
+
+        dr.body.velocity.y =  (Math.sin(0.5*Math.PI*(dr.body.x/40))*180);
+
+    }
 
     dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
     dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
@@ -469,3 +562,5 @@ function collectedPotion(player, potion) {
         player.heal(1);
     }
 }
+
+
