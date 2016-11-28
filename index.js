@@ -50,6 +50,7 @@ var droidCollection;
 var facing = 'left';
 var jumpTimer = 0;
 var gravityTimer = 0;
+var attackTimer = 0;
 var cursors;
 var jumpButton;
 var gravityButton;
@@ -63,7 +64,6 @@ var gravityDown = true;
 var invincibleTimer;
 var hearts;
 var healthMeterIcons;
-var damagelevel;
 
 var potionCollection;
 var spikesCollection;
@@ -75,11 +75,10 @@ var currentLevel = 0;
 
 var endGametext;
 var endGameSubtext;
-var weaponLength;
-var weaponArcAbove;
-var weaponArcBelow;
-var weaponDamage;
 var weapon;
+var attackarc;
+var graphics;
+var monster;
 
 function create() {
 
@@ -95,14 +94,7 @@ function create() {
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
-    weaponLength = 400;
-    weaponArcAbove = 90;
-    weaponArcBelow = 45;
-    weaponDamage = 1;
-    weapon.length = weaponLength;
-    weapon.arcUp = weaponArcAbove;
-    weapon.arcDown = weaponArcBelow;
-    weapon.damage = weaponDamage;
+    weapon = new Weapon(100,1);
 //********************************END Weapon*********************************//
 
     //****************PLAYER****************//
@@ -126,8 +118,7 @@ function create() {
 
 
     //****************End PLAYER***************//
-
-
+    graphics = new Phaser.Circle(player.x,player.y,player.weapon.length);
     //*******************HEARTS*****************//
     game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
     hearts = game.add.group();
@@ -216,7 +207,7 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
-    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
 }
 
 function update() {
@@ -297,18 +288,12 @@ function update() {
     }
 
     if(attackButton.isDown && game.time.now > attackTimer){
-        foreach (enemy in enemyCollection)
-        {
-            if(game.physics.arcade.distanceBetween(player,enemy) < weaponLength)
-            {
-                var angle = game.physics.arcade.angleBetween(player,enemy);
-                if((angle <= 0 && Math.abs(angle) < weapon.arcUp)|| (angle >= 0 && angle < weapon.arcDown))
-                {
-                    giveDamage(player,enemy);
-                }
-            }
+        for (var i = 0; i< enemyCollection.length; i++) {
+            enemy = enemyCollection.hash[i];
+            if(enemy.alive == true)
+                attack(enemy);
+            attackTimer = game.time.now + Phaser.Timer.SECOND * .3;
         }
-        attackTimer = game.time.now + Phaser.Timer.SECOND*.3;
         attackAnimation();
     }
 }
@@ -329,7 +314,7 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
-        //debugger;
+
         map = game.add.tilemap('levelTest0');
         console.log(layer);
 
@@ -526,6 +511,18 @@ function giveDamage(enemy){
 
     enemy.damage(player.weapon.damage);
 }
+
+function attack(enemy)        {
+
+        if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
+            if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
+                giveDamage(enemy);
+            }
+            if (enemy.health <= 0) {
+                enemy.kill();
+            }
+        }
+}
 function attackAnimation(){
 
 }
@@ -615,8 +612,14 @@ function updateDroidGravity(droid){
 function collectedPotion(player, potion) {
     potion.kill();
     if (player.health < player.maxHealth) {
-        player.health(1);
+        player.heal(1);
     }
+}
+function Weapon(length,damage) {
+
+    this.length = length;
+
+    this.damage = damage;
 }
 
 
