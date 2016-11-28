@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="32" tilewidth="16" tileheight="16" nextobjectid="27">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="32" tilewidth="16" tileheight="16" nextobjectid="41">
  <tileset firstgid="1" name="tiles-1" tilewidth="16" tileheight="16" tilecount="68" columns="17">
   <image source="../images/tiles-1.png" width="272" height="64"/>
  </tileset>
  <tileset firstgid="69" name="potion" tilewidth="16" tileheight="16" tilecount="1" columns="1">
   <image source="../images/potion.png" width="16" height="16"/>
+ </tileset>
+ <tileset firstgid="70" name="spikes_down" tilewidth="61" tileheight="28" tilecount="1" columns="1">
+  <image source="../images/spikes_down.png" width="61" height="28"/>
+ </tileset>
+ <tileset firstgid="71" name="spikes" tilewidth="61" tileheight="28" tilecount="1" columns="1">
+  <image source="../images/spikes.png" width="61" height="28"/>
+  <tile id="0">
+   <properties>
+    <property name="h" type="int" value="28"/>
+    <property name="w" type="int" value="61"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Tile Layer 1" width="50" height="32">
   <data encoding="csv">
@@ -43,5 +55,40 @@
 </data>
  </layer>
  <objectgroup name="potionLayer"/>
- <objectgroup name="enemyLayer" offsetx="-2" offsety="-1"/>
+ <objectgroup name="enemyLayer" offsetx="-2" offsety="-1">
+  <object id="38" type="droid" x="588" y="391" width="16" height="16">
+   <properties>
+    <property name="colEnv" type="bool" value="true"/>
+    <property name="damage" type="int" value="1"/>
+    <property name="gravity" type="bool" value="true"/>
+    <property name="h" type="int" value="32"/>
+    <property name="speed" type="int" value="50"/>
+    <property name="w" type="int" value="32"/>
+   </properties>
+  </object>
+  <object id="40" type="ghost" x="610" y="217" width="16" height="16">
+   <properties>
+    <property name="colEnv" type="bool" value="false"/>
+    <property name="damage" type="int" value="1"/>
+    <property name="gravity" type="bool" value="false"/>
+    <property name="h" type="int" value="60"/>
+    <property name="speed" type="int" value="150"/>
+    <property name="w" type="int" value="60"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="spikesLayer">
+  <object id="32" type="spikes" gid="71" x="351" y="481" width="61" height="28">
+   <properties>
+    <property name="h" type="int" value="28"/>
+    <property name="w" type="int" value="61"/>
+   </properties>
+  </object>
+  <object id="36" type="spikes_down" gid="70" x="353" y="59" width="61" height="28">
+   <properties>
+    <property name="h" type="int" value="28"/>
+    <property name="w" type="int" value="61"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

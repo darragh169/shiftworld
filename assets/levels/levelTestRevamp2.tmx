@@ -59,6 +59,7 @@
  <objectgroup name="enemyLayer" offsetx="-2" offsety="-1">
   <object id="21" type="bird" x="625" y="210" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
@@ -68,6 +69,7 @@
   </object>
   <object id="22" type="bird" x="432" y="396" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
@@ -77,6 +79,7 @@
   </object>
   <object id="23" type="enemy" x="399" y="29" width="12" height="14">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="64"/>
@@ -86,36 +89,34 @@
   </object>
   <object id="24" type="droid" x="549" y="212" width="16" height="16">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
-    <property name="delay" type="int" value="3000"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
-    <property name="spawn" type="int" value="3"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>
   </object>
   <object id="25" type="droid" x="746" y="266" width="16" height="16">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
-    <property name="delay" type="int" value="3000"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
-    <property name="spawn" type="int" value="3"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>
   </object>
   <object id="26" type="droid" x="175" y="259" width="16" height="16">
    <properties>
+    <property name="colEnv" type="bool" value="true"/>
     <property name="damage" type="int" value="1"/>
-    <property name="delay" type="int" value="3000"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
-    <property name="spawn" type="int" value="3"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>
   </object>
  </objectgroup>
+ <objectgroup name="spikesLayer"/>
 </map>
