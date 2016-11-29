@@ -425,7 +425,13 @@ function initSpikes(spikes, size) {
 function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
-    enemy.body.collideWorldBounds = true;
+    if(enemyType === "ghost"){
+        enemy.checkWorldBounds = true;
+        enemy.events.onOutOfBounds.add(enemyOut, this);
+    }else{
+        enemy.body.collideWorldBounds = true;
+    }
+
     enemy.body.checkCollision.left = enemy.body.checkCollision.right = colEnv;
 
     enemy.body.setSize(size[0], size[1]);
@@ -560,7 +566,11 @@ function updateAnchor(droid){
 }    
 
 function updateDroids(dr){
-    game.physics.arcade.collide(dr, layer);
+
+    if(dr.enemyType !== 'ghost'){
+        game.physics.arcade.collide(dr, layer);
+    }
+    
     dr.animations.play('move');
     if(dr.body.blocked.left){
         dr.currentDirection = 'right';
@@ -570,10 +580,7 @@ function updateDroids(dr){
     }
 
     if(dr.enemyType === "ghost"){
-        //console.log(dr.enemyType);
-
-        dr.body.velocity.y =  (Math.sin(0.5*Math.PI*(dr.body.x/40))*180);
-
+        dr.body.velocity.y =  (Math.sin(0.5 * Math.PI * (dr.body.x/40)) * 180);
     }
 
     dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
@@ -619,10 +626,16 @@ function collectedPotion(player, potion) {
     }
 }
 function Weapon(length,damage) {
-
     this.length = length;
-
     this.damage = damage;
 }
 
+function enemyOut(ghost){
+    if(ghost.x < 0 || ghost.x > game.width){
+        ghost.x = game.width - ghost.width;
+    }
+    if(ghost.y < 0 || ghost.y > game.height){
+        ghost.y = game.height - ghost.height; 
+    }
+}
 
