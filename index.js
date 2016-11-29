@@ -32,8 +32,7 @@ function preload() {
   
     game.load.image('heart', 'assets/heartFull.png');
 
-    game.load.spritesheet('endLevel', 'assets/images/enemy.png', 20, 20);
-    game.load.image('axe','assets/axe-iron.png');
+    game.load.image('endLevel', 'assets/images/endLevel.gif');
 
     //***************************************Sound FX************************//
     game.load.audio('explosion', 'assets/sfx/explosion.mp3');
@@ -228,7 +227,9 @@ function create() {
         spawnEnemy(3, 3000, 2, 1);
     }
 
-    endLevel = game.add.sprite(700, 420, 'endLevel');
+    endLevel = game.add.image(700, 445, 'endLevel');
+    endLevel.scale.setTo(0.2,0.2)
+
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -282,7 +283,6 @@ function update() {
 
     
     // JUMPING
-    if(cursors)
     if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { 
         player.body.velocity.y = -playerJumpPower;
 
@@ -323,7 +323,8 @@ function update() {
                 attack(enemy);
             attackTimer = game.time.now + Phaser.Timer.SECOND * .3;
         }
-        sword.play();
+attackAnimation();        
+sword.play();
     }
     if(musicButton.isDown && game.time.now > audiolag){
 
@@ -464,7 +465,13 @@ function initSpikes(spikes, size) {
 function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
-    enemy.body.collideWorldBounds = true;
+    if(enemyType === "ghost"){
+        enemy.checkWorldBounds = true;
+        enemy.events.onOutOfBounds.add(enemyOut, this);
+    }else{
+        enemy.body.collideWorldBounds = true;
+    }
+
     enemy.body.checkCollision.left = enemy.body.checkCollision.right = colEnv;
 
     enemy.body.setSize(size[0], size[1]);
@@ -603,7 +610,11 @@ function updateAnchor(droid){
 }    
 
 function updateDroids(dr){
-    game.physics.arcade.collide(dr, layer);
+
+    if(dr.enemyType !== 'ghost'){
+        game.physics.arcade.collide(dr, layer);
+    }
+    
     dr.animations.play('move');
     if(dr.body.blocked.left){
         dr.currentDirection = 'right';
@@ -613,10 +624,7 @@ function updateDroids(dr){
     }
 
     if(dr.enemyType === "ghost"){
-        //console.log(dr.enemyType);
-
-        dr.body.velocity.y =  (Math.sin(0.5*Math.PI*(dr.body.x/40))*180);
-
+        dr.body.velocity.y =  (Math.sin(0.5 * Math.PI * (dr.body.x/40)) * 180);
     }
 
     dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
@@ -663,10 +671,16 @@ function collectedPotion(player, potion) {
     }
 }
 function Weapon(length,damage) {
-
     this.length = length;
-
     this.damage = damage;
 }
 
+function enemyOut(ghost){
+    if(ghost.x < 0 || ghost.x > game.width){
+        ghost.x = game.width - ghost.width;
+    }
+    if(ghost.y < 0 || ghost.y > game.height){
+        ghost.y = game.height - ghost.height; 
+    }
+}
 
