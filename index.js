@@ -140,7 +140,7 @@ function create() {
     player.animations.add('right', [0, 1, 2, 3], 10, true);
     player.health = 3;
     player.maxHealth = 8;
-
+ 
 
 
     //****************End PLAYER***************//
