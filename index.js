@@ -33,6 +33,7 @@ function preload() {
     game.load.image('heart', 'assets/heartFull.png');
 
     game.load.image('endLevel', 'assets/images/endLevel.gif');
+    game.load.image('arrowDown', 'assets/images/arrow-down.png');
 
     //***************************************Sound FX************************//
     game.load.audio('explosion', 'assets/sfx/explosion.mp3');
@@ -77,8 +78,13 @@ var spikesCollection;
 var enemyCollection;
 var attackboxes;
 
+var endfirstLevel = false; 
 var endLevel;
+var arrowDown;
 var currentLevel = 0;
+var timerStarted = false;
+var currentSeconds = 0;
+var gameTimer;
 
 var endGametext;
 var endGameSubtext;
@@ -107,7 +113,9 @@ function create() {
     bg.fixedToCamera = true;
 
     loadLevel(currentLevel);
-
+    if(currentLevel > 0 && !timerStarted) {
+        startGameTimer();
+    }
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
@@ -347,10 +355,22 @@ function update() {
 
 function checkForLevelEnd(){
     if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
-        console.log('success');
-        music.stop();
-        currentLevel++;
-        create();
+        if(endfirstLevel) { 
+            console.log('success');
+            music.stop();
+            currentLevel++;
+            create();
+         } else {
+            endLevel.kill();
+            endfirstLevel = true;
+            // reset end level in first roung
+            endLevel = game.add.image(700, 70, 'endLevel');
+            endLevel.scale.setTo(0.2,0.2);
+            endLevel.scale.y *= -1; 
+            // set arrow down
+            arrowDown = game.add.image(680, 240, 'arrowDown');
+            arrowDown.scale.setTo(0.1,0.1);
+        }
     }
 }
 
@@ -406,6 +426,8 @@ function loadLevel(level){
         });
 
         endGametext.anchor.setTo(0.5, 0.5);
+         clearInterval(gameTimer);
+        $('.gameWrapper h2').replaceWith('<h2>You completed the game in ' + currentSeconds + ' seconds </h2>');
     } 
     else if (level === 999){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
@@ -414,6 +436,7 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
+        clearInterval(gameTimer);
     }
     
     map.addTilesetImage('tiles-1');
@@ -454,6 +477,15 @@ function initPotion(potion, size) {
     potion.body.collideWorldBounds = true;  
     potion.body.allowGravity = false;   // Ensure potions stays put in spot
     potion.body.setSize(size[0], size[1]);
+}
+
+function startGameTimer() {
+    timerStarted = true;
+    gameTimer = setInterval(function(){
+        $('.gameWrapper h2').replaceWith('<h2>' + currentSeconds + ' seconds </h2>');
+        currentSeconds += 1;
+    }, 1000);
+    
 }
 
 function initSpikes(spikes, size) {
@@ -669,6 +701,10 @@ function updateGravity() {
     gameH1.style.msTransform = twist;
     gameH1.style.webkitTransform = twist; 
     gameH1.style.Transform = twist;
+
+    if(currentLevel === 0 && arrowDown){
+        arrowDown.kill();
+    }
 }
 
 function updateDroidGravity(droid){
