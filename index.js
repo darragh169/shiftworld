@@ -32,8 +32,9 @@ function preload() {
   
     game.load.image('heart', 'assets/heartFull.png');
 
-    game.load.spritesheet('endLevel', 'assets/images/enemy.png', 20, 20);
-game.load.image('axe','assets/axe-iron.png');
+    game.load.image('endLevel', 'assets/images/endLevel.gif');
+
+    game.load.image('axe','assets/axe-iron.png');
 }
 
 var map;
@@ -201,7 +202,9 @@ function create() {
         spawnEnemy(3, 3000, 2, 1);
     }
 
-    endLevel = game.add.sprite(700, 420, 'endLevel');
+    endLevel = game.add.image(700, 445, 'endLevel');
+    endLevel.scale.setTo(0.2,0.2)
+
     game.camera.follow(player);
 
     cursors = game.input.keyboard.createCursorKeys();
