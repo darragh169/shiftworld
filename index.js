@@ -28,7 +28,7 @@ function preload() {
     game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
     game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
-    game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
+    game.load.spritesheet('dude', 'assets/images/dude5.png', 100, 80);  // Size of Sprite including whitespace
   
     game.load.image('heart', 'assets/heartFull.png');
 
@@ -143,10 +143,10 @@ function create() {
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
-    player.animations.add('left', [5, 6, 7, 8], 10, true);
+    player.animations.add('left', [4, 5, 6, 7], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
-    player.animations.add('attackL', [9, 10, 11, 11, 5], 15, false, true);
+    player.animations.add('attackL', [9, 10, 11, 11, 4], 15, false, true);
     player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
     player.health = 3;
     player.maxHealth = 8;
@@ -285,6 +285,7 @@ function update() {
 
             if (facing == 'left') {
                 player.frame = 5;
+                console.log("23");
             }
             else {
                 player.frame = 0;
