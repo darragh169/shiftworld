@@ -34,7 +34,13 @@ function preload() {
 
     game.load.image('endLevel', 'assets/images/endLevel.gif');
 
-    game.load.image('axe','assets/axe-iron.png');
+    //***************************************Sound FX************************//
+    game.load.audio('explosion', 'assets/sfx/explosion.mp3');
+    game.load.audio('player_hit', 'assets/sfx/player_hit.mp3');
+    game.load.audio('music', 'assets/sfx/music.mp3');
+    game.load.audio('sword', 'assets/sfx/sword.mp3');
+    game.load.audio('die', 'assets/sfx/die.mp3');
+    game.load.audio('potion', 'assets/sfx/potion.mp3');
 }
 
 var map;
@@ -81,8 +87,18 @@ var attackarc;
 var graphics;
 var monster;
 
-function create() {
+var player_hit;
+var explosion;
+var music;
+var sword;
+var explode_robot;
+var music_on;
+var musicButton;
+var audiolag;
+var die;
+var potion_sound;
 
+function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
@@ -96,6 +112,15 @@ function create() {
 
     //********************************Weapon*********************************//
     weapon = new Weapon(100,1);
+    explosion = game.add.audio('explosion');
+    music = game.add.audio('music');
+    player_hit = game.add.audio('player_hit');
+    sword = game.add.audio('sword');
+    die = game.add.audio('die');
+    potion_sound = game.add.audio('potion');
+    music.play();
+    music_on = true;
+    audiolag = 0;
 //********************************END Weapon*********************************//
 
     //****************PLAYER****************//
@@ -117,7 +142,7 @@ function create() {
     player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
     player.health = 3;
     player.maxHealth = 8;
-
+ 
 
 
     //****************End PLAYER***************//
@@ -213,6 +238,7 @@ function create() {
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+    musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 }
 
 function update() {
@@ -302,13 +328,27 @@ function update() {
                 attack(enemy);
             attackTimer = game.time.now + Phaser.Timer.SECOND * .2;
         }
-        attackAnimation();
+        attackAnimation();        
+        sword.play();
+    }
+    if(musicButton.isDown && game.time.now > audiolag){
+
+        if(music_on == true){
+            music.pause();
+            audiolag = game.time.now + Phaser.Timer.SECOND*.5;
+            music_on = false;
+        }else{
+            music.resume();
+            audiolag = game.time.now + Phaser.Timer.SECOND*.5;
+            music_on = true;
+        }
     }
 }
 
 function checkForLevelEnd(){
     if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
         console.log('success');
+        music.stop();
         currentLevel++;
         create();
     }
@@ -515,6 +555,7 @@ function takeDamage(player, enemy)   {
 
     // player is dead, start over
     if (player.health <= 0) {
+        die.play();
         restart();
     }
 }
@@ -531,9 +572,10 @@ function attack(enemy) {
     if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
         if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
             giveDamage(enemy);
-
+            player_hit.play();
         }
         if (enemy.health <= 0) {
+            explosion.play();
             enemy.kill();
         }
     }
@@ -550,7 +592,8 @@ function attackAnimation(){
    
 }
 
-function killEnemy(enemy, spike) {
+function killEnemy(enemy) {
+    explosion.play();
     enemy.kill();
 }
 
@@ -637,6 +680,7 @@ function collectedPotion(player, potion) {
     potion.kill();
     if (player.health < player.maxHealth) {
         player.heal(1);
+        potion_sound.play();
     }
 }
 function Weapon(length,damage) {
