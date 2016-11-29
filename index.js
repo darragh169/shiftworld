@@ -48,7 +48,7 @@ var enemy;
 var droidLength = 10;
 
 var droidCollection;
-var facing = 'left';
+var facing = 'right';
 var jumpTimer = 0;
 var gravityTimer = 0;
 var attackTimer = 0;
@@ -113,6 +113,8 @@ function create() {
     player.animations.add('left', [5, 6, 7, 8], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
+    player.animations.add('attackL', [9, 10, 11, 11, 5], 15, false, true);
+    player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
     player.health = 3;
     player.maxHealth = 8;
 
@@ -219,6 +221,8 @@ function update() {
 
     player.body.velocity.x = 0;
 
+    render();
+
     droidCollection.forEach(updateDroids, this);
     enemyCollection.forEach(updateDroids, this);
 
@@ -242,7 +246,7 @@ function update() {
         }
     }
     else {
-        if (facing != 'idle') {
+        if (facing != 'idle' && player.animations.currentAnim.name != "attackL" && player.animations.currentAnim.name != "attackR") {
             player.animations.stop();
 
             if (facing == 'left') {
@@ -254,6 +258,7 @@ function update() {
             facing = 'idle';
         }
     }
+
 
     
     // JUMPING
@@ -295,7 +300,7 @@ function update() {
             enemy = enemyCollection.hash[i];
             if(enemy.alive == true)
                 attack(enemy);
-            attackTimer = game.time.now + Phaser.Timer.SECOND * .3;
+            attackTimer = game.time.now + Phaser.Timer.SECOND * .2;
         }
         attackAnimation();
     }
@@ -381,7 +386,7 @@ function loadLevel(level){
 
 function render() {
     //game.debug.text(game.time.physicsElapsed, 32, 32);
-
+   
     //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
     //game.debug.body(player);
@@ -521,19 +526,28 @@ function giveDamage(enemy){
     enemy.damage(player.weapon.damage);
 }
 
-function attack(enemy)        {
+function attack(enemy) {
 
-        if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
-            if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
-                giveDamage(enemy);
-            }
-            if (enemy.health <= 0) {
-                enemy.kill();
-            }
+    if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
+        if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
+            giveDamage(enemy);
+
         }
+        if (enemy.health <= 0) {
+            enemy.kill();
+        }
+    }
 }
 function attackAnimation(){
-
+    if(facing == 'left' ||  player.frame == 5){
+        player.animations.play('attackL');
+        //player.animations.stop();
+    }
+    else if(facing == 'right' ||  player.frame == 0) {
+        player.animations.play('attackR');
+        //player.animations.stop();
+    }
+   
 }
 
 function killEnemy(enemy, spike) {
