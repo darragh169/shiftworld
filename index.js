@@ -89,7 +89,6 @@ var gameTimer;
 var endGametext;
 var endGameSubtext;
 var weapon;
-var attackarc;
 var graphics;
 var monster;
 
@@ -97,12 +96,12 @@ var player_hit;
 var explosion;
 var music;
 var sword;
-var explode_robot;
 var music_on;
 var musicButton;
 var audiolag;
 var die;
 var potion_sound;
+var stun;
 
 var endLevelAnimation;
 
@@ -152,6 +151,7 @@ function create() {
     player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
     player.health = 3;
     player.maxHealth = 8;
+    stun = 0;
  
 
 
@@ -272,12 +272,13 @@ function update() {
 
     render();
 
-    droidCollection.forEach(updateDroids, this);
-    enemyCollection.forEach(updateDroids, this);
+    droidCollection.forEach(updateEnemies, this);
+    enemyCollection.forEach(updateEnemies, this);
 
     checkForLevelEnd();
 
     // PLAYER MOVEMENT
+
     if (cursors.left.isDown) {
         player.body.velocity.x = -playerSpeed;
 
@@ -299,7 +300,7 @@ function update() {
             player.animations.stop();
 
             if (facing == 'left') {
-                player.frame = 5;
+                player.frame = 4;
                 console.log("23");
             }
             else {
@@ -310,32 +311,31 @@ function update() {
     }
 
 
-    
     // JUMPING
-    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) { 
+    if (cursors.up.isDown && game.time.now > jumpTimer && player.body.onFloor()) {
         player.body.velocity.y = -playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
     // REVERSE JUMP
-    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) { 
-        player.body.velocity.y =  playerJumpPower;
+    else if (cursors.up.isDown && game.time.now > jumpTimer && player.body.blocked.up) {
+        player.body.velocity.y = playerJumpPower;
 
         jumpTimer = game.time.now + 750;
     }
 
     // Reversing GRAVITY when DOWN button is pressed
-    if(gravityButton.isDown && game.time.now > gravityTimer) {  
+    if(gravityButton.isDown && game.time.now > gravityTimer) {
         updateGravity();
     }
-    
+
     // COLLISIONS
-    game.physics.arcade.collide(player, droidCollection, takeDamage, null, this);
-    game.physics.arcade.collide(player, enemyCollection, takeDamage, null, this);
+    game.physics.arcade.collide(player, droidCollection, knockback, null, this);
+    game.physics.arcade.collide(player, enemyCollection, knockback, null, this);
 
     game.physics.arcade.collide(enemyCollection, spikesCollection, killEnemy, null, this);
 
-    game.physics.arcade.collide(player, spikesCollection, takeDamage, null, this);
+    game.physics.arcade.collide(player, spikesCollection, knockback, null, this);
     game.physics.arcade.collide(player, potionCollection, collectedPotion, null, this);
     
 
@@ -589,7 +589,15 @@ function spawnEnemy(b, interval, max, level) {
         }, interval);
     }
 }
-
+function knockback(player,enemy) {
+    if (player.body.touching.down && gravityDown) {
+        player.body.velocity.y = -400;
+    }
+    else if (player.body.touching.up && !gravityDown) {
+        player.body.velocity.y = 400;
+    }
+    takeDamage(player,enemy);
+}
 //whatever is damaging the player needs to have attribute "damageLevel"
 function takeDamage(player, enemy)   {
 
@@ -618,7 +626,7 @@ function giveDamage(enemy){
 function attack(enemy) {
 
     if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
-        if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
+        if ((player.frame == 4 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
             giveDamage(enemy);
             player_hit.play();
         }
@@ -629,7 +637,7 @@ function attack(enemy) {
     }
 }
 function attackAnimation(){
-    if(facing == 'left' ||  player.frame == 5){
+    if(facing == 'left' ||  player.frame == 4){
         player.animations.play('attackL');
         //player.animations.stop();
     }
@@ -666,30 +674,31 @@ function restart () {
     loadLevel(999);
 }
 
-function updateAnchor(droid){
-    droid.anchor.setTo(0.5, 0.5);
+function updateAnchor(enemy){
+    enemy.anchor.setTo(0.5, 0.5);
+    enemy.body.immovable = true;
 }    
 
-function updateDroids(dr){
+function updateEnemies(enemy){
 
-    if(dr.enemyType !== 'ghost'){
-        game.physics.arcade.collide(dr, layer);
+    if(enemy.enemyType !== 'ghost'){
+        game.physics.arcade.collide(enemy, layer);
     }
     
-    dr.animations.play('move');
-    if(dr.body.blocked.left){
-        dr.currentDirection = 'right';
+    enemy.animations.play('move');
+    if(enemy.body.blocked.left){
+        enemy.currentDirection = 'right';
     }
-    if(dr.body.blocked.right){
-        dr.currentDirection = 'left';
-    }
-
-    if(dr.enemyType === "ghost"){
-        dr.body.velocity.y =  (Math.sin(0.5 * Math.PI * (dr.body.x/40)) * 180);
+    if(enemy.body.blocked.right){
+        enemy.currentDirection = 'left';
     }
 
-    dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
-    dr.scale.x = dr.currentDirection === 'left' ? (-1) : 1;
+    if(enemy.enemyType === "ghost"){
+        enemy.body.velocity.y =  (Math.sin(0.5 * Math.PI * (enemy.body.x/40)) * 180);
+    }
+
+    enemy.body.velocity.x = enemy.currentDirection === 'left' ? (enemy.customSpeed * -1) : enemy.customSpeed;
+    enemy.scale.x = enemy.currentDirection === 'left' ? (-1) : 1;
 }
 
 function updateGravity() {
