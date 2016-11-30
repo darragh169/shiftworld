@@ -561,7 +561,8 @@ function spawnEnemy(b, interval, max, level) {
             // I made this global so that it can be viewed in the render()
             // X pos, Y pos minus its height, sprite
             enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y - sizeArray[1]*0.5, map.objects.enemyLayer[b].type);
-                
+             if(!gravityDown)
+                 enemy.scale.y *= -1;
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
             initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
             updateAnchor(enemy); 
