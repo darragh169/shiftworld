@@ -104,6 +104,8 @@ var audiolag;
 var die;
 var potion_sound;
 
+var endLevelAnimation;
+
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -154,7 +156,9 @@ function create() {
 
 
     //****************End PLAYER***************//
-    graphics = new Phaser.Circle(player.x,player.y,player.weapon.length);
+    //graphics = new Phaser.Circle(player.x,player.y,player.weapon.length);
+    
+
     //*******************HEARTS*****************//
     game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
     hearts = game.add.group();
@@ -247,6 +251,17 @@ function create() {
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
     musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
+
+    endLevelAnimation = game.add.graphics(0, 0);
+
+    var changeLevel =  game.add.graphics(0, 0);
+    changeLevel.beginFill(0x000000);
+    changeLevel.lineStyle(10, 0xffd900, 1);
+    changeLevel.drawRect(0, 0, game.width, game.height);
+
+    setTimeout(function(){ 
+        changeLevel.destroy(); 
+    }, 700);
 }
 
 function update() {
