@@ -28,13 +28,20 @@ function preload() {
     game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
     game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
-    game.load.spritesheet('dude', 'assets/images/dude4.png', 80, 80);  // Size of Sprite including whitespace
+    game.load.spritesheet('dude', 'assets/images/dude5.png', 100, 80);  // Size of Sprite including whitespace
   
     game.load.image('heart', 'assets/heartFull.png');
 
     game.load.image('endLevel', 'assets/images/endLevel.gif');
+    game.load.image('arrowDown', 'assets/images/arrow-down.png');
 
-    game.load.image('axe','assets/axe-iron.png');
+    //***************************************Sound FX************************//
+    game.load.audio('explosion', 'assets/sfx/explosion.mp3');
+    game.load.audio('player_hit', 'assets/sfx/player_hit.mp3');
+    game.load.audio('music', 'assets/sfx/music.mp3');
+    game.load.audio('sword', 'assets/sfx/sword.mp3');
+    game.load.audio('die', 'assets/sfx/die.mp3');
+    game.load.audio('potion', 'assets/sfx/potion.mp3');
 }
 
 var map;
@@ -48,7 +55,7 @@ var enemy;
 var droidLength = 10;
 
 var droidCollection;
-var facing = 'left';
+var facing = 'right';
 var jumpTimer = 0;
 var gravityTimer = 0;
 var attackTimer = 0;
@@ -71,8 +78,13 @@ var spikesCollection;
 var enemyCollection;
 var attackboxes;
 
+var endfirstLevel = false; 
 var endLevel;
+var arrowDown;
 var currentLevel = 0;
+var timerStarted = false;
+var currentSeconds = 0;
+var gameTimer;
 
 var endGametext;
 var endGameSubtext;
@@ -81,8 +93,20 @@ var attackarc;
 var graphics;
 var monster;
 
-function create() {
+var player_hit;
+var explosion;
+var music;
+var sword;
+var explode_robot;
+var music_on;
+var musicButton;
+var audiolag;
+var die;
+var potion_sound;
 
+var endLevelAnimation;
+
+function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
@@ -91,11 +115,22 @@ function create() {
     bg.fixedToCamera = true;
 
     loadLevel(currentLevel);
-
+    if(currentLevel > 0 && !timerStarted) {
+        startGameTimer();
+    }
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
     weapon = new Weapon(100,1);
+    explosion = game.add.audio('explosion');
+    music = game.add.audio('music');
+    player_hit = game.add.audio('player_hit');
+    sword = game.add.audio('sword');
+    die = game.add.audio('die');
+    potion_sound = game.add.audio('potion');
+    music.play();
+    music_on = true;
+    audiolag = 0;
 //********************************END Weapon*********************************//
 
     //****************PLAYER****************//
@@ -110,16 +145,20 @@ function create() {
     
     player.anchor.setTo(0.7, 0.7);  // This ensure that the player's centre point is in the middle. Needed for flipping sprite
 
-    player.animations.add('left', [5, 6, 7, 8], 10, true);
+    player.animations.add('left', [4, 5, 6, 7], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
+    player.animations.add('attackL', [9, 10, 11, 11, 4], 15, false, true);
+    player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
     player.health = 3;
     player.maxHealth = 8;
-
+ 
 
 
     //****************End PLAYER***************//
-    graphics = new Phaser.Circle(player.x,player.y,player.weapon.length);
+    //graphics = new Phaser.Circle(player.x,player.y,player.weapon.length);
+    
+
     //*******************HEARTS*****************//
     game.plugin = game.plugins.add(Phaser.Plugin.HealthMeter);
     hearts = game.add.group();
@@ -211,6 +250,18 @@ function create() {
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+    musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
+
+    endLevelAnimation = game.add.graphics(0, 0);
+
+    var changeLevel =  game.add.graphics(0, 0);
+    changeLevel.beginFill(0x000000);
+    changeLevel.lineStyle(10, 0xffd900, 1);
+    changeLevel.drawRect(0, 0, game.width, game.height);
+
+    setTimeout(function(){ 
+        changeLevel.destroy(); 
+    }, 700);
 }
 
 function update() {
@@ -218,6 +269,8 @@ function update() {
     game.physics.arcade.collide(enemyCollection, layer);
 
     player.body.velocity.x = 0;
+
+    render();
 
     droidCollection.forEach(updateDroids, this);
     enemyCollection.forEach(updateDroids, this);
@@ -242,11 +295,12 @@ function update() {
         }
     }
     else {
-        if (facing != 'idle') {
+        if (facing != 'idle' && player.animations.currentAnim.name != "attackL" && player.animations.currentAnim.name != "attackR") {
             player.animations.stop();
 
             if (facing == 'left') {
                 player.frame = 5;
+                console.log("23");
             }
             else {
                 player.frame = 0;
@@ -254,6 +308,7 @@ function update() {
             facing = 'idle';
         }
     }
+
 
     
     // JUMPING
@@ -295,17 +350,43 @@ function update() {
             enemy = enemyCollection.hash[i];
             if(enemy.alive == true)
                 attack(enemy);
-            attackTimer = game.time.now + Phaser.Timer.SECOND * .3;
+            attackTimer = game.time.now + Phaser.Timer.SECOND * .2;
         }
-        attackAnimation();
+        attackAnimation();        
+        sword.play();
+    }
+    if(musicButton.isDown && game.time.now > audiolag){
+
+        if(music_on == true){
+            music.pause();
+            audiolag = game.time.now + Phaser.Timer.SECOND*.5;
+            music_on = false;
+        }else{
+            music.resume();
+            audiolag = game.time.now + Phaser.Timer.SECOND*.5;
+            music_on = true;
+        }
     }
 }
 
 function checkForLevelEnd(){
     if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
-        console.log('success');
-        currentLevel++;
-        create();
+        if(endfirstLevel) { 
+            console.log('success');
+            music.stop();
+            currentLevel++;
+            create();
+         } else {
+            endLevel.kill();
+            endfirstLevel = true;
+            // reset end level in first roung
+            endLevel = game.add.image(700, 70, 'endLevel');
+            endLevel.scale.setTo(0.2,0.2);
+            endLevel.scale.y *= -1; 
+            // set arrow down
+            arrowDown = game.add.image(680, 240, 'arrowDown');
+            arrowDown.scale.setTo(0.1,0.1);
+        }
     }
 }
 
@@ -361,6 +442,8 @@ function loadLevel(level){
         });
 
         endGametext.anchor.setTo(0.5, 0.5);
+         clearInterval(gameTimer);
+        $('.gameWrapper h2').replaceWith('<h2>You completed the game in ' + currentSeconds + ' seconds </h2>');
     } 
     else if (level === 999){
         endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
@@ -369,6 +452,7 @@ function loadLevel(level){
             align: "center"
         });
         endGametext.anchor.setTo(0.5, 0.5);
+        clearInterval(gameTimer);
     }
     
     map.addTilesetImage('tiles-1');
@@ -381,7 +465,7 @@ function loadLevel(level){
 
 function render() {
     //game.debug.text(game.time.physicsElapsed, 32, 32);
-
+   
     //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
     //game.debug.body(player);
@@ -411,6 +495,15 @@ function initPotion(potion, size) {
     potion.body.setSize(size[0], size[1]);
 }
 
+function startGameTimer() {
+    timerStarted = true;
+    gameTimer = setInterval(function(){
+        $('.gameWrapper h2').replaceWith('<h2>' + currentSeconds + ' seconds </h2>');
+        currentSeconds += 1;
+    }, 1000);
+    
+}
+
 function initSpikes(spikes, size) {
     game.physics.enable(spikes, Phaser.Physics.ARCADE);
     spikes.body.collideWorldBounds = true;  
@@ -425,7 +518,13 @@ function initSpikes(spikes, size) {
 function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
-    enemy.body.collideWorldBounds = true;
+    if(enemyType === "ghost"){
+        enemy.checkWorldBounds = true;
+        enemy.events.onOutOfBounds.add(enemyOut, this);
+    }else{
+        enemy.body.collideWorldBounds = true;
+    }
+
     enemy.body.checkCollision.left = enemy.body.checkCollision.right = colEnv;
 
     enemy.body.setSize(size[0], size[1]);
@@ -504,6 +603,7 @@ function takeDamage(player, enemy)   {
 
     // player is dead, start over
     if (player.health <= 0) {
+        die.play();
         restart();
     }
 }
@@ -515,22 +615,33 @@ function giveDamage(enemy){
     enemy.damage(player.weapon.damage);
 }
 
-function attack(enemy)        {
+function attack(enemy) {
 
-        if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
-            if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
-                giveDamage(enemy);
-            }
-            if (enemy.health <= 0) {
-                enemy.kill();
-            }
+    if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
+        if ((player.frame == 5 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
+            giveDamage(enemy);
+            player_hit.play();
         }
+        if (enemy.health <= 0) {
+            explosion.play();
+            enemy.kill();
+        }
+    }
 }
 function attackAnimation(){
-
+    if(facing == 'left' ||  player.frame == 5){
+        player.animations.play('attackL');
+        //player.animations.stop();
+    }
+    else if(facing == 'right' ||  player.frame == 0) {
+        player.animations.play('attackR');
+        //player.animations.stop();
+    }
+   
 }
 
-function killEnemy(enemy, spike) {
+function killEnemy(enemy) {
+    explosion.play();
     enemy.kill();
 }
 
@@ -560,7 +671,11 @@ function updateAnchor(droid){
 }    
 
 function updateDroids(dr){
-    game.physics.arcade.collide(dr, layer);
+
+    if(dr.enemyType !== 'ghost'){
+        game.physics.arcade.collide(dr, layer);
+    }
+    
     dr.animations.play('move');
     if(dr.body.blocked.left){
         dr.currentDirection = 'right';
@@ -570,10 +685,7 @@ function updateDroids(dr){
     }
 
     if(dr.enemyType === "ghost"){
-        //console.log(dr.enemyType);
-
-        dr.body.velocity.y =  (Math.sin(0.5*Math.PI*(dr.body.x/40))*180);
-
+        dr.body.velocity.y =  (Math.sin(0.5 * Math.PI * (dr.body.x/40)) * 180);
     }
 
     dr.body.velocity.x = dr.currentDirection === 'left' ? (dr.customSpeed * -1) : dr.customSpeed;
@@ -605,6 +717,10 @@ function updateGravity() {
     gameH1.style.msTransform = twist;
     gameH1.style.webkitTransform = twist; 
     gameH1.style.Transform = twist;
+
+    if(currentLevel === 0 && arrowDown){
+        arrowDown.kill();
+    }
 }
 
 function updateDroidGravity(droid){
@@ -616,13 +732,20 @@ function collectedPotion(player, potion) {
     potion.kill();
     if (player.health < player.maxHealth) {
         player.heal(1);
+        potion_sound.play();
     }
 }
 function Weapon(length,damage) {
-
     this.length = length;
-
     this.damage = damage;
 }
 
+function enemyOut(ghost){
+    if(ghost.x < 0 || ghost.x > game.width){
+        ghost.x = game.width - ghost.width;
+    }
+    if(ghost.y < 0 || ghost.y > game.height){
+        ghost.y = game.height - ghost.height; 
+    }
+}
 
