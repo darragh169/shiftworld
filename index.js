@@ -55,7 +55,7 @@ var enemy;
 var droidLength = 10;
 
 var droidCollection;
-var facing = 'right';
+var facing = 'left';
 var jumpTimer = 0;
 var gravityTimer = 0;
 var attackTimer = 0;
