@@ -51,7 +51,7 @@ var player;
 var droid;
 var enemy;
 
-var droidLength = 10;
+
 
 var droidCollection;
 var facing = 'left';
@@ -75,7 +75,7 @@ var healthMeterIcons;
 var potionCollection;
 var spikesCollection;
 var enemyCollection;
-var attackboxes;
+
 
 var endfirstLevel = false; 
 
