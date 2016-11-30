@@ -32,7 +32,6 @@ function preload() {
   
     game.load.image('heart', 'assets/heartFull.png');
 
-    game.load.image('endLevel', 'assets/images/endLevel.gif');
     game.load.image('arrowDown', 'assets/images/arrow-down.png');
 
     //***************************************Sound FX************************//
@@ -79,7 +78,7 @@ var enemyCollection;
 var attackboxes;
 
 var endfirstLevel = false; 
-var endLevel;
+
 var arrowDown;
 var currentLevel = 0;
 var timerStarted = false;
@@ -103,8 +102,6 @@ var musicButton;
 var audiolag;
 var die;
 var potion_sound;
-
-var endLevelAnimation;
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -238,11 +235,8 @@ function create() {
     if(currentLevel === 1){
         console.log()
         spawnEnemy(0, 4000, 2, 1);
-        spawnEnemy(3, 3000, 2, 1);
+        spawnEnemy(3, 3000, 2, 1);;
     }
-
-    endLevel = game.add.image(700, 445, 'endLevel');
-    endLevel.scale.setTo(0.2,0.2)
 
     game.camera.follow(player);
 
@@ -251,8 +245,6 @@ function create() {
     gravityButton = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);      // Press DOWN to flip gravity
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
     musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
-
-    endLevelAnimation = game.add.graphics(0, 0);
 
     var changeLevel =  game.add.graphics(0, 0);
     changeLevel.beginFill(0x000000);
@@ -370,23 +362,20 @@ function update() {
 }
 
 function checkForLevelEnd(){
-    if ((player.getBounds().contains(endLevel.x, endLevel.y))) {
-        if(endfirstLevel) { 
-            console.log('success');
-            music.stop();
-            currentLevel++;
-            create();
-         } else {
-            endLevel.kill();
-            endfirstLevel = true;
-            // reset end level in first roung
-            endLevel = game.add.image(700, 70, 'endLevel');
-            endLevel.scale.setTo(0.2,0.2);
-            endLevel.scale.y *= -1; 
-            // set arrow down
-            arrowDown = game.add.image(680, 240, 'arrowDown');
-            arrowDown.scale.setTo(0.1,0.1);
-        }
+    var levelOver = false;
+    for (var i = enemyCollection.length - 1; i >= 0; i--) {
+      if(enemyCollection.children[i].alive){
+        levelOver = false;
+        break;
+      }
+      levelOver = true;
+    }
+
+    if(levelOver){
+        console.log('success');
+        music.stop();
+        currentLevel++;
+        create();
     }
 }
 
