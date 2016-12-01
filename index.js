@@ -389,13 +389,19 @@ function checkForLevelEnd(){
     }
 }
 
+var titleStyle = {
+    font: "65px Squada One",
+    shadowFill: "black",
+    shadowOffsetX: "10px",
+    stroke: "black",
+    strokeThickness: 3,
+    fill: "#ff0044",
+    align: "center"
+}
+
 function loadLevel(level){
     if(level === 0){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", {
-            font: "65px Arial",
-            fill: "#ff0044",
-            align: "center"
-        });
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", titleStyle);
         endGametext.anchor.setTo(0.5, 0.5);
 
         map = game.add.tilemap('levelTest0');
@@ -433,22 +439,14 @@ function loadLevel(level){
     } 
 
     else if(level === 4){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", {
-            font: "65px Arial",
-            fill: "#ff0044",
-            align: "center"
-        });
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", titleStyle);
 
         endGametext.anchor.setTo(0.5, 0.5);
-         clearInterval(gameTimer);
+        clearInterval(gameTimer);
         $('.gameWrapper h2').replaceWith('<h2>You completed the game in ' + currentSeconds + ' seconds </h2>');
     } 
     else if (level === 999){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", {
-            font: "65px Arial",
-            fill: "#ff0044",
-            align: "center"
-        });
+        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", titleStyle);
         endGametext.anchor.setTo(0.5, 0.5);
         clearInterval(gameTimer);
     }
@@ -601,11 +599,17 @@ function knockback(player,enemy) {
 function takeDamage(player, enemy)   {
 
     fadePlayer();
+    game.time.events.add(Phaser.Timer.SECOND * 0.20, unFadePlayer, this);
+    game.time.events.add(Phaser.Timer.SECOND * 0.40, fadePlayer, this);
+    game.time.events.add(Phaser.Timer.SECOND * 0.60, unFadePlayer, this);
+    game.time.events.add(Phaser.Timer.SECOND * 0.80, fadePlayer, this);
     game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
+    game.time.events.add(Phaser.Timer.SECOND * 1.2, fadePlayer, this);
+    game.time.events.add(Phaser.Timer.SECOND * 1.4, unFadePlayer, this);
 
     if (game.time.now > invincibleTimer) {
         player.damage(enemy.damageLevel);
-        invincibleTimer = game.time.now + 1000;
+        invincibleTimer = game.time.now + 1400;
     }
 
     // player is dead, start over
@@ -630,11 +634,7 @@ function attack(enemy) {
             player_hit.play();
         }
         if (enemy.health <= 0) {
-            explosion.play();
-            var boom = booms.getFirstExists(false);
-            boom.reset(enemy.body.x, enemy.body.y);
-            boom.play('boom', 30, false, true);
-            enemy.kill();
+            killEnemy(enemy)
         }
     }
 }
@@ -650,6 +650,9 @@ function attackAnimation(){
 
 function killEnemy(enemy) {
     explosion.play();
+    var boom = booms.getFirstExists(false);
+    boom.reset(enemy.body.x, enemy.body.y);
+    boom.play('boom', 30, false, true);
     enemy.kill();
 }
 
