@@ -113,9 +113,6 @@ function create() {
     bg.fixedToCamera = true;
 
     loadLevel(currentLevel);
-    if(currentLevel > 0 && !timerStarted) {
-        startGameTimer();
-    }
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
@@ -252,14 +249,65 @@ function create() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
     musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
+   createSplash();
+}
+
+function createSplash(text, endGame) {
+     var levelText = 'Start Game';
+     var textarr;
     var changeLevel =  game.add.graphics(0, 0);
     changeLevel.beginFill(0x000000);
     changeLevel.lineStyle(10, 0xffd900, 1);
     changeLevel.drawRect(0, 0, game.width, game.height);
+    if (currentLevel > 0) {
+        levelText = 'Level ' + currentLevel;
+    }
+    levelText = text ? text : levelText;
+    endGametext = game.add.text(game.world.centerX, game.world.centerY, levelText, {
+            font: "65px Squada One",
+            fill: "#1a768e",
+            align: "center",
+        });
+    
+    textarr = levelText.split("");
+    var ani = 0;
+    var aniY = game.world.randomY < 350 ? game.world.randomY: 350;
+    var int1 = setInterval(function(){
+        console.log('here');
+        endGametext.x = ani;
+        endGametext.angle = ani / 20;
+        endGametext.y = aniY;
+        ani += 20;
+        aniY +- 20;
+        if(ani >= 800) {
+            if(!endGame){
+                clearInterval(int1);
+                changeLevel.destroy(); 
+                endGametext.kill();
+                 for(var j=0; j<textarr.length; j++){
+                    textarr[j].kill();
+                }
+            }
+            
+            if(currentLevel > 0 && !timerStarted) {
+                startGameTimer();
+            }
+        }
+        if (ani === 400) {
+            for(var j=0; j<textarr.length; j++){
+                textarr[j] = game.add.text(game.world.randomX, game.world.randomY, levelText, {
+                    font: "65px Squada One",
+                    fill: "#99d9ea",
+                    align: "center",
+                });
+            }
+        } 
+    }, 100);
+    endGametext.anchor.setTo(0, 0);
 
-    setTimeout(function(){ 
-        changeLevel.destroy(); 
-    }, 700);
+    /*setTimeout(function(){ 
+        
+    }, 1000);*/
 }
 
 function update() {
@@ -401,8 +449,10 @@ var titleStyle = {
 
 function loadLevel(level){
     if(level === 0){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", titleStyle);
-        endGametext.anchor.setTo(0.5, 0.5);
+
+        //endGametext = game.add.text(game.world.centerX, game.world.centerY, "Start Game", titleStyle);
+        //endGametext.anchor.setTo(0.5, 0.5);
+
 
         map = game.add.tilemap('levelTest0');
 
@@ -439,15 +489,22 @@ function loadLevel(level){
     } 
 
     else if(level === 4){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", titleStyle);
+        //endGametext = game.add.text(game.world.centerX, game.world.centerY, "You Win!!!!!!", titleStyle);
 
-        endGametext.anchor.setTo(0.5, 0.5);
+        //endGametext.anchor.setTo(0.5, 0.5);
         clearInterval(gameTimer);
         $('.gameWrapper h2').replaceWith('<h2>You completed the game in ' + currentSeconds + ' seconds </h2>');
     } 
     else if (level === 999){
-        endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", titleStyle);
-        endGametext.anchor.setTo(0.5, 0.5);
+       // endGametext = game.add.text(game.world.centerX, game.world.centerY, "DEAD... Restart?", titleStyle);
+       // endGametext.anchor.setTo(0.5, 0.5);
+
+        createSplash('You Win', true);
+        clearInterval(gameTimer);
+        $('.gameWrapper h2').replaceWith('<h2>You completed the game in ' + currentSeconds + ' seconds </h2>');
+    } 
+    else if (level === 999){
+        createSplash('You are dead', true);
         clearInterval(gameTimer);
     }
     
