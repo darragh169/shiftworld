@@ -117,7 +117,7 @@ function create() {
     game.physics.arcade.gravity.y = 1000;
 
     //********************************Weapon*********************************//
-    weapon = new Weapon(100,1);
+    weapon = new Weapon(75,1);
     explosion = game.add.audio('explosion');
     music = game.add.audio('music');
     player_hit = game.add.audio('player_hit');
@@ -134,7 +134,7 @@ function create() {
     game.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
-    player.body.setSize(32, 46, 24, 34); //player.body.setSize(20, 32, 5, 16);
+    player.body.setSize(32, 46, 34, 34); //player.body.setSize(20, 32, 5, 16);
     player.body.height = 46;
     player.weapon = weapon;
 
@@ -455,7 +455,10 @@ function loadLevel(level){
 function render() {
     //game.debug.text(game.time.physicsElapsed, 32, 32);
    
-    //game.debug.body(enemy);
+    // game.debug.body(player,"pink",false);
+    // game.debug.spriteBounds(player,"blue",false);
+    // game.debug.spriteCoords(player);
+    // game.debug.body(enemy,"red",false);
     //game.debug.bodyInfo(droid, 16, 24);
     //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
@@ -614,7 +617,7 @@ function giveDamage(enemy){
 
 function attack(enemy) {
 
-    if (game.physics.arcade.distanceBetween(player, enemy) < player.weapon.length) {
+    if (game.physics.arcade.distanceBetween(player.body, enemy.body) < player.weapon.length) {
         if ((player.frame == 4 && player.x > enemy.x)||(player.frame == 0 && player.x < enemy.x))  {
             giveDamage(enemy);
             player_hit.play();
