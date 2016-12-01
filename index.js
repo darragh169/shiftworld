@@ -431,11 +431,6 @@ function checkForLevelEnd(){
     }
 
     if(levelOver){
-<<<<<<< HEAD
-        debugger;
-        console.log('success');
-=======
->>>>>>> e68d701db18fcc70478c5411bdda348b7ae29f8e
         music.stop();
         currentLevel++;
         create();
