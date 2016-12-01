@@ -22,13 +22,14 @@ function preload() {
     game.load.spritesheet('enemy', 'assets/images/enemy1.png', 32, 64);   
     game.load.spritesheet('bird', 'assets/images/enemy2.png', 40, 31);  
     game.load.spritesheet('droid', 'assets/images/droid.png', 32, 32); 
-    game.load.spritesheet('ghost', 'assets/images/ghost.png', 60, 60); 
-    
+    game.load.spritesheet('ghost', 'assets/images/ghost.png', 60, 60);
+
+    game.load.spritesheet('boom', 'assets/images/explosion.png', 98, 84);  
 
     game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
     game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
 
-    game.load.spritesheet('dude', 'assets/images/dude5.png', 100, 80);  // Size of Sprite including whitespace
+    game.load.spritesheet('dude', 'assets/images/dude6.png', 126, 80);  // Size of Sprite including whitespace
   
     game.load.image('heart', 'assets/heartFull.png');
 
@@ -50,6 +51,7 @@ var layer;
 var player;
 var droid;
 var enemy;
+var booms;
 
 
 
@@ -144,8 +146,8 @@ function create() {
     player.animations.add('left', [4, 5, 6, 7], 10, true);
     player.animations.add('turn', [4], 20, true);
     player.animations.add('right', [0, 1, 2, 3], 10, true);
-    player.animations.add('attackL', [9, 10, 11, 11, 4], 15, false, true);
-    player.animations.add('attackR', [12, 13, 14, 14, 0], 15, false, true);
+    player.animations.add('attackL', [9, 10, 11, 11, 4], 25, false, true);
+    player.animations.add('attackR', [12, 13, 14, 14, 0], 25, false, true);
     player.health = 3;
     player.maxHealth = 8;
     stun = 0;
@@ -224,6 +226,11 @@ function create() {
     }
     //****************End POTIONS***************//
 
+    // Explosions
+    booms = game.add.group();
+    booms.createMultiple(30, 'boom');
+    booms.forEach(setupBoom, this);
+
         
     //}
 
@@ -233,7 +240,6 @@ function create() {
     // spawnEnemy(Type of enemy (array number of map objects), interval between spawn, number of times to spawn, level)
     
     if(currentLevel === 1){
-        console.log()
         spawnEnemy(0, 4000, 2, 1);
         spawnEnemy(3, 3000, 2, 1);;
     }
@@ -293,7 +299,6 @@ function update() {
 
             if (facing == 'left') {
                 player.frame = 4;
-                console.log("23");
             }
             else {
                 player.frame = 0;
@@ -361,18 +366,23 @@ function update() {
     }
 }
 
+function setupBoom(b){
+    b.anchor.x = 0.5;
+    b.anchor.y = 0.5;
+    b.animations.add('boom');
+}
+
 function checkForLevelEnd(){
     var levelOver = false;
     for (var i = enemyCollection.length - 1; i >= 0; i--) {
-      if(enemyCollection.children[i].alive){
-        levelOver = false;
-        break;
-      }
-      levelOver = true;
+        if(enemyCollection.children[i].alive){
+            levelOver = false;
+            break;
+        }
+        levelOver = true;
     }
 
     if(levelOver){
-        console.log('success');
         music.stop();
         currentLevel++;
         create();
@@ -389,7 +399,6 @@ function loadLevel(level){
         endGametext.anchor.setTo(0.5, 0.5);
 
         map = game.add.tilemap('levelTest0');
-        console.log(layer);
 
         if(layer){ 
             layer.destroy();
@@ -568,11 +577,9 @@ function spawnEnemy(b, interval, max, level) {
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
             initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
             updateAnchor(enemy); 
-            console.log(max);
             max -= 1;
 
             if(currentLevel != level) {
-                console.log(currentLevel + " " + level);
             }
 
             if(max <= 0 || currentLevel != level){
@@ -624,6 +631,9 @@ function attack(enemy) {
         }
         if (enemy.health <= 0) {
             explosion.play();
+            var boom = booms.getFirstExists(false);
+            boom.reset(enemy.body.x, enemy.body.y);
+            boom.play('boom', 30, false, true);
             enemy.kill();
         }
     }
@@ -631,11 +641,9 @@ function attack(enemy) {
 function attackAnimation(){
     if(facing == 'left' ||  player.frame == 4){
         player.animations.play('attackL');
-        //player.animations.stop();
     }
     else if(facing == 'right' ||  player.frame == 0) {
         player.animations.play('attackR');
-        //player.animations.stop();
     }
    
 }
