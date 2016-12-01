@@ -38,7 +38,7 @@
                      "damage":1,
                      "gravity":true,
                      "h":32,
-                     "speed":50,
+                     "speed":0,
                      "w":32
                     },
                  "propertytypes":
@@ -85,6 +85,93 @@
                  "width":16,
                  "x":610,
                  "y":217
+                }, 
+                {
+                 "height":16,
+                 "id":41,
+                 "name":"",
+                 "properties":
+                    {
+                     "colEnv":true,
+                     "damage":1,
+                     "gravity":true,
+                     "h":32,
+                     "speed":0,
+                     "w":32
+                    },
+                 "propertytypes":
+                    {
+                     "colEnv":"bool",
+                     "damage":"int",
+                     "gravity":"bool",
+                     "h":"int",
+                     "speed":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"droid",
+                 "visible":true,
+                 "width":16,
+                 "x":475,
+                 "y":393
+                }, 
+                {
+                 "height":16,
+                 "id":42,
+                 "name":"",
+                 "properties":
+                    {
+                     "colEnv":true,
+                     "damage":1,
+                     "gravity":true,
+                     "h":32,
+                     "speed":0,
+                     "w":32
+                    },
+                 "propertytypes":
+                    {
+                     "colEnv":"bool",
+                     "damage":"int",
+                     "gravity":"bool",
+                     "h":"int",
+                     "speed":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"droid",
+                 "visible":true,
+                 "width":16,
+                 "x":366,
+                 "y":389
+                }, 
+                {
+                 "height":16,
+                 "id":43,
+                 "name":"",
+                 "properties":
+                    {
+                     "colEnv":true,
+                     "damage":1,
+                     "gravity":true,
+                     "h":32,
+                     "speed":0,
+                     "w":32
+                    },
+                 "propertytypes":
+                    {
+                     "colEnv":"bool",
+                     "damage":"int",
+                     "gravity":"bool",
+                     "h":"int",
+                     "speed":"int",
+                     "w":"int"
+                    },
+                 "rotation":0,
+                 "type":"droid",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":388
                 }],
          "offsetx":-2,
          "offsety":-1,
@@ -119,7 +206,7 @@
                  "type":"spikes",
                  "visible":true,
                  "width":61,
-                 "x":351,
+                 "x":703,
                  "y":481
                 }, 
                 {
@@ -151,7 +238,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":41,
+ "nextobjectid":44,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,
