@@ -466,7 +466,7 @@ function render() {
    
     //game.debug.body(enemy);
     //game.debug.bodyInfo(droid, 16, 24);
-    game.debug.body(player);
+    //game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
     //layer.debug = true;
 }
