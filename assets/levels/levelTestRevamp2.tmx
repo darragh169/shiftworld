@@ -63,6 +63,7 @@
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
+    <property name="health" type="int" value="1"/>
     <property name="speed" type="int" value="200"/>
     <property name="w" type="int" value="40"/>
    </properties>
@@ -73,6 +74,7 @@
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="false"/>
     <property name="h" type="int" value="31"/>
+    <property name="health" type="int" value="1"/>
     <property name="speed" type="int" value="200"/>
     <property name="w" type="int" value="40"/>
    </properties>
@@ -83,6 +85,7 @@
     <property name="damage" type="int" value="2"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="64"/>
+    <property name="health" type="int" value="2"/>
     <property name="speed" type="int" value="25"/>
     <property name="w" type="int" value="32"/>
    </properties>
@@ -93,6 +96,7 @@
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
+    <property name="health" type="int" value="2"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>
@@ -103,6 +107,7 @@
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
+    <property name="health" type="int" value="1"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>
@@ -113,6 +118,7 @@
     <property name="damage" type="int" value="1"/>
     <property name="gravity" type="bool" value="true"/>
     <property name="h" type="int" value="32"/>
+    <property name="health" type="int" value="2"/>
     <property name="speed" type="int" value="50"/>
     <property name="w" type="int" value="32"/>
    </properties>

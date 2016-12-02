@@ -25,6 +25,7 @@ function preload() {
     game.load.spritesheet('ghost', 'assets/images/ghost.png', 60, 60);
 
     game.load.spritesheet('boom', 'assets/images/explosion.png', 98, 84);  
+    game.load.spritesheet('smoke', 'assets/images/smoke.png', 100, 37); 
 
     game.load.spritesheet('spikes', 'assets/images/spikes.png', 61, 28); 
     game.load.spritesheet('spikes_down', 'assets/images/spikes_down.png', 61, 28); 
@@ -52,6 +53,7 @@ var player;
 var droid;
 var enemy;
 var booms;
+var smokes;
 
 
 var droidCollection;
@@ -227,6 +229,11 @@ function create() {
     booms = game.add.group();
     booms.createMultiple(30, 'boom');
     booms.forEach(setupBoom, this);
+
+    // Smokes
+    smokes = game.add.group();
+    smokes.createMultiple(30, 'smoke');
+    smokes.forEach(setupSmoke, this);
 
         
     //}
@@ -421,6 +428,11 @@ function setupBoom(b){
     b.anchor.y = 0.5;
     b.animations.add('boom');
 }
+function setupSmoke(s){
+    s.anchor.x = 0.5;
+    s.anchor.y = 0.5;
+    s.animations.add('smoke');
+}
 
 function checkForLevelEnd(){
     var levelOver = false;
@@ -573,7 +585,7 @@ function initSpikes(spikes, size) {
 }
 
 // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
+function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv, health) {
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
 
     if(enemyType === "ghost"){
@@ -590,6 +602,7 @@ function initEnemy(enemy, enemyType, size, speed, damage, grav, colEnv) {
     enemy.body.allowGravity = grav;   
     enemy.customSpeed = speed;
     enemy.enemyType = enemyType;
+    enemy.health = health;
 
     enemy.currentDirection = 'left';
 
@@ -606,14 +619,15 @@ function createEnemy(){
         var enemyDamage = map.objects.enemyLayer[i].properties.damage;
         var enemySpeed = map.objects.enemyLayer[i].properties.speed;
         var affectedByGravity = map.objects.enemyLayer[i].properties.gravity; 
-        var colEnv = map.objects.enemyLayer[i].properties.colEnv;          
+        var colEnv = map.objects.enemyLayer[i].properties.colEnv;    
+        var health = map.objects.enemyLayer[i].properties.health;      
 
         // I made this global so that it can be viewed in the render()
         // X pos, Y pos minus its height, sprite
         enemy = enemyCollection.create(map.objects.enemyLayer[i].x, map.objects.enemyLayer[i].y + sizeArray[1], map.objects.enemyLayer[i].type);
         
         // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);       
+        initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv, health);       
     }
 }
 
@@ -626,7 +640,7 @@ function spawnEnemy(b, interval, max, level) {
             var enemySpeed = map.objects.enemyLayer[b].properties.speed;
             var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;  
             var colEnv = map.objects.enemyLayer[b].properties.colEnv;   
-
+            var health = map.objects.enemyLayer[b].properties.health; 
 
             // I made this global so that it can be viewed in the render()
             // X pos, Y pos minus its height, sprite
@@ -638,7 +652,7 @@ function spawnEnemy(b, interval, max, level) {
             }  
 
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
-            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
+            initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv, health);
             updateAnchor(enemy); 
             max -= 1;
 
@@ -670,7 +684,7 @@ function takeDamage(player, enemy)   {
         game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
         game.time.events.add(Phaser.Timer.SECOND * 1.2, fadePlayer, this);
         game.time.events.add(Phaser.Timer.SECOND * 1.4, unFadePlayer, this);
-        
+
         invincibleTimer = game.time.now + 1400;
     }
 
@@ -682,9 +696,28 @@ function takeDamage(player, enemy)   {
 }
 
 function giveDamage(enemy){
-    fadeEnemy(enemy);
-    game.time.events.add(Phaser.Timer.SECOND * .5, unFadeEnemy, this);
+    //fadeEnemy(enemy);
+    //game.time.events.add(Phaser.Timer.SECOND * .5, unFadeEnemy, this);
+    if(gravityDown === true){
+        enemy.body.velocity.y -= 150;
+    }
+    else {
+        enemy.body.velocity.y += 150;
+    }
+    
+    if(player.body.x > enemy.body.x){
+        //console.log("Player on RIGHT");
+        enemy.body.velocity.x -= 400;
+    }
+    else {
+        //console.log("Player on LEFT");
+        enemy.body.velocity.x += 400;        
+    }
 
+    var smoke = smokes.getFirstExists(false);
+    smoke.reset(enemy.body.x, enemy.body.y);
+    smoke.play('smoke', 30, false, true);
+    
     enemy.damage(player.weapon.damage);
 }
 

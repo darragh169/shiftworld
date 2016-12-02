@@ -104,6 +104,7 @@
                      "damage":2,
                      "gravity":true,
                      "h":64,
+                     "health":1,
                      "speed":25,
                      "w":32
                     },
@@ -113,6 +114,7 @@
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
+                     "health":"int",
                      "speed":"int",
                      "w":"int"
                     },
@@ -133,6 +135,7 @@
                      "damage":2,
                      "gravity":true,
                      "h":64,
+                     "health":2,
                      "speed":25,
                      "w":32
                     },
@@ -142,6 +145,7 @@
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
+                     "health":"int",
                      "speed":"int",
                      "w":"int"
                     },
@@ -162,6 +166,7 @@
                      "damage":1,
                      "gravity":false,
                      "h":31,
+                     "health":1,
                      "speed":100,
                      "w":40
                     },
@@ -171,6 +176,7 @@
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
+                     "health":"int",
                      "speed":"int",
                      "w":"int"
                     },
@@ -191,6 +197,7 @@
                      "damage":1,
                      "gravity":false,
                      "h":31,
+                     "health":1,
                      "speed":200,
                      "w":40
                     },
@@ -200,6 +207,7 @@
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
+                     "health":"int",
                      "speed":"int",
                      "w":"int"
                     },
@@ -220,6 +228,7 @@
                      "damage":1,
                      "gravity":true,
                      "h":32,
+                     "health":2,
                      "speed":50,
                      "w":32
                     },
@@ -229,6 +238,7 @@
                      "damage":"int",
                      "gravity":"bool",
                      "h":"int",
+                     "health":"int",
                      "speed":"int",
                      "w":"int"
                     },
