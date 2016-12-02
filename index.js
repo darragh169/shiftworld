@@ -54,7 +54,6 @@ var enemy;
 var booms;
 
 
-
 var droidCollection;
 var facing = 'left';
 var jumpTimer = 0;
@@ -105,6 +104,7 @@ var potion_sound;
 var stun;
 
 function create() {
+    gravityDown = true; // Ensure that gravity is set correctly on level load
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.stage.backgroundColor = '#000000';
@@ -133,7 +133,7 @@ function create() {
     game.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.bounce.y = 0.0; // I set this to 0 because it interfers with the jump. Originally 0.2
     player.body.collideWorldBounds = true;
-    player.body.setSize(32, 46, 34, 34); //player.body.setSize(20, 32, 5, 16);
+    player.body.setSize(32, 46, 44, 34); //player.body.setSize(20, 32, 5, 16);
     player.body.height = 46;
     player.weapon = weapon;
 
@@ -249,12 +249,13 @@ function create() {
     attackButton = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
     musicButton = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
-   createSplash();
+    createSplash();
 }
 
 function createSplash(text, endGame) {
-     var levelText = 'Start Game';
-     var textarr;
+    /*
+    var levelText = 'Start Game';
+    var textarr;
     var changeLevel =  game.add.graphics(0, 0);
     changeLevel.beginFill(0x000000);
     changeLevel.lineStyle(10, 0xffd900, 1);
@@ -273,7 +274,7 @@ function createSplash(text, endGame) {
     var ani = 0;
     var aniY = game.world.randomY < 350 ? game.world.randomY: 350;
     var int1 = setInterval(function(){
-        console.log('here');
+        //console.log('here');
         endGametext.x = ani;
         endGametext.angle = ani / 20;
         endGametext.y = aniY;
@@ -304,6 +305,7 @@ function createSplash(text, endGame) {
         } 
     }, 100);
     endGametext.anchor.setTo(0, 0);
+    */
 
     /*setTimeout(function(){ 
         
@@ -524,7 +526,7 @@ function render() {
     // game.debug.spriteCoords(player);
     // game.debug.body(enemy,"red",false);
     //game.debug.bodyInfo(droid, 16, 24);
-    //game.debug.body(player);
+    game.debug.body(player);
     //game.debug.bodyInfo(player, 16, 24);
     //layer.debug = true;
 }
@@ -623,19 +625,22 @@ function spawnEnemy(b, interval, max, level) {
             var enemyDamage = map.objects.enemyLayer[b].properties.damage;
             var enemySpeed = map.objects.enemyLayer[b].properties.speed;
             var affectedByGravity = map.objects.enemyLayer[b].properties.gravity;  
-            var colEnv = map.objects.enemyLayer[b].properties.colEnv;         
+            var colEnv = map.objects.enemyLayer[b].properties.colEnv;   
+
 
             // I made this global so that it can be viewed in the render()
             // X pos, Y pos minus its height, sprite
             enemy = enemyCollection.create(map.objects.enemyLayer[b].x, map.objects.enemyLayer[b].y - sizeArray[1]*0.5, map.objects.enemyLayer[b].type);
 
+            if(gravityDown === false){
+                // Gravity is upside down therefore make enemy upside down
+                enemy.scale.y = enemy.scale.y * (-1); 
+            }  
+
             // Enemy, Type, W & H, Speed, Damage, Affected by Gravity
             initEnemy(enemy, enemyType, sizeArray, enemySpeed, enemyDamage, affectedByGravity, colEnv);
             updateAnchor(enemy); 
             max -= 1;
-
-            if(currentLevel != level) {
-            }
 
             if(max <= 0 || currentLevel != level){
                 clearInterval(spawnInterval);
@@ -765,6 +770,8 @@ function updateGravity() {
     gravityDown = !gravityDown;             // Change gravity boolean
     game.physics.arcade.gravity.y *= -1;    // Invert gravity
 
+    console.log("GravityDown is " + gravityDown);
+
     //player.anchor.setTo(0.5, 0.5);        // Set anchor point to middle of sprite - Redundant due to setting this at create()
     player.scale.y *= -1;                   // Flip Sprite vertically
 
@@ -817,4 +824,3 @@ function enemyOut(ghost){
         ghost.y = game.height - ghost.height; 
     }
 }
-
