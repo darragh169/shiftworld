@@ -660,17 +660,17 @@ function knockback(player,enemy) {
 //whatever is damaging the player needs to have attribute "damageLevel"
 function takeDamage(player, enemy)   {
 
-    fadePlayer();
-    game.time.events.add(Phaser.Timer.SECOND * 0.20, unFadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 0.40, fadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 0.60, unFadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 0.80, fadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 1.2, fadePlayer, this);
-    game.time.events.add(Phaser.Timer.SECOND * 1.4, unFadePlayer, this);
-
     if (game.time.now > invincibleTimer) {
         player.damage(enemy.damageLevel);
+        fadePlayer();
+        game.time.events.add(Phaser.Timer.SECOND * 0.20, unFadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 0.40, fadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 0.60, unFadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 0.80, fadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 1, unFadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 1.2, fadePlayer, this);
+        game.time.events.add(Phaser.Timer.SECOND * 1.4, unFadePlayer, this);
+        
         invincibleTimer = game.time.now + 1400;
     }
 
